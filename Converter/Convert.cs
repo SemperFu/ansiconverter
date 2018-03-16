@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using Internal;
 using Microsoft.VisualBasic;
+using System.Linq;
 
 namespace ConverterSupport
 {
@@ -181,7 +182,7 @@ namespace ConverterSupport
 			string sHex;
 			string sChar;
 			for (a = 128; a <= 255; a++) {
-				sHex = "&#x" + (string)Hex(InternalConstants.aUniCode[a]) + ";";
+				sHex = "&#x" + (string)Conversion.Hex(InternalConstants.aUniCode[a]) + ";";
 				sChar = "&#" + (string)InternalConstants.aUniCode[a] + ";";
 				swork = Strings.Replace(swork, sHex, Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 				swork = Strings.Replace(swork, sChar, Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
@@ -213,11 +214,11 @@ namespace ConverterSupport
 			string s4 = "";
 			if (InternalConstants.aSpecH[iChr] != "") {
 				//Return Unicode Character or Special HTML Entity value for Character
-				sResult = Interaction.IIf(Data.bHTMLEncode, InternalConstants.aSpecH[iChr], Strings.ChrW(InternalConstants.aUniCode[iChr]));
+				sResult = (string) Interaction.IIf(Data.bHTMLEncode, InternalConstants.aSpecH[iChr], Strings.ChrW(System.Convert.ToInt32(InternalConstants.aUniCode[iChr])));
 			} else {
-				if ((int)InternalConstants.aUniCode[iChr] != (int)iChr) {
+				if (System.Convert.ToInt32(InternalConstants.aUniCode[iChr]) != iChr) {
 					//Return Unicode Character or HTML Encoded Unicode Char
-					sResult = Interaction.IIf(Data.bHTMLEncode, "&#" + InternalConstants.aUniCode[iChr] + ";", Strings.ChrW(InternalConstants.aUniCode[iChr]));
+					sResult = (string)Interaction.IIf(Data.bHTMLEncode, "&#" + InternalConstants.aUniCode[iChr] + ";", Strings.ChrW(System.Convert.ToInt32(InternalConstants.aUniCode[iChr])));
 				} else {
 					//Keep Original
 					sResult = Strings.Chr(iChr).ToString();
@@ -449,7 +450,7 @@ namespace ConverterSupport
 					Data.Screen[Data.XPos, Data.YPos].BackColor = Data.BackColor;
 					Data.Screen[Data.XPos, Data.YPos].Bold = Data.Bold;
 					if (Data.bConv2Unicode == true) {
-						Data.Screen[Data.XPos, Data.YPos].Chr = Interaction.IIf(Data.bHTMLEncode, Strings.Replace(seekascuni(sChar), " ", "&nbsp;", 1, -1, CompareMethod.Text), seekascuni(sChar));
+						Data.Screen[Data.XPos, Data.YPos].Chr = (string)Interaction.IIf(Data.bHTMLEncode, Strings.Replace(seekascuni(sChar), " ", "&nbsp;", 1, -1, CompareMethod.Text), seekascuni(sChar));
 					} else {
 						Data.Screen[Data.XPos, Data.YPos].Chr = sChar;
 					}
@@ -509,7 +510,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int NotZero(int iVal)
 		{
-			return Interaction.IIf(iVal == 0, 1, iVal);
+			return (int) Interaction.IIf(iVal == 0, 1, iVal);
 		}
 		//----------------------------------------------------
 		/// <summary>
@@ -548,7 +549,7 @@ namespace ConverterSupport
 		public string Decimal2BaseN(int value, int outBase)
 		{
 			int quotient;
-			object reminder;
+			double reminder;
 			int denominator;
 			string result = "";
 			denominator = outBase;
@@ -559,7 +560,7 @@ namespace ConverterSupport
 				if (reminder >= 10) {
 					reminder = (string)Strings.Chr(65 + (reminder - 10));
 				}
-				result += (string)reminder;
+				result += reminder.ToString();
 			} while (!(quotient == 0));
 			System.Windows.Forms.Application.DoEvents();
 			return Strings.StrReverse(result);
@@ -630,22 +631,23 @@ namespace ConverterSupport
 		public string ByteArrayToStr(byte[] ByteArray, FFormats enc = FFormats.us_ascii)
 		{
 			switch (enc) {
-				case FFormats.us_ascii:
-					System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-					return encoding.GetString(ByteArray);
+				
 				case FFormats.utf_7:
-					System.Text.UTF7Encoding encoding = new System.Text.UTF7Encoding();
-					return encoding.GetString(ByteArray);
+					System.Text.UTF7Encoding u7encoding = new System.Text.UTF7Encoding();
+					return u7encoding.GetString(ByteArray);
 				case FFormats.utf_8:
-					System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-					return encoding.GetString(ByteArray);
+					System.Text.UTF8Encoding u8encoding = new System.Text.UTF8Encoding();
+					return u8encoding.GetString(ByteArray);
 				case FFormats.utf_16:
-					System.Text.UnicodeEncoding encoding = new System.Text.UnicodeEncoding();
-					return encoding.GetString(ByteArray);
+					System.Text.UnicodeEncoding u16encoding = new System.Text.UnicodeEncoding();
+					return u16encoding.GetString(ByteArray);
 				case FFormats.utf_32:
-					System.Text.UTF32Encoding encoding = new System.Text.UTF32Encoding();
-					return encoding.GetString(ByteArray);
-				default:
+					System.Text.UTF32Encoding u32encoding = new System.Text.UTF32Encoding();
+					return u32encoding.GetString(ByteArray);
+                case FFormats.us_ascii:
+                    //System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+                    //return encoding.GetString(ByteArray);
+                default:
 					System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
 					return encoding.GetString(ByteArray);
 			}
@@ -836,7 +838,7 @@ namespace ConverterSupport
 			Int16 BitMask;
 			MyByte = MyByte & 0xff;
 			BitMask = Math.Pow(2, (MyBit - 1));
-			ExamineBit = ((MyByte & BitMask) > 0);
+			return ((MyByte & BitMask) > 0);
 		}
 
 		/// <summary>
@@ -928,7 +930,7 @@ namespace ConverterSupport
 		public bool RegExTest(string sStr, string sPattern, System.Text.RegularExpressions.RegexOptions RegExOpt = 0)
 		{
 			if (RegExOpt && RegexOptions.Multiline) {
-				sStr = Strings.Replace(sStr, vbCrLf, vbLf, 1, -1, CompareMethod.Text);
+				sStr = Strings.Replace(sStr, Environment.NewLine, "\n", 1, -1, CompareMethod.Text);
 			}
 			Regex re = new Regex(sPattern, RegExOpt);
 			return re.IsMatch(sStr);
@@ -1072,7 +1074,7 @@ namespace ConverterSupport
 			if (sChar.Length == 0) {
 				return false;
 			}
-			for (x = 0; x <= sChar.Length - 1; x++) {
+			for (int x = 0; x <= sChar.Length - 1; x++) {
 				sChr = sChar.ToUpper().Substring(x, 1);
 				if ((Strings.Asc(sChr) < 48 | Strings.Asc(sChr) > 57) & (Strings.Asc(sChr) < 65 | Strings.Asc(sChr) > 70)) {
 					bResult = false;
@@ -1139,7 +1141,7 @@ namespace ConverterSupport
 		{
 			int Length;
 			int x;
-			int TempValue;
+			int TempValue = 0; //defau
 			//Get the length of the binary string
 			Length = ((string)BinaryNumber).Length;
 
@@ -1148,8 +1150,9 @@ namespace ConverterSupport
 			//The string is parsed from the right (LSB - Least Significant Bit)
 			//to the left (MSB - Most Significant Bit)
 			for (x = 1; x <= Length; x++) {
-				TempValue = TempValue + (int)Strings.Mid(BinaryNumber, Length - x + 1, 1) * Math.Pow(2, (x - 1));
-			}
+                TempValue = TempValue + System.Convert.ToInt32(Strings.Mid(BinaryNumber, Length - x + 1, 1)) * 2 ^ (x - 1);
+
+            }
 
 			return TempValue;
 
@@ -1630,10 +1633,10 @@ namespace ConverterSupport
 				byte[] pixels = new byte[height * stride];
 				System.Drawing.Color c;
 				List<System.Windows.Media.Color> clist = new List<System.Windows.Media.Color>();
-				for (int id = 0; id <= pal.Entries.Count - 1; id++) {
-					clist.Add(System.Windows.Media.Color.FromArgb(pal.Entries(id).A, pal.Entries(id).R, pal.Entries(id).G, pal.Entries(id).B));
+				for (int id = 0; id <= pal.Entries.Count() - 1; id++) {
+					clist.Add(System.Windows.Media.Color.FromArgb(pal.Entries[id].A, pal.Entries[id].R, pal.Entries[id].G, pal.Entries[id].B));
 				}
-				object palnew = new System.Windows.Media.Imaging.BitmapPalette(clist);
+                BitmapPalette palnew = new System.Windows.Media.Imaging.BitmapPalette(clist);
 				byte palentry;
 				int iCnt = 0;
 				for (int x = 0; x <= width - 1; x++) {
@@ -1669,8 +1672,8 @@ namespace ConverterSupport
 			byte iResult = 0;
 			bool bFound = false;
 			System.Drawing.Color nearc;
-			for (a = 0; a <= cp.Entries.Count - 1; a++) {
-				if (cp.Entries(a).R == col.R & cp.Entries(a).G == col.G & cp.Entries(a).B == col.B & (bIgnoreAlpha == true | (bIgnoreAlpha == false & cp.Entries(a).A == col.A))) {
+			for (int a = 0; a <= cp.Entries.Count() - 1; a++) {
+				if (cp.Entries[a].R == col.R & cp.Entries[a].G == col.G & cp.Entries[a].B == col.B & (bIgnoreAlpha == true | (bIgnoreAlpha == false & cp.Entries[a].A == col.A))) {
 					bFound = true;
 					iResult = a;
 					break; // TODO: might not be correct. Was : Exit For
@@ -1703,9 +1706,9 @@ namespace ConverterSupport
 
 			if (DistCI <= MinDist) {
 				// distance is less than current minimum. set save variables.
-				TestColorCloser = true;
+				return true;
 			} else {
-				TestColorCloser = false;
+				return false;
 			}
 
 		}
@@ -1719,18 +1722,18 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public System.Drawing.Color GetClosestExistingRGBColor(System.Drawing.Color ColorI, System.Drawing.Imaging.ColorPalette pal)
 		{
-			int a;
+			
 			System.Drawing.Color CloseCol = System.Drawing.Color.Black;
-			for (a = 0; a <= pal.Entries.Count - 1; a++) {
+			for (int a = 0; a <= pal.Entries.Count() - 1; a++) {
 				if (a == 0) {
-					CloseCol = (System.Drawing.Color)pal.Entries(a);
+					CloseCol = (System.Drawing.Color)pal.Entries[a];
 				} else {
-					if (TestColorCloser((System.Drawing.Color)pal.Entries(a), CloseCol, ColorI) == true) {
-						CloseCol = (System.Drawing.Color)pal.Entries(a);
+					if (TestColorCloser((System.Drawing.Color)pal.Entries[a], CloseCol, ColorI) == true) {
+						CloseCol = (System.Drawing.Color)pal.Entries[a];
 					}
 				}
 			}
-			GetClosestExistingRGBColor = CloseCol;
+			return CloseCol;
 		}
 		/// <summary>
 		/// Returns Larger of two values <paramref>val1</paramref> and <paramref>val2</paramref>
@@ -1741,7 +1744,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int larger(int val1, int val2)
 		{
-			return Interaction.IIf(val1 > val2, val1, val2);
+			return (int) Interaction.IIf(val1 > val2, val1, val2);
 		}
 		/// <summary>
 		/// Returns Smaller of two values <paramref>val1</paramref> and <paramref>val2</paramref>
@@ -1752,7 +1755,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int smaller(int val1, int val2)
 		{
-			return Interaction.IIf(val1 < val2, val1, val2);
+			return (int)Interaction.IIf(val1 < val2, val1, val2);
 		}
 
 	}
