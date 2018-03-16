@@ -86,7 +86,7 @@ namespace Internal
 			Color.FromArgb(255, 255, 255, 255)
 
 		};
-		public string[] AnsiForeColors = new string[] {
+		public static string[] AnsiForeColors = new string[] {
 			"30",
 			"34",
 			"32",
@@ -96,7 +96,7 @@ namespace Internal
 			"33",
 			"37"
 		};
-		public string[] AnsiBackColors = new string[] {
+		public static string[] AnsiBackColors = new string[] {
 			"40",
 			"44",
 			"42",

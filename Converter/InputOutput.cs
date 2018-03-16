@@ -6,6 +6,9 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
 using System.Text;
+using Microsoft.VisualBasic;
+using Internal;
+
 namespace ConverterSupport
 {
 
@@ -19,9 +22,9 @@ namespace ConverterSupport
 			byte[] bte;
 			System.IO.FileStream ofile;
 			int iSize = 0;
-			if (IO.File.Exists(sFile)) {
-				ofile = IO.File.Open(sFile, IO.FileMode.Open, IO.FileAccess.Read, FileShare.ReadWrite);
-				ofile.Seek(0, IO.SeekOrigin.Begin);
+			if (File.Exists(sFile)) {
+				ofile = File.Open(sFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+				ofile.Seek(0, SeekOrigin.Begin);
 				iSize = ofile.Length - 1;
 				 // ERROR: Not supported in C#: ReDimStatement
 
@@ -109,96 +112,100 @@ namespace ConverterSupport
 			string[] aResult = new string[2];
 			string sParentDir = "";
 
-			sParentDir = IO.Path.GetDirectoryName(OutFileName);
-			if (IO.Directory.Exists(sParentDir) == false && sParentDir != "") {
-				IO.Directory.CreateDirectory(sParentDir);
+			sParentDir = Path.GetDirectoryName(OutFileName);
+			if (Directory.Exists(sParentDir) == false && sParentDir != "") {
+				Directory.CreateDirectory(sParentDir);
 			}
 
-			if (IO.File.Exists(OutFileName)) {
+			if (File.Exists(OutFileName)) {
 				if (bForceOverwrite == true) {
 					try {
-						IO.File.Delete(OutFileName);
+						File.Delete(OutFileName);
 						bProceed = true;
-						aResult(0) = "1";
-						aResult(1) = OutFileName;
-						aResult(2) = "  - [b]Force Overwrite enabled.[/b] \r\n" + "  - Existing Output file overwritten.";
+						aResult[0] = "1";
+						aResult[1] = OutFileName;
+						aResult[2] = "  - [b]Force Overwrite enabled.[/b] \r\n" + "  - Existing Output file overwritten.";
 					} catch (Exception ex) {
 						bProceed = false;
-						aResult(0) = "-4";
-						aResult(1) = OutFileName;
-						aResult(2) = "  - Unable to Delete Existing Output File [i]'" + OutFileName + "'[/i].\r\n" + "  - File Skipped.";
+						aResult[0] = "-4";
+						aResult[1] = OutFileName;
+						aResult[2] = "  - Unable to Delete Existing Output File [i]'" + OutFileName + "'[/i].\r\n" + "  - File Skipped.";
 					}
 				} else {
 					switch (iOutExists) {
 						case 0:
 							//Delete Output File, if it already exists
 							try {
-								IO.File.Delete(OutFileName);
+								File.Delete(OutFileName);
 								bProceed = true;
-								aResult(0) = "2";
-								aResult(1) = OutFileName;
-								aResult(2) = "  - Program Setting [i]'Overwrite Existing Output Files'[/i].\r\n" + "  - Existing Output file overwritten.";
+								aResult[0] = "2";
+								aResult[1] = OutFileName;
+								aResult[2] = "  - Program Setting [i]'Overwrite Existing Output Files'[/i].\r\n" + "  - Existing Output file overwritten.";
 							} catch (Exception ex) {
 								bProceed = false;
-								aResult(0) = "-4";
-								aResult(1) = OutFileName;
-								aResult(2) = "  - Unable to Delete Existing Output File [i]'" + OutFileName + "'[/i].\r\n" + "  - File Skipped.";
+								aResult[0] = "-4";
+								aResult[1] = OutFileName;
+								aResult[2] = "  - Unable to Delete Existing Output File [i]'" + OutFileName + "'[/i].\r\n" + "  - File Skipped.";
 
 							}
+                            break;
 						case 1:
 							//Skip
 							bProceed = false;
-							aResult(0) = "3";
-							aResult(1) = "";
-							aResult(2) = "  - Program Setting [i]'Skip Existing Output Files'[/i].\r\n" + "  - Output [b]'" + OutFileName + "'[/b] Skipped.";
-						case 3:
+							aResult[0] = "3";
+							aResult[1] = "";
+							aResult[2] = "  - Program Setting [i]'Skip Existing Output Files'[/i].\r\n" + "  - Output [b]'" + OutFileName + "'[/b] Skipped.";
+                            break;
+                        case 3:
 							//Ask    
 							if (MsgBox("Output File: " + OutFileName + " already exists.\r\n" + "Do you want to overwrite it?", vbYesNo, "File Exists") == vbYes) {
-								IO.File.Delete(OutFileName);
+								File.Delete(OutFileName);
 								bProceed = true;
-								aResult(0) = "4";
-								aResult(1) = OutFileName;
-								aResult(2) = "  - Manual Decision [i]'Overwrite Existing Output File'[/i].\r\n" + "  - Existing Output file overwritten.";
+								aResult[0] = "4";
+								aResult[1] = OutFileName;
+								aResult[2] = "  - Manual Decision [i]'Overwrite Existing Output File'[/i].\r\n" + "  - Existing Output file overwritten.";
 							} else {
 								bProceed = false;
-								aResult(0) = "5";
-								aResult(1) = "";
-								aResult(2) = "  - Manual Decision [i]'Skip Existing Output File'[/i].\r\n" + "  - Output [b]'" + OutFileName + "'[/b] Skipped.";
+								aResult[0] = "5";
+								aResult[1] = "";
+								aResult[2] = "  - Manual Decision [i]'Skip Existing Output File'[/i].\r\n" + "  - Output [b]'" + OutFileName + "'[/b] Skipped.";
 							}
-						default:
+                            break;
+                        default:
 							//Auto-Ren
-							SF = IO.Path.GetFileNameWithoutExtension(OutFileName) + IO.Path.GetExtension(OutFileName);
-							sP = Left(OutFileName, Len(OutFileName) - Len(SF) - 1);
-							sE = IO.Path.GetExtension(OutFileName);
-							sB = Left(SF, Len(SF) - Len(sE));
+							SF = Path.GetFileNameWithoutExtension(OutFileName) + Path.GetExtension(OutFileName);
+							sP = Strings.Left(OutFileName, Len(OutFileName) - Len(SF) - 1);
+							sE = Path.GetExtension(OutFileName);
+							sB = Strings.Left(SF, Len(SF) - Len(sE));
 							DC = 1;
 							sWorkFN = OutFileName;
-							while (IO.File.Exists(sWorkFN) == true) {
+							while (File.Exists(sWorkFN) == true) {
 								DC += 1;
-								sWorkFN = IO.Path.Combine(sP, sB + "(" + DC + ")" + sE);
+								sWorkFN = Path.Combine(sP, sB + "(" + DC + ")" + sE);
 							}
 							//Auto-Ren New
 							if (iOutExists == 2) {
-								aResult(0) = "6";
-								aResult(1) = sWorkFN;
-								aResult(2) = "  - Program Setting [i]'Auto-Rename New Output Files'[/i].\r\n" + "  - Original Output file name: [b]'" + OutFileName + "'[/b].";
+								aResult[0] = "6";
+								aResult[1] = sWorkFN;
+								aResult[2] = "  - Program Setting [i]'Auto-Rename New Output Files'[/i].\r\n" + "  - Original Output file name: [b]'" + OutFileName + "'[/b].";
 								OutFileName = sWorkFN;
 							}
 							//Auto-Ren Existing
 							if (iOutExists == 4) {
-								aResult(0) = "7";
-								aResult(1) = OutFileName;
-								aResult(2) = "  - Program Setting [i]'Auto-Rename Existing Output Files'[/i]. \r\n" + "  - Exisiting File Renamed to: [b]'" + sWorkFN + "'[/b].";
-								IO.File.Move(OutFileName, sWorkFN);
+								aResult[0] = "7";
+								aResult[1] = OutFileName;
+								aResult[2] = "  - Program Setting [i]'Auto-Rename Existing Output Files'[/i]. \r\n" + "  - Exisiting File Renamed to: [b]'" + sWorkFN + "'[/b].";
+								File.Move(OutFileName, sWorkFN);
 							}
-							bProceed = true;
+							
+                            break;
 					}
 				}
 			} else {
 				bProceed = true;
-				aResult(0) = "0";
-				aResult(1) = OutFileName;
-				aResult(2) = "";
+				aResult[0] = "0";
+				aResult[1] = OutFileName;
+				aResult[2] = "";
 			}
 
 			if (bProceed == true) {
@@ -240,27 +247,37 @@ namespace ConverterSupport
 							switch (LCase(IO.Path.GetExtension(OutFileName))) {
 								case ".png":
 									f = System.Drawing.Imaging.ImageFormat.Png;
+                                    break;
 								case ".bmp":
 									f = System.Drawing.Imaging.ImageFormat.Bmp;
-								case ".gif":
+                                    break;
+                                case ".gif":
 									f = System.Drawing.Imaging.ImageFormat.Gif;
-								case ".ico":
+                                    break;
+                                case ".ico":
 									f = System.Drawing.Imaging.ImageFormat.Icon;
-								case ".emf":
+                                    break;
+                                case ".emf":
 									f = System.Drawing.Imaging.ImageFormat.Emf;
-								case ".jpg":
+                                    break;
+                                case ".jpg":
 									f = System.Drawing.Imaging.ImageFormat.Jpeg;
-								case ".tif":
+                                    break;
+                                case ".tif":
 									f = System.Drawing.Imaging.ImageFormat.Tiff;
-								case ".wmf":
+                                    break;
+                                case ".wmf":
 									f = System.Drawing.Imaging.ImageFormat.Wmf;
+                                    break;
+
 								default:
 									throw new Exception();
-							}
+                                    break;
+                            }
 							img.Save(OutFileName, f);
 						} else if (sStr is byte[]) {
 							long lngByte = sStr.Length;
-							IO.FileStream sw2 = new IO.FileStream(OutFileName, IO.FileMode.CreateNew, IO.FileAccess.Write);
+							FileStream sw2 = new FileStream(OutFileName, FileMode.CreateNew, FileAccess.Write);
 							sw2.Write(sStr, 0, lngByte);
 							sw2.Close();
 						} else {
@@ -270,9 +287,9 @@ namespace ConverterSupport
 
 					}
 				} catch (Exception ex) {
-					aResult(0) = "-4";
-					aResult(1) = OutFileName;
-					aResult(2) = ex.Message;
+					aResult[0] = "-4";
+					aResult[1] = OutFileName;
+					aResult[2] = ex.Message;
 				}
 
 			}
@@ -290,19 +307,19 @@ namespace ConverterSupport
 			FFormats sRes = FFormats.us_ascii;
 			int i = 0;
 			System.IO.FileStream ofile;
-			if (IO.File.Exists(sFile)) {
+			if (File.Exists(sFile)) {
 				if (GetFileSizeNum(sFile) > 0) {
-					ofile = IO.File.Open(sFile, IO.FileMode.Open, IO.FileAccess.Read);
-					ofile.Seek(0, IO.SeekOrigin.Begin);
+					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
+					ofile.Seek(0, SeekOrigin.Begin);
 					while (i < ReadTo) {
-						Buf(i) = ofile.ReadByte;
+						Buf[i] = ofile.ReadByte;
 						i += 1;
 					}
 					ofile.Close();
-					if (Buf(0) == 239 & Buf(1) == 187 & Buf(2) == 191) {
+					if (Buf[0] == 239 & Buf[1] == 187 & Buf[2] == 191) {
 						sRes = FFormats.utf_8;
 					} else {
-						if (Buf(0) == 255 & Buf(1) == 254) {
+						if (Buf[0] == 255 & Buf[1] == 254) {
 							sRes = FFormats.utf_16;
 						}
 					}
@@ -316,23 +333,23 @@ namespace ConverterSupport
 			byte[] eBte;
 			string sData = "";
 			System.IO.FileStream ofile;
-			if (IO.File.Exists(sFile)) {
+			if (File.Exists(sFile)) {
 				if (GetFileSizeNum(sFile) > 0) {
-					ofile = IO.File.Open(sFile, IO.FileMode.Open, IO.FileAccess.Read);
+					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
 					int iSize = ofile.Length - 1;
 					if (iSize > 10000)
 						iSize = 10000;
 					 // ERROR: Not supported in C#: ReDimStatement
 
-					ofile.Seek(0, IO.SeekOrigin.Begin);
+					ofile.Seek(0, SeekOrigin.Begin);
 					ofile.Read(eBte, 0, iSize + 1);
 					ofile.Close();
 					sData = ConverterSupport.ByteArrayToString(eBte);
 				}
 			}
 			if (sData != "" & !sData == null) {
-				if (InStr(1, sData, Chr(27) + "[", CompareMethod.Text) > 0) {
-					if (InStr(1, sData, Chr(27) + "[0;0;40m", CompareMethod.Text) > 0) {
+				if (InStr(1, sData,Strings.Chr(27) + "[", CompareMethod.Text) > 0) {
+					if (InStr(1, sData,Strings.Chr(27) + "[0;0;40m", CompareMethod.Text) > 0) {
 						sRes = FTypes.WC2;
 					} else {
 						sRes = FTypes.ANSI;
@@ -347,10 +364,10 @@ namespace ConverterSupport
 							if (ConverterSupport.RegExTest(sData, "@[0-9A-F]{2}@", RegularExpressions.RegexOptions.Singleline) == true) {
 								sRes = FTypes.WC3;
 							} else {
-								if (InStr(1, sData, Chr(22) + Chr(1), CompareMethod.Binary) > 0) {
+								if (InStr(1, sData,Strings.Chr(22) +Strings.Chr(1), CompareMethod.Binary) > 0) {
 									sRes = FTypes.AVT;
 								} else {
-									if (InStr(1, sData, Chr(7), CompareMethod.Binary) > 0) {
+									if (InStr(1, sData,Strings.Chr(7), CompareMethod.Binary) > 0) {
 										sRes = FTypes.Bin;
 									} else {
 										sRes = FTypes.ASCII;
@@ -403,14 +420,14 @@ namespace ConverterSupport
 			string sDir = "";
 			string sResult = "";
 
-			sInpFile = IO.Path.GetFullPath(sInpFile);
-			string sFile = IO.Path.GetFileName(sInpFile);
-			string sFileBase = IO.Path.GetFileNameWithoutExtension(sInpFile);
+			sInpFile = Path.GetFullPath(sInpFile);
+			string sFile = Path.GetFileName(sInpFile);
+			string sFileBase = Path.GetFileNameWithoutExtension(sInpFile);
 			string sExt = "." + txtExt;
 
-			sDir = IIf(rOutPathInput, IO.Path.GetDirectoryName(sInpFile), outPath);
-			sFile = IIf(rReplaceExt, sFileBase + sExt, sFile + sExt);
-			sResult = IO.Path.Combine(sDir, sFile);
+			sDir = Interaction.IIf(Data.rOutPathInput, Path.GetDirectoryName(sInpFile), Data.outPath);
+			sFile = Interaction.IIf(Data.rReplaceExt, sFileBase + sExt, sFile + sExt);
+			sResult = Path.Combine(sDir, sFile);
 
 			return sResult;
 		}
@@ -424,12 +441,12 @@ namespace ConverterSupport
 		public string[] OutputASCHTML(string sOutFile, string sASC)
 		{
 			string sOut = "";
-			string sObjWidth = (string)maxX * 8 + "px";
+			string sObjWidth = (Data.maxX * 8).ToString() + "px";
 			byte[] bteWork1;
 			int iLp2 = 0;
 			int iLen = 0;
 
-			if (bHTMLComplete == true) {
+			if (Data.bHTMLComplete == true) {
 				sOut += "<html><head>\r\n";
 				sOut += BuildCSSforHTML();
 				sOut += "</head><body>\r\n";
@@ -438,115 +455,117 @@ namespace ConverterSupport
 			sOut += sASC;
 			sOut += "</span>\r\n" + "</pre></div>\r\n";
 
-			if (bHTMLComplete == true) {
+			if (Data.bHTMLComplete == true) {
 				sOut += "</body></html>";
 			}
-			iLen = Microsoft.VisualBasic.Len(sOut);
+			iLen = Strings.Len(sOut);
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			for (iLp2 = 1; iLp2 <= iLen; iLp2++) {
-				bteWork1(iLp2 - 1) = Asc(Mid(sOut, iLp2, 1));
+				bteWork1[iLp2 - 1] = Strings.Asc(Strings.Mid(sOut, iLp2, 1));
 				System.Windows.Forms.Application.DoEvents();
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
 				bteWork1 = ConverterSupport.MergeByteArrays(bteWork1, ConverterSupport.StrToByteArray(oSauce.BuildHTML(true)));
 			}
-			return WriteFile(sOutFile, bteWork1, bForceOverwrite, OutputFileExists, false, true);
+			return WriteFile(sOutFile, bteWork1, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 
 		}
 
 		public string BuildCSSforHTML()
 		{
-			string sWorkCSS = sCSSDef;
-			string sObjWidth = (string)maxX * 8 + "px";
+			string sWorkCSS = Data.sCSSDef;
+			string sObjWidth = (Data.maxX * 8).ToString() + "px";
 			string sOut = "";
 
-			if (bCUFon == true) {
+			if (Data.bCUFon == true) {
 				sOut += "<link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">\r\n" + "<script  type=\"text/javascript\" src=\"typeface-0.15.js\"></script>\r\n" + "<script  type=\"text/javascript\" src=\"msdos_fnt_vga_cp437_regular.typeface.js\"></script>\r\n";
 			} else {
-				if (bAnimation == true) {
-					sWorkCSS = Replace(sWorkCSS, "%EXTRACSSDIV%", WebFontList.Item(SelectedWebFont).AnimEXTRACSSDIV, 1, -1, CompareMethod.Text);
-					sWorkCSS = Replace(sWorkCSS, "%EXTRACSSPRE%", WebFontList.Item(SelectedWebFont).AnimEXTRACSSPRE, 1, -1, CompareMethod.Text);
-					sWorkCSS = Replace(sWorkCSS, "%EXTRACSSSPAN%", WebFontList.Item(SelectedWebFont).AnimEXTRACSSSPAN, 1, -1, CompareMethod.Text);
+				if (Data.bAnimation == true) {
+                    
+                    sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSDIV%", Data.WebFontList[Data.SelectedWebFont].AnimEXTRACSSDIV, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSPRE%", Data.WebFontList.Item(Data.SelectedWebFont).AnimEXTRACSSPRE, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSSPAN%", Data.WebFontList.Item(Data.SelectedWebFont).AnimEXTRACSSSPAN, 1, -1, CompareMethod.Text);
 				} else {
-					sWorkCSS = Replace(sWorkCSS, "%EXTRACSSDIV%", WebFontList.Item(SelectedWebFont).StaticEXTRACSSDIV, 1, -1, CompareMethod.Text);
-					sWorkCSS = Replace(sWorkCSS, "%EXTRACSSPRE%", WebFontList.Item(SelectedWebFont).StaticEXTRACSSPRE, 1, -1, CompareMethod.Text);
-					sWorkCSS = Replace(sWorkCSS, "%EXTRACSSSPAN%", WebFontList.Item(SelectedWebFont).StaticEXTRACSSSPAN, 1, -1, CompareMethod.Text);
+                    
+                    sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSDIV%", Data.WebFontList.Item(Data.SelectedWebFont).StaticEXTRACSSDIV, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSPRE%", Data.WebFontList.Item(Data.SelectedWebFont).StaticEXTRACSSPRE, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSSPAN%", Data.WebFontList.Item(Data.SelectedWebFont).StaticEXTRACSSSPAN, 1, -1, CompareMethod.Text);
 				}
-				sWorkCSS = Replace(sWorkCSS, "%WIDTH%", sObjWidth, 1, -1, CompareMethod.Text);
-				if (bOutputSauce == true & bHasSauce == true) {
-					sWorkCSS += vbCrLf + Internal.sSauceCSS + vbCrLf;
+				sWorkCSS = Strings.Replace(sWorkCSS, "%WIDTH%", sObjWidth, 1, -1, CompareMethod.Text);
+				if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+					sWorkCSS += Environment.NewLine + InternalConstants.sSauceCSS + Environment.NewLine;
 				}
-				sOut += "<style>\r\n" + sWorkCSS + vbCrLf + "</style>\r\n";
+				sOut += "<style>\r\n" + sWorkCSS + Environment.NewLine + "</style>\r\n";
 			}
 			return sOut;
 		}
 		public string[] OutputHTML(string sOutFile)
 		{
 			string sOut = "";
-			string sObjWidth = (string)maxX * 8 + "px";
-			XPos = minX;
-			YPos = minY;
-			ForeColor = 7;
-			BackColor = 0;
-			if (bHTMLComplete == true) {
+			string sObjWidth = (Data.maxX * 8).ToString() + "px";
+            Data.XPos = Data.minX;
+            Data.YPos = Data.minY;
+            Data.ForeColor = 7;
+            Data.BackColor = 0;
+			if (Data.bHTMLComplete == true) {
 				sOut += "<html><head>\r\n";
 				sOut += BuildCSSforHTML();
 				sOut += "</head><body>";
 			}
 
-			if (bCUFon == true) {
+			if (Data.bCUFon == true) {
 				sOut += "<div class=\"ANSICSS typeface-js\" style=\"font-family:msdos_fnt_vga_cp437, Regular;font-weight: normal;font-size:1em;" + "width:" + sObjWidth + ";background-color:#000;color:#C6C6C6; padding: 0; margin: 0;\"><pre>\r\n";
 			} else {
 				sOut += "<div class=ANSICSS><pre>\r\n";
 			}
-			for (int y = minY; y <= LinesUsed; y++) {
-				for (int x = minX; x <= maxX; x++) {
-					if (x == minX) {
+			for (int y = Data.minY; y <= Data.LinesUsed; y++) {
+				for (int x = Data.minX; x <= Data.maxX; x++) {
+					if (x == Data.minX) {
 						sOut += "<span class=\"";
-						if (bCUFon == true) {
+						if (Data.bCUFon == true) {
 							sOut += "typeface-js ";
 						}
-						sOut += Internal.aCSS(0, Screen(x, y).BackColor) + " " + Internal.aCSS(1, Screen(x, y).ForeColor + Screen(x, y).Bold);
+						sOut += InternalConstants.aCSS[0, Data.Screen[x, y].BackColor] + " " + InternalConstants.aCSS[1, Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold];
 						sOut += "\">";
 					}
-					if (Screen(x, y).ForeColor + Screen(x, y).Bold != ForeColor | Screen(x, y).BackColor != BackColor) {
+					if (Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold != Data.ForeColor | Data.Screen[x, y].BackColor != Data.BackColor) {
 						sOut += "</span><span class=\"";
-						if (bCUFon == true) {
+						if (Data.bCUFon == true) {
 							sOut += "typeface-js ";
 						}
-						sOut += Internal.aCSS(0, Screen(x, y).BackColor) + " " + Internal.aCSS(1, Screen(x, y).ForeColor + Screen(x, y).Bold) + "\">";
-						ForeColor = Screen(x, y).ForeColor + Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
+						sOut += InternalConstants.aCSS[0, Data.Screen[x, y].BackColor] + " " + InternalConstants.aCSS[1, Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold] + "\">";
+                        Data.ForeColor = Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
 					}
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr != Chr(255)) {
-							sOut += Screen(x, y).Chr;
+					if (Data.Screen[x, y].Chr != Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr != Strings.Chr(255).ToString()) {
+							sOut += Data.Screen[x, y].Chr;
 						} else {
 							sOut += "&nbsp;";
 						}
 					} else {
-						x = maxX;
+						x = Data.maxX;
 					}
-					if (x == maxX) {
+					if (x == Data.maxX) {
 						sOut += "</span>";
 					}
 				}
-				sOut += vbCrLf;
+				sOut += Environment.NewLine;
 				System.Windows.Forms.Application.DoEvents();
 			}
 			sOut += "</span></pre></div>";
-			if (bCUFon == true) {
+			if (Data.bCUFon == true) {
 				sOut += "<script language=\"Javascript\">\r\n" + " _typeface_js.initialize();\r\n" + "</script>\r\n";
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
-				sOut += oSauce.BuildHTML(true);
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				sOut += Data.oSauce.BuildHTML(true);
 			}
-			if (bHTMLComplete == true) {
+			if (Data.bHTMLComplete == true) {
 				sOut += "</body></html>";
 			}
 
-			return WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 
@@ -554,35 +573,35 @@ namespace ConverterSupport
 		{
 			string sOut = "";
 
-			XPos = minX;
-			YPos = minY;
-			ForeColor = 7;
-			BackColor = 0;
-			sOut = "@X" + Hex(BackColor) + Hex(ForeColor);
+            Data.XPos = Data.minX;
+            Data.YPos = Data.minY;
+            Data.ForeColor = 7;
+            Data.BackColor = 0;
+			sOut = "@X" + Conversion.Hex(Data.BackColor) + Conversion.Hex(Data.ForeColor);
 
-			for (int y = minY; y <= LinesUsed; y++) {
-				for (int x = minX; x <= maxX; x++) {
-					if (Screen(x, y).ForeColor + Screen(x, y).Bold != ForeColor | Screen(x, y).BackColor != BackColor) {
-						sOut = sOut + "@X" + Hex(Screen(x, y).BackColor) + Hex(Screen(x, y).ForeColor + Screen(x, y).Bold);
-						ForeColor = Screen(x, y).ForeColor + Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
+			for (int y = Data.minY; y <= Data.LinesUsed; y++) {
+				for (int x = Data.minX; x <= Data.maxX; x++) {
+					if (Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold != Data.ForeColor | Data.Screen[x, y].BackColor != Data.BackColor) {
+						sOut = sOut + "@X" + Conversion.Hex(Data.Screen[x, y].BackColor) +Conversion.Hex(Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold);
+                        Data.ForeColor = Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
 					}
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr != Chr(255)) {
-							sOut = sOut + Screen(x, y).Chr;
+					if (Data.Screen[x, y].Chr != Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr != Strings.Chr(255).tostring()) {
+							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
 						}
 					} else {
-						x = maxX;
+						x = Data.maxX;
 						break; // TODO: might not be correct. Was : Exit For
 					}
 				}
-				sOut += vbCrLf;
+				sOut += Environment.NewLine;
 				System.Windows.Forms.Application.DoEvents();
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
-				sOut += oSauce.toString();
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				sOut += Data.oSauce.toString();
 			}
 			return WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
 
@@ -599,14 +618,14 @@ namespace ConverterSupport
 
 			for (int y = minY; y <= LinesUsed; y++) {
 				for (int x = minX; x <= maxX; x++) {
-					if (Screen(x, y).ForeColor + Screen(x, y).Bold != ForeColor | Screen(x, y).BackColor != BackColor) {
-						ForeColor = Screen(x, y).ForeColor + Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
-						sOut = sOut + Chr(22) + Chr(1) + Chr(BackColor * 16 + ForeColor);
+					if (Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold != ForeColor | Data.Screen[x, y].BackColor != BackColor) {
+                        Data.ForeColor = Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
+						sOut = sOut +Strings.Chr(22) +Strings.Chr(1) +Strings.Chr(BackColor * 16 + ForeColor);
 					}
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr != Chr(255)) {
-							sOut = sOut + Screen(x, y).Chr;
+					if (Data.Screen[x, y].Chr !=Strings.Chr(0)) {
+						if (Data.Screen[x, y].Chr !=Strings.Chr(255)) {
+							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
 						}
@@ -615,13 +634,13 @@ namespace ConverterSupport
 						break; // TODO: might not be correct. Was : Exit For
 					}
 				}
-				sOut += vbCrLf;
+				sOut += Environment.NewLine;
 				System.Windows.Forms.Application.DoEvents();
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
-				sOut += oSauce.toString();
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				sOut += Data.oSauce.toString();
 			}
-			return WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 		public string[] OutputWC2(string sOutFile)
@@ -648,79 +667,79 @@ namespace ConverterSupport
 				47
 			};
 
-			XPos = minX;
-			YPos = minY;
-			ForeColor = 7;
-			BackColor = 0;
-			Bold = 0;
+			Data.XPos = Data.minX;
+            Data.YPos = Data.minY;
+            Data.ForeColor = 7;
+            Data.BackColor = 0;
+            Data.Bold = 0;
 
-			for (int y = minY; y <= LinesUsed; y++) {
-				for (int x = minX; x <= maxX; x++) {
-					if (Screen(x, y).ForeColor != ForeColor | Screen(x, y).BackColor != BackColor | Screen(x, y).Bold != Bold) {
-						ForeColor = Screen(x, y).ForeColor;
-						Bold = Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
-						if (ForeColor + Bold == 7 & BackColor == 0) {
-							sOut = sOut + Chr(27) + "[0;0;40m";
+			for (int y = Data.minY; Data.y <= Data.LinesUsed; y++) {
+				for (int x = Data.minX; x <= Data.maxX; x++) {
+					if (Data.Screen[x, y].ForeColor != Data.ForeColor | Data.Screen[x, y].BackColor != Data.BackColor | Data.Screen[x, y].Bold != Data.Bold) {
+                        Data.ForeColor = Data.Screen[x, y].ForeColor;
+                        Data.Bold = Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
+						if (Data.ForeColor + Data.Bold == 7 & Data.BackColor == 0) {
+							sOut = sOut + Strings.Chr(27) + "[0;0;40m";
 						} else {
-							sOut = sOut + Chr(27) + "[" + Bold / 8 + ";" + aWCF(ForeColor) + ";" + aWCB(BackColor) + "m";
+							sOut = sOut + Strings.Chr(27) + "[" + Data.Bold / 8 + ";" + aWCF[Data.ForeColor] + ";" + aWCB[Data.BackColor] + "m";
 						}
 					}
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr != Chr(255)) {
-							sOut = sOut + Screen(x, y).Chr;
+					if (Data.Screen[x, y].Chr != Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr != Strings.Chr(255).ToString()) {
+							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
 						}
 					} else {
-						x = maxX;
+						x = Data.maxX;
 						break; // TODO: might not be correct. Was : Exit For
 					}
 				}
-				sOut += vbCrLf;
+				sOut += Environment.NewLine;
 				System.Windows.Forms.Application.DoEvents();
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
-				sOut += oSauce.toString();
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				sOut += Data.oSauce.toString();
 			}
-			return WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 		public string[] OutputWC3(string sOutFile)
 		{
 			string sOut = "";
 
-			XPos = minX;
-			YPos = minY;
-			ForeColor = 7;
-			BackColor = 0;
-			sOut = "@" + Hex(BackColor) + Hex(ForeColor) + "@";
+            Data.XPos = Data.minX;
+            Data.YPos = Data.minY;
+            Data.ForeColor = 7;
+            Data.BackColor = 0;
+			sOut = "@" + Conversion.Hex(Data.BackColor) +Conversion.Hex(Data.ForeColor) + "@";
 
-			for (int y = minY; y <= LinesUsed; y++) {
-				for (int x = minX; x <= maxX; x++) {
-					if (Screen(x, y).ForeColor + Screen(x, y).Bold != ForeColor | Screen(x, y).BackColor != BackColor) {
-						ForeColor = Screen(x, y).ForeColor + Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
-						sOut = sOut + "@" + Hex(BackColor) + Hex(ForeColor) + "@";
+			for (int y = Data.minY; y <= Data.LinesUsed; y++) {
+				for (int x = Data.minX; x <= Data.maxX; x++) {
+					if (Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold != Data.ForeColor | Data.Screen[x, y].BackColor != Data.BackColor) {
+                        Data.ForeColor = Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
+						sOut = sOut + "@" +Conversion.Hex(Data.BackColor) +Conversion.Hex(Data.ForeColor) + "@";
 					}
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr != Chr(255)) {
-							sOut = sOut + Screen(x, y).Chr;
+					if (Data.Screen[x, y].Chr !=Strings.Chr(0)) {
+						if (Data.Screen[x, y].Chr !=Strings.Chr(255)) {
+							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
 						}
 					} else {
-						x = maxX;
+						x = Data.maxX;
 						break; // TODO: might not be correct. Was : Exit For
 					}
 				}
-				sOut += vbCrLf;
+				sOut += Environment.NewLine;
 				System.Windows.Forms.Application.DoEvents();
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
-				sOut += oSauce.toString();
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				sOut += Data.oSauce.toString();
 			}
-			return WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 
@@ -732,179 +751,179 @@ namespace ConverterSupport
 			int x;
 			int y;
 			bool bRest = false;
-			XPos = minX;
-			YPos = minY;
-			ForeColor = 7;
-			BackColor = 0;
-			Bold = 0;
-			Reversed = false;
-			for (y = minY; y <= LinesUsed; y++) {
-				for (x = minX; x <= maxX; x++) {
-					if (Screen(x, y).Chr == "-1") {
-						Screen(x, y).Chr = Chr(32);
+            Data.XPos = Data.minX;
+            Data.YPos = Data.minY;
+            Data.ForeColor = 7;
+            Data.BackColor = 0;
+            Data.Bold = 0;
+            Data.Reversed = false;
+			for (y = Data.minY; y <= Data.LinesUsed; y++) {
+				for (x = Data.minX; x <= Data.maxX; x++) {
+					if (Data.Screen[x, y].Chr == "-1") {
+                        Data.Screen[x, y].Chr =Strings.Chr(32).ToString();
 					}
 				}
 			}
 
-			for (y = minY; y <= LinesUsed; y++) {
-				if (y == minY) {
+			for (y = Data.minY; y <= Data.LinesUsed; y++) {
+				if (y == Data.minY) {
 					//<[255D
-					aOut(Cnt) = 27;
+					aOut[Cnt] = 27;
 					Cnt += 1;
-					aOut(Cnt) = 91;
+					aOut[Cnt] = 91;
 					Cnt += 1;
-					aOut(Cnt) = 50;
+					aOut[Cnt] = 50;
 					Cnt += 1;
-					aOut(Cnt) = 50;
+					aOut[Cnt] = 50;
 					Cnt += 1;
-					aOut(Cnt) = 53;
+					aOut[Cnt] = 53;
 					Cnt += 1;
-					aOut(Cnt) = 68;
+					aOut[Cnt] = 68;
 					Cnt += 1;
 				}
 				bRest = false;
-				for (x = minX; x <= maxX; x++) {
+				for (x = Data.minX; x <= Data.maxX; x++) {
 					//0 = 48, 1 = 49, 59 = ; 109 = m
 					iWhatChange = 0;
-					if (x == minX & y > minY) {
+					if (x == Data.minX & y > Data.minY) {
 						iWhatChange = 14;
 					} else {
-						if (Screen(x, y).ForeColor != ForeColor) {
+						if (Data.Screen[x, y].ForeColor != Data.ForeColor) {
 							iWhatChange += 2;
 						}
-						if (Screen(x, y).Bold != Bold) {
+						if (Data.Screen[x, y].Bold != Data.Bold) {
 							iWhatChange += 4;
 						}
-						if (Screen(x, y).BackColor != BackColor) {
+						if (Data.Screen[x, y].BackColor != Data.BackColor) {
 							iWhatChange += 8;
 						}
 					}
 
 					if (iWhatChange != 0) {
-						ForeColor = Screen(x, y).ForeColor;
-						Bold = Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
+                        Data.ForeColor = Data.Screen[x, y].ForeColor;
+                        Data.Bold = Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
 						//all changed
 						if (iWhatChange > 9) {
-							aOut(Cnt) = 27;
+							aOut[Cnt] = 27;
 							Cnt += 1;
-							aOut(Cnt) = 91;
+							aOut[Cnt] = 91;
 							Cnt += 1;
-							aOut(Cnt) = IIf(Bold != 0, 49, 48);
+							aOut[Cnt] = Interaction.IIf(Bold != 0, 49, 48);
 							Cnt += 1;
-							aOut(Cnt) = 59;
+							aOut[Cnt] = 59;
 							Cnt += 1;
-							aOut(Cnt) = Asc(Left(Internal.AnsiForeColors(ForeColor), 1));
+							aOut[Cnt] =Strings.Asc(Strings.Left(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
 							Cnt += 1;
-							aOut(Cnt) = Asc(Right(Internal.AnsiForeColors(ForeColor), 1));
+							aOut[Cnt] =Strings.Asc(Strings.Right(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
 							Cnt += 1;
-							aOut(Cnt) = 59;
+							aOut[Cnt] = 59;
 							Cnt += 1;
-							aOut(Cnt) = Asc(Left(Internal.AnsiBackColors(BackColor), 1));
+							aOut[Cnt] =Strings.Asc(Strings.Left(InternalConstants.AnsiBackColors[Data.BackColor], 1));
 							Cnt += 1;
-							aOut(Cnt) = Asc(Right(Internal.AnsiBackColors(BackColor), 1));
+							aOut[Cnt] =Strings.Asc(Strings.Right(InternalConstants.AnsiBackColors[Data.BackColor], 1));
 							Cnt += 1;
-							aOut(Cnt) = 109;
+							aOut[Cnt] = 109;
 							Cnt += 1;
 						} else {
 							//Back color only
 							if (iWhatChange == 8) {
-								aOut(Cnt) = 27;
+								aOut[Cnt] = 27;
 								Cnt += 1;
-								aOut(Cnt) = 91;
+								aOut[Cnt] = 91;
 								Cnt += 1;
-								aOut(Cnt) = Asc(Left(Internal.AnsiBackColors(BackColor), 1));
+								aOut[Cnt] =Strings.Asc(Strings.Left(InternalConstants.AnsiBackColors[BackColor], 1));
 								Cnt += 1;
-								aOut(Cnt) = Asc(Right(Internal.AnsiBackColors(BackColor), 1));
+								aOut[Cnt] =Strings.Asc(Strings.Right(InternalConstants.AnsiBackColors[BackColor], 1));
 								Cnt += 1;
-								aOut(Cnt) = 109;
+								aOut[Cnt] = 109;
 								Cnt += 1;
 							} else {
-								aOut(Cnt) = 27;
+								aOut[Cnt] = 27;
 								Cnt += 1;
-								aOut(Cnt) = 91;
+								aOut[Cnt] = 91;
 								Cnt += 1;
-								aOut(Cnt) = IIf(Bold != 0, 49, 48);
+								aOut[Cnt] = Interaction.IIf(Data.Bold != 0, 49, 48);
 								Cnt += 1;
-								aOut(Cnt) = 59;
+								aOut[Cnt] = 59;
 								Cnt += 1;
-								aOut(Cnt) = Asc(Left(Internal.AnsiForeColors(ForeColor), 1));
+								aOut[Cnt] =Strings.Asc(Strings.Left(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
 								Cnt += 1;
-								aOut(Cnt) = Asc(Right(Internal.AnsiForeColors(ForeColor), 1));
+								aOut[Cnt] =Strings.Asc(Strings.Right(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
 								Cnt += 1;
-								aOut(Cnt) = 109;
+								aOut[Cnt] = 109;
 								Cnt += 1;
 							}
 						}
 
 					}
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr == Chr(32)) {
+					if (Data.Screen[x, y].Chr !=Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr ==Strings.Chr(32).ToString()) {
 							int iSpc = NumSpaces(x, y);
-							if (iSpc > maxX) {
+							if (iSpc > Data.maxX) {
 								//<[XC move cursor right
-								aOut(Cnt) = 27;
+								aOut[Cnt] = 27;
 								Cnt += 1;
-								aOut(Cnt) = 91;
+								aOut[Cnt] = 91;
 								Cnt += 1;
-								for (int iLoop2 = 1; iLoop2 <= iSpc.ToString.Length; iLoop2++) {
-									aOut(Cnt) = Asc(Mid(iSpc.ToString, iLoop2, 1));
+								for (int iLoop2 = 1; iLoop2 <= iSpc.ToString().Length; iLoop2++) {
+									aOut[Cnt] =Strings.Asc(Strings.Mid(iSpc.ToString(), iLoop2, 1));
 									Cnt += 1;
 								}
-								aOut(Cnt) = 67;
+								aOut[Cnt] = 67;
 								Cnt += 1;
 								x += iSpc - 1;
 							} else {
-								aOut(Cnt) = Asc(Screen(x, y).Chr);
+								aOut[Cnt] =Strings.Asc(Data.Screen[x, y].Chr);
 								Cnt += 1;
 							}
 						} else {
-							aOut(Cnt) = Asc(Screen(x, y).Chr);
+							aOut[Cnt] =Strings.Asc(Data.Screen[x, y].Chr);
 							Cnt += 1;
 						}
 					} else {
-						aOut(Cnt) = 32;
+						aOut[Cnt] = 32;
 						Cnt += 1;
 					}
-					if (x >= maxX) {
+					if (x >= Data.maxX) {
 						//<[s
-						aOut(Cnt) = 27;
+						aOut[Cnt] = 27;
 						Cnt += 1;
-						aOut(Cnt) = 91;
+						aOut[Cnt] = 91;
 						Cnt += 1;
-						aOut(Cnt) = 115;
+						aOut[Cnt] = 115;
 						Cnt += 1;
 						bRest = true;
 					}
-					if (Cnt > UBound(aOut) - 20) {
-						Array.Resize(ref aOut, UBound(aOut) + 1001);
+					if (Cnt > Information.UBound(aOut) - 20) {
+						Array.Resize(ref aOut, Information.UBound(aOut) + 1001);
 					}
 				}
 				//linebreak
-				aOut(Cnt) = 13;
+				aOut[Cnt] = 13;
 				Cnt += 1;
-				aOut(Cnt) = 10;
+				aOut[Cnt] = 10;
 				Cnt += 1;
 				if (bRest == true) {
 					//<[u
-					aOut(Cnt) = 27;
+					aOut[Cnt] = 27;
 					Cnt += 1;
-					aOut(Cnt) = 91;
+					aOut[Cnt] = 91;
 					Cnt += 1;
-					aOut(Cnt) = 117;
+					aOut[Cnt] = 117;
 					Cnt += 1;
 
 				}
 
-				if (Cnt > UBound(aOut) - 20) {
-					Array.Resize(ref aOut, UBound(aOut) + 1001);
+				if (Cnt > Information.UBound(aOut) - 20) {
+					Array.Resize(ref aOut, Information.UBound(aOut) + 1001);
 				}
 			}
 			Array.Resize(ref aOut, Cnt + 1);
-			if (bOutputSauce == true & bHasSauce == true) {
-				aOut = ConverterSupport.MergeByteArrays(aOut, oSauce.toByteArray);
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				aOut = Convert.MergeByteArrays(aOut, Data.oSauce.toByteArray());
 			}
-			return WriteFile(sOutFile, aOut, bForceOverwrite, OutputFileExists, false, true);
+			return WriteFile(sOutFile, aOut, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 			aOut = null;
 		}
 		public int NumSpaces(int xOffset, int yOffset)
@@ -913,9 +932,9 @@ namespace ConverterSupport
 			bool bEnd = false;
 			int iCnter = xOffset;
 			while (bEnd == false) {
-				if (maxX >= iCnter + 1) {
+				if (Data.maxX >= iCnter + 1) {
 					iCnter += 1;
-					if (Screen(iCnter, yOffset).Chr == Chr(32)) {
+					if (Data.Screen[iCnter, yOffset].Chr ==Strings.Chr(32).ToString()) {
 						iNums += 1;
 					} else {
 						bEnd = true;
@@ -928,45 +947,45 @@ namespace ConverterSupport
 		}
 		public string[] OutputBin(string sOutFile)
 		{
-			XPos = minX;
-			YPos = minY;
-			ForeColor = 7;
-			BackColor = 0;
-			byte[] aOut = new byte[(LinesUsed * (maxX * 2)) - 1];
+            Data.XPos = Data.minX;
+            Data.YPos = Data.minY;
+            Data.ForeColor = 7;
+            Data.BackColor = 0;
+			byte[] aOut = new byte[(Data.LinesUsed * (Data.maxX * 2)) - 1];
 			int Cnt = 0;
 			int intC = 0;
 			bool bFiller = false;
 
-			for (int y = minY; y <= LinesUsed; y++) {
-				for (int x = minX; x <= maxX; x++) {
-					if (Screen(x, y).Chr != Chr(0)) {
-						if (Screen(x, y).Chr == Chr(255)) {
+			for (int y = Data.minY; y <= Data.LinesUsed; y++) {
+				for (int x = Data.minX; x <= Data.maxX; x++) {
+					if (Data.Screen[x, y].Chr !=Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr ==Strings.Chr(255).ToString()) {
 							bFiller = true;
 						}
 					} else {
 						bFiller = true;
 					}
 					if (bFiller == true) {
-						ForeColor = DefForeColor;
-						BackColor = DefBackColor;
+                        Data.ForeColor = Data.DefForeColor;
+                        Data.BackColor = Data.DefBackColor;
 						intC = 0;
 					} else {
-						ForeColor = Screen(x, y).ForeColor + Screen(x, y).Bold;
-						BackColor = Screen(x, y).BackColor;
-						intC = Asc(Screen(x, y).Chr);
+                        Data.ForeColor = Data.Screen[x, y].ForeColor + Data.Screen[x, y].Bold;
+                        Data.BackColor = Data.Screen[x, y].BackColor;
+						intC =Strings.Asc(Data.Screen[x, y].Chr);
 					}
-					aOut(Cnt) = intC;
+					aOut[Cnt] = intC;
 					Cnt += 1;
-					aOut(Cnt) = System.Convert.ToInt32(Hex(BackColor) + Hex(ForeColor), 16);
+					aOut[Cnt] = System.Convert.ToInt32(Conversion.Hex(Data.BackColor) + Conversion.Hex(Data.ForeColor), 16);
 					Cnt += 1;
 				}
 				bFiller = false;
 				System.Windows.Forms.Application.DoEvents();
 			}
-			if (bOutputSauce == true & bHasSauce == true) {
-				aOut = ConverterSupport.MergeByteArrays(aOut, oSauce.toByteArray);
+			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
+				aOut = Convert.MergeByteArrays(aOut, Data.oSauce.toByteArray);
 			}
-			return WriteFile(sOutFile, aOut, bForceOverwrite, OutputFileExists, false, true);
+			return WriteFile(sOutFile, aOut, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 			aOut = null;
 
 		}

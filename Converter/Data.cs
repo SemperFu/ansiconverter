@@ -60,7 +60,7 @@ public class Data
     public static string sCodePgIn;
     public static string TempVideoFolder;
     public static bool bHTMLEncode;
-    public bool bHTMLComplete = true;
+    public static bool bHTMLComplete = true;
     public static bool bSanitize;
     public static bool bCUFon = false;
     public static int OutputFileExists = 0;
@@ -103,8 +103,8 @@ public class Data
 
     public const int DefBackColor = 0;
     public const int DefBold = 0;
-    public ConverterSupport.SauceMeta oSauce = new ConverterSupport.SauceMeta();
-    public bool bHasSauce = false;
+    public static ConverterSupport.SauceMeta oSauce = new ConverterSupport.SauceMeta();
+    public static bool bHasSauce = false;
 
     public static bool bOutputSauce = false;
     public static int Yoffset = 0;
@@ -118,12 +118,12 @@ public class Data
     //Public m_BackgroundColor As Drawing.Color = Color.Black
     //Public m_TextColor As Drawing.Color = Color.FromArgb(255, 168, 168, 168)
     // Public DosFontSml As MediaSupport.Ansifntdef = Nothing
-    public ArrayList WebFontList = new ArrayList();
+    public static ArrayList WebFontList = new ArrayList();
 
-    public int SelectedWebFont = 0;
+    public static int SelectedWebFont = 0;
     public const int minX = 1;
     public static int maxX = 80;
     public const int minY = 1;
 
-    public int maxY = 1500;
+    public static int maxY = 1500;
 }

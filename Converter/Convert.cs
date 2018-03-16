@@ -213,11 +213,11 @@ namespace ConverterSupport
 			string s4 = "";
 			if (InternalConstants.aSpecH[iChr] != "") {
 				//Return Unicode Character or Special HTML Entity value for Character
-				sResult = IIf(Data.bHTMLEncode, InternalConstants.aSpecH[iChr], Strings.ChrW(InternalConstants.aUniCode[iChr]));
+				sResult = Interaction.IIf(Data.bHTMLEncode, InternalConstants.aSpecH[iChr], Strings.ChrW(InternalConstants.aUniCode[iChr]));
 			} else {
 				if ((int)InternalConstants.aUniCode[iChr] != (int)iChr) {
 					//Return Unicode Character or HTML Encoded Unicode Char
-					sResult = IIf(Data.bHTMLEncode, "&#" + InternalConstants.aUniCode[iChr] + ";", Strings.ChrW(InternalConstants.aUniCode[iChr]));
+					sResult = Interaction.IIf(Data.bHTMLEncode, "&#" + InternalConstants.aUniCode[iChr] + ";", Strings.ChrW(InternalConstants.aUniCode[iChr]));
 				} else {
 					//Keep Original
 					sResult = Strings.Chr(iChr).ToString();
@@ -273,31 +273,31 @@ namespace ConverterSupport
 			string sStr = "";
 			oSauce = new SauceMeta();
 			oSauce.ID = ReadByteArray(ref aAnsi, 5, "s");
-			oSauce.Version(0) = ReadByteArray(ref aAnsi, 1, "b");
-			oSauce.Version(1) = ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.Version[0] = ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.Version[1] = ReadByteArray(ref aAnsi, 1, "b");
 			oSauce.Title = ReadByteArray(ref aAnsi, 35, "s");
-			oSauce.Author = ReadByteArray(aAnsi, 20, "s");
-			oSauce.Group = ReadByteArray(aAnsi, 20, "s");
-			oSauce.CreatedDate = ReadByteArray(aAnsi, 8, "s");
-			oSauce.FileSize = HexToDec(FlipHex(ReadByteArray(aAnsi, 4, "h")));
-			oSauce.DataType = (int)ReadByteArray(aAnsi, 1, "b");
-			oSauce.FileType = (int)ReadByteArray(aAnsi, 1, "b");
-			oSauce.TInfo1 = HexToDec(FlipHex(ReadByteArray(aAnsi, 2, "h")));
-			oSauce.TInfo2 = HexToDec(FlipHex(ReadByteArray(aAnsi, 2, "h")));
-			oSauce.TInfo3 = HexToDec(FlipHex(ReadByteArray(aAnsi, 2, "h")));
-			oSauce.TInfo4 = HexToDec(FlipHex(ReadByteArray(aAnsi, 2, "h")));
-			oSauce.Comments = (int)ReadByteArray(aAnsi, 1, "b");
-			oSauce.Flags = (int)ReadByteArray(aAnsi, 1, "b");
-			for (x = 0; x <= 21; x++) {
-				oSauce.Filler(x) = ReadByteArray(aAnsi, 1, "b");
+			oSauce.Author = ReadByteArray(ref aAnsi, 20, "s");
+			oSauce.Group = ReadByteArray(ref aAnsi, 20, "s");
+			oSauce.CreatedDate = ReadByteArray(ref aAnsi, 8, "s");
+			oSauce.FileSize = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 4, "h")));
+			oSauce.DataType = (int)ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.FileType = (int)ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.TInfo1 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.TInfo2 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.TInfo3 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.TInfo4 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.Comments = (int)ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.Flags = (int)ReadByteArray(ref aAnsi, 1, "b");
+			for (int x = 0; x <= 21; x++) {
+				oSauce.Filler[x] = ReadByteArray(ref aAnsi, 1, "b");
 			}
 			if (Information.UBound(aAnsi) >= iLoop + (oSauce.Comments * 64) + 5) {
 				if (oSauce.Comments != 0) {
-					sStr = ReadByteArray(aAnsi, 5, "s");
+					sStr = ReadByteArray(ref aAnsi, 5, "s");
 					if (sStr == "COMNT") {
 						oSauce.SetComments((int)oSauce.Comments);
 						for (int iLoop2 = 1; iLoop2 <= oSauce.Comments; iLoop2++) {
-							oSauce.aComments(iLoop2) = ReadByteArray(aAnsi, 64, "s");
+							oSauce.aComments[iLoop2] = ReadByteArray(ref aAnsi, 64, "s");
 						}
 					}
 				}
@@ -449,7 +449,7 @@ namespace ConverterSupport
 					Data.Screen[Data.XPos, Data.YPos].BackColor = Data.BackColor;
 					Data.Screen[Data.XPos, Data.YPos].Bold = Data.Bold;
 					if (Data.bConv2Unicode == true) {
-						Data.Screen[Data.XPos, Data.YPos].Chr = IIf(Data.bHTMLEncode, Replace(seekascuni(sChar), " ", "&nbsp;", 1, -1, CompareMethod.Text), seekascuni(sChar));
+						Data.Screen[Data.XPos, Data.YPos].Chr = Interaction.IIf(Data.bHTMLEncode, Strings.Replace(seekascuni(sChar), " ", "&nbsp;", 1, -1, CompareMethod.Text), seekascuni(sChar));
 					} else {
 						Data.Screen[Data.XPos, Data.YPos].Chr = sChar;
 					}
@@ -459,39 +459,39 @@ namespace ConverterSupport
 				}
 			}
 			if (bIncr) {
-				XPos += 1;
-				if (XPos > maxX) {
-					YPos += 1;
-					if (YPos > maxY - 1) {
-						YPos = maxY - 1;
+				Data.XPos += 1;
+				if (Data.XPos > Data.maxX) {
+                    Data.YPos += 1;
+					if (Data.YPos > Data.maxY - 1) {
+                        Data.YPos = Data.maxY - 1;
 						bReturn = false;
 					} else {
-						XPos = 1;
+                        Data.XPos = 1;
 					}
 				}
-				if (YPos > LinesUsed) {
-					if (YPos > LinesUsed) {
-						if (LinesUsed > 25) {
-							Yoffset += (YPos - LinesUsed);
+				if (Data.YPos > Data.LinesUsed) {
+					if (Data.YPos > Data.LinesUsed) {
+						if (Data.LinesUsed > 25) {
+                            Data.Yoffset += (Data.YPos - Data.LinesUsed);
 						}
-						LinesUsed = YPos;
+                        Data.LinesUsed = Data.YPos;
 					}
 				}
 				return bReturn;
 			} else {
-				XPos -= 1;
-				if (XPos < minX) {
-					YPos -= 1;
-					if (YPos < minY) {
-						YPos = minY;
-						XPos = minX;
+                Data.XPos -= 1;
+				if (Data.XPos < Data.minX) {
+                    Data.YPos -= 1;
+					if (Data.YPos < Data.minY) {
+                        Data.YPos = Data.minY;
+                        Data.XPos = Data.minX;
 						bReturn = false;
 					} else {
-						XPos = maxX;
+                        Data.XPos = Data.maxX;
 					}
 				}
-				if (YPos < Yoffset) {
-					Yoffset = YPos - 1;
+				if (Data.YPos < Data.Yoffset) {
+                    Data.Yoffset = Data.YPos - 1;
 				}
 				return bReturn;
 			}
@@ -509,7 +509,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int NotZero(int iVal)
 		{
-			return IIf(iVal == 0, 1, iVal);
+			return Interaction.IIf(iVal == 0, 1, iVal);
 		}
 		//----------------------------------------------------
 		/// <summary>
@@ -520,7 +520,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int ChkNum(object iVal)
 		{
-			if (Strings.Trim(iVal) != "" & !iVal == null & IsNumeric(iVal)) {
+			if (Strings.Trim(iVal) != "" & !iVal == null & Information.IsNumeric(iVal)) {
 				return (int)iVal;
 			} else {
 				return 0;
@@ -578,7 +578,6 @@ namespace ConverterSupport
 			string sResult = "";
 			if (sHexStr.Length % 2 != 0) {
 				return sHexStr;
-				return;
 			}
 			for (a = sHexStr.Length - 1; a >= 1; a += -2) {
 				sResult += Strings.Mid(sHexStr, a, 2);
@@ -597,22 +596,23 @@ namespace ConverterSupport
 		{
 			switch (enc) {
 
-				case FFormats.us_ascii:
-					System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-					return encoding.GetBytes(str);
 				case FFormats.utf_7:
-					System.Text.UTF7Encoding encoding = new System.Text.UTF7Encoding();
-					return encoding.GetBytes(str);
+					System.Text.UTF7Encoding u7encoding = new System.Text.UTF7Encoding();
+					return u7encoding.GetBytes(str);
 				case FFormats.utf_8:
-					System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-					return encoding.GetBytes(str);
+					System.Text.UTF8Encoding u8encoding = new System.Text.UTF8Encoding();
+					return u8encoding.GetBytes(str);
 				case FFormats.utf_16:
-					System.Text.UnicodeEncoding encoding = new System.Text.UnicodeEncoding();
-					return encoding.GetBytes(str);
+					System.Text.UnicodeEncoding u16encoding = new System.Text.UnicodeEncoding();
+					return u16encoding.GetBytes(str);
 				case FFormats.utf_32:
-					System.Text.UTF32Encoding encoding = new System.Text.UTF32Encoding();
-					return encoding.GetBytes(str);
-				default:
+					System.Text.UTF32Encoding u32encoding = new System.Text.UTF32Encoding();
+					return u32encoding.GetBytes(str);
+
+                case FFormats.us_ascii:
+                //System.Text.ASCIIEncoding aencoding = new System.Text.ASCIIEncoding();
+                //return encoding.GetBytes(str);
+                default:
 					System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
 					return encoding.GetBytes(str);
 			}
@@ -724,7 +724,7 @@ namespace ConverterSupport
 		/// <param name="bArr2">Byte Array</param>
 		/// <returns>Combined Byte Array</returns>
 		/// <remarks></remarks>
-		public byte[] MergeByteArrays(byte[] bArr1, byte[] bArr2)
+		public static byte[] MergeByteArrays(byte[] bArr1, byte[] bArr2)
 		{
 			int iDim1 = 0;
 			int iDim2 = 0;
@@ -1024,7 +1024,7 @@ namespace ConverterSupport
 							sPart1 = Strings.Left(SInp, iFrom + sFrom.Length - 1);
 						}
 						sTemp = Strings.Right(SInp, SInp.Length - (iFrom + sFrom.Length - 1));
-						if (sToIE.ToUpper == "Z") {
+						if (sToIE.ToUpper() == "Z") {
 							iTo = sTemp.Length + 1;
 							sToIE = "I";
 						} else {
@@ -1034,7 +1034,7 @@ namespace ConverterSupport
 						if (iTo > 0) {
 							bFound = true;
 							//Incl
-							if (sToIE.ToUpper == "I") {
+							if (sToIE.ToUpper() == "I") {
 								if (sTemp.Length - (iTo + sTo.Length - 1) == 0) {
 									sPart2 = "";
 								} else {
@@ -1071,10 +1071,9 @@ namespace ConverterSupport
 			string sChr = "";
 			if (sChar.Length == 0) {
 				return false;
-				return;
 			}
 			for (x = 0; x <= sChar.Length - 1; x++) {
-				sChr = sChar.ToUpper.Substring(x, 1);
+				sChr = sChar.ToUpper().Substring(x, 1);
 				if ((Strings.Asc(sChr) < 48 | Strings.Asc(sChr) > 57) & (Strings.Asc(sChr) < 65 | Strings.Asc(sChr) > 70)) {
 					bResult = false;
 				}
@@ -1352,7 +1351,6 @@ namespace ConverterSupport
 			string sResult = "";
 			if (sHexStr.Length % 2 != 0) {
 				return null;
-				return;
 			}
 			if (sHexStr.Length > 2) {
 				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
@@ -1743,7 +1741,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int larger(int val1, int val2)
 		{
-			return IIf(val1 > val2, val1, val2);
+			return Interaction.IIf(val1 > val2, val1, val2);
 		}
 		/// <summary>
 		/// Returns Smaller of two values <paramref>val1</paramref> and <paramref>val2</paramref>
@@ -1754,7 +1752,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int smaller(int val1, int val2)
 		{
-			return IIf(val1 < val2, val1, val2);
+			return Interaction.IIf(val1 < val2, val1, val2);
 		}
 
 	}
