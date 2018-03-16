@@ -1,4 +1,14 @@
-﻿namespace ConverterSupport
+﻿using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+
+namespace ConverterSupport
 {
 	/// <summary>
 	/// Code Page Class used for <see cref="CPS"/> Class (also see <see cref="AnsiCPMaps.AnsiCPMaps.CodePages"/>)

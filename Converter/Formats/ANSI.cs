@@ -1,4 +1,14 @@
-﻿namespace MediaFormats
+﻿using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+
+namespace MediaFormats
 {
 
 	public class ANSI
@@ -599,7 +609,7 @@
 							InfoMsg("[b]" + Strings.Right("     " + iFramesCount.ToString, 5) + "[/b] (100.00%)", true, true);
 						}
 						if (InfoMsg != null) {
-							InfoMsg(vbCrLf, true, false);
+							InfoMsg(Environment.NewLine, true, false);
 						}
 					}
 				}

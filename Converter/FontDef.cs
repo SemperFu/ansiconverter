@@ -1,7 +1,22 @@
-﻿using System.Drawing;
+﻿using Internal;
+using Microsoft.VisualBasic;
+using System;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
+
+using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+
 namespace MediaSupport
 {
 
@@ -167,8 +182,8 @@ namespace MediaSupport
 			//to this ASCII code
 		private int m_FontCharTo;
 			// Transparent Color /Background color
-		private Drawing.Color m_FontTranspColor;
-		private Drawing.Color m_FontColor;
+		private Color m_FontTranspColor;
+		private Color m_FontColor;
 			//Bitmap image of the Font (Backup)
 		private Bitmap FontBmpBak;
 		private bool bBuildFont;
@@ -242,7 +257,7 @@ namespace MediaSupport
 			}
 		}
 
-		public void SetFontColor(Drawing.Color NewColor)
+		public void SetFontColor(Color NewColor)
 		{
 			if (!m_FontBmp == null) {
 				Color c;
@@ -271,7 +286,7 @@ namespace MediaSupport
 			}
 			return cp;
 		}
-		public void ChangePalettenEntry(int id, Drawing.Color Col)
+		public void ChangePalettenEntry(int id, Color Col)
 		{
 			if (!m_FontBmp == null) {
 				if (id >= 0 & id <= m_FontBmp.Palette.Entries.Count - 1) {
@@ -279,7 +294,7 @@ namespace MediaSupport
 				}
 			}
 		}
-		public Drawing.Color GetPalettenEntry(int ID)
+		public Color GetPalettenEntry(int ID)
 		{
 			if (!m_FontBmp == null) {
 				if (ID >= 0 & ID <= m_FontBmp.Palette.Entries.Count - 1) {
@@ -287,7 +302,7 @@ namespace MediaSupport
 				}
 			}
 		}
-		public int FindPalettenEntry(Drawing.Color col)
+		public int FindPalettenEntry(Color col)
 		{
 			ColorPalette cp = new Bitmap(1, 1).Palette;
 			int a;
@@ -315,8 +330,8 @@ namespace MediaSupport
 				cp = m_FontBmp.Palette;
 				 // ERROR: Not supported in C#: ReDimStatement
 
-				for (int a = 0; a <= cp.Entries.Count - 1; a++) {
-					aCol(a) = cp.Entries(a);
+				for (int a = 0; a <= cp.Entries.Count() - 1; a++) {
+					aCol[a] = cp.Entries[a];
 				}
 			}
 			return aCol;
@@ -347,10 +362,10 @@ namespace MediaSupport
 			int fc;
 			for (b = 0; b <= (16 * 8) - 1; b++) {
 				byte[] cTemp = new byte[(bmap.Width * bmap.Height) - 1];
-				bArray(b) = cTemp;
+				bArray[b] = cTemp;
 			}
 			int a = 0;
-			Drawing.Color c;
+			Color c;
 			//Dim MyPointer As IntPtr
 			for (int x = 0; x <= bmap.Width - 1; x++) {
 				for (int y = 0; y <= bmap.Height - 1; y++) {
@@ -358,7 +373,7 @@ namespace MediaSupport
 					if (c.Equals(m_FontTranspColor)) {
 						int d = 0;
 						for (b = 0; b <= (16 * 8) - 1; b++) {
-							bArray(b)(a) = d;
+							bArray[b](a) = d;
 							if (b + 1 % 16 == 0) {
 								d += 1;
 								if (d == 16)
@@ -382,7 +397,7 @@ namespace MediaSupport
 			fc = 0;
 			bc = 0;
 			for (b = 0; b <= (16 * 8) - 1; b++) {
-				GCHandle MyGC = GCHandle.Alloc(bArray(b), GCHandleType.Pinned);
+				GCHandle MyGC = GCHandle.Alloc(bArray[b], GCHandleType.Pinned);
 				//MyPointer = Marshal.AllocHGlobal(Marshal.SizeOf(bArray(b)))
 				//Marshal.StructureToPtr(bArray(b), MyPointer, False)
 				if (b + 1 % 8 == 0) {
@@ -395,7 +410,7 @@ namespace MediaSupport
 					if (fc == 16)
 						fc = 0;
 				}
-				m_FontArrays(code, fc, bc) = MyGC;
+				m_FontArrays[code, fc, bc] = MyGC;
 			}
 		}
 		struct Bte128
@@ -422,13 +437,13 @@ namespace MediaSupport
 			int CutHgt;
 			FntPOS = charcode - m_FontInitChar;
 			FntX = ((FntPOS % m_FontCharsperLine) * m_FontWidth) + m_FontMarginLeft;
-			FntY = (Int(FntPOS / m_FontCharsperLine) * m_FontHeight) + m_FontMarginTop;
+			FntY = (Conversion.Int(FntPOS / m_FontCharsperLine) * m_FontHeight) + m_FontMarginTop;
 			CutLen = m_FontWidth - m_FontMarginLeft - m_FontMarginRight;
 			CutHgt = m_FontHeight - m_FontMarginTop - m_FontMarginBottom;
 			Bitmap bm = new Bitmap(m_FontWidth, m_FontHeight);
 
 			//bm.MakeTransparent(Color.FromArgb(128, 0, 128, 255))
-			//Dim bmcol As Bitmap = My.Resources.ansibackgrounds256
+			//Dim bmcol As Bitmap = Resources.ansibackgrounds256
 			//Dim pal As Drawing.Imaging.ColorPalette = bmcol.Palette
 			//bm.Palette = pal
 			Graphics gr = Graphics.FromImage(bm);
@@ -443,7 +458,7 @@ namespace MediaSupport
 			} catch (Exception ex) {
 			}
 			gr.Dispose();
-			m_FontImgs(charcode) = bm;
+			m_FontImgs[charcode] = bm;
 			//Call BuildBitmapArray(bm, charcode)
 		}
 		/// <summary>
@@ -479,21 +494,21 @@ namespace MediaSupport
 				bIsASCII = false;
 			}
 			if (bDrawNoColors == true) {
-				aworktxt = Split(stext, vbCrLf);
-				for (int a = 0; a <= UBound(aworktxt); a++) {
-					if (Len(aworktxt(a)) > iMaxWidth) {
-						iMaxWidth = Len(aworktxt(a));
+				aworktxt = Strings.Split((string)stext, Environment.NewLine);
+				for (int a = 0; a <= Information.UBound(aworktxt); a++) {
+					if (Strings.Len(aworktxt[a]) > iMaxWidth) {
+						iMaxWidth = Strings.Len(aworktxt[a]);
 					}
 				}
-				iMaxHeight = (UBound(aworktxt) + 1);
+				iMaxHeight = (Information.UBound(aworktxt) + 1);
 			} else {
-				iMaxWidth = maxX;
-				iMaxHeight = LinesUsed;
-				aText = Screen;
+				iMaxWidth = Data.maxX;
+				iMaxHeight = Data.LinesUsed;
+				aText = Data.Screen;
 				//CType(stext, ScreenChar(,))
 			}
 			int iLineLen = iMaxWidth;
-			//Dim bmcol As Bitmap = My.Resources.ansibackgrounds
+			//Dim bmcol As Bitmap = Resources.ansibackgrounds
 			//Dim pal As Drawing.Imaging.ColorPalette = bmcol.Palette
 
 			Bitmap bm = new Bitmap(iMaxWidth * m_FontWidth, iMaxHeight * m_FontHeight);
@@ -501,8 +516,8 @@ namespace MediaSupport
 
 			int ForeColorID = 7;
 			int BackColorID = 0;
-			Drawing.Color NewForeColor;
-			Drawing.Color NewBackColor;
+			Color NewForeColor;
+			Color NewBackColor;
 			//bm.Palette = pal
 			gr = Graphics.FromImage(bm);
 			gr.PageUnit = GraphicsUnit.Pixel;
@@ -512,8 +527,8 @@ namespace MediaSupport
 			for (int a = 0; a <= iMaxHeight - 1; a++) {
 				CharXPos = xpos;
 				if (bDrawNoColors == true) {
-					sworktxt = aworktxt(a);
-					iLineLen = Len(sworktxt);
+					sworktxt = aworktxt[a];
+					iLineLen = Strings.Len(sworktxt);
 				}
 
 				for (int FntCharPos = 1; FntCharPos <= iLineLen; FntCharPos++) {
@@ -525,32 +540,32 @@ namespace MediaSupport
 					grchar.Clear(m_FontTranspColor);
 
 					if (bDrawNoColors == true) {
-						FntCurrChar = Asc(Mid(sworktxt, FntCharPos, 1));
+						FntCurrChar = Strings.Asc(Strings.Mid(sworktxt, FntCharPos, 1));
 					} else {
-						FntCurrChar = Screen(FntCharPos, a + 1).DosChar;
-						BackColorID = Screen(FntCharPos, a + 1).BackColor;
-						ForeColorID = Screen(FntCharPos, a + 1).ForeColor + Screen(FntCharPos, a + 1).Bold;
+						FntCurrChar = Data.Screen[FntCharPos, a + 1].DosChar;
+						BackColorID = Data.Screen[FntCharPos, a + 1].BackColor;
+						ForeColorID = Data.Screen[FntCharPos, a + 1].ForeColor + Data.Screen[FntCharPos, a + 1].Bold;
 
 
-						NewForeColor = Internal.AnsiColorsARGB(ForeColorID);
-						NewBackColor = Internal.AnsiColorsARGB(BackColorID);
+						NewForeColor = InternalConstants.AnsiColorsARGB[ForeColorID];
+						NewBackColor = InternalConstants.AnsiColorsARGB[BackColorID];
 						if (!NewBackColor.Equals(m_FontTranspColor) & 1 == 2) {
 							MapCount += 1;
 							Array.Resize(ref ImgColorMap, MapCount + 1);
-							ImgColorMap(MapCount) = new ColorMap();
-							ImgColorMap(MapCount).OldColor = new Color();
-							ImgColorMap(MapCount).OldColor = m_FontTranspColor;
-							ImgColorMap(MapCount).NewColor = new Color();
-							ImgColorMap(MapCount).NewColor = NewBackColor;
+							ImgColorMap[MapCount] = new ColorMap();
+							ImgColorMap[MapCount].OldColor = new Color();
+							ImgColorMap[MapCount].OldColor = m_FontTranspColor;
+							ImgColorMap[MapCount].NewColor = new Color();
+							ImgColorMap[MapCount].NewColor = NewBackColor;
 						}
 						if (!NewForeColor.Equals(m_FontColor) & 1 == 2) {
 							MapCount += 1;
 							Array.Resize(ref ImgColorMap, MapCount + 1);
-							ImgColorMap(MapCount) = new ColorMap();
-							ImgColorMap(MapCount).OldColor = new Color();
-							ImgColorMap(MapCount).OldColor = m_FontColor;
-							ImgColorMap(MapCount).NewColor = new Color();
-							ImgColorMap(MapCount).NewColor = NewForeColor;
+							ImgColorMap[MapCount] = new ColorMap();
+							ImgColorMap[MapCount].OldColor = new Color();
+							ImgColorMap[MapCount].OldColor = m_FontColor;
+							ImgColorMap[MapCount].NewColor = new Color();
+							ImgColorMap[MapCount].NewColor = NewForeColor;
 						}
 						if (MapCount > -1) {
 							ImgAttributes.SetRemapTable(ImgColorMap, ColorAdjustType.Bitmap);
@@ -570,15 +585,15 @@ namespace MediaSupport
 						Bitmap imgChar;
 						if (bDrawNoColors == false) {
 							//imgChar = New Bitmap(m_FontWidth, m_FontHeight, m_FontWidth, PixelFormat.Format8bppIndexed, m_FontArrays(FntCurrChar, ForeColorID, BackColorID))
-							imgChar = m_FontImgs(FntCurrChar);
-							// Dim bmcol As Bitmap = My.Resources.ansibackgrounds256
+							imgChar = m_FontImgs[FntCurrChar];
+							// Dim bmcol As Bitmap = Resources.ansibackgrounds256
 							// Dim pal As Drawing.Imaging.ColorPalette = bmcol.Palette
 							// imgChar.Palette = pal
-							Bitmap drawimg = ConverterSupport.Replace2ColorsInImage(imgChar, m_FontColor, NewForeColor, m_FontTranspColor, NewBackColor);
+							Bitmap drawimg = ConverterSupport.Convert.Replace2ColorsInImage(imgChar, m_FontColor, NewForeColor, m_FontTranspColor, NewBackColor);
 							imgChar = drawimg;
 							//imgChar2.Palette = 
 						} else {
-							imgChar = m_FontImgs(FntCurrChar);
+							imgChar = m_FontImgs[FntCurrChar];
 						}
 
 						grchar.DrawImage(imgChar, 0, 0, m_FontWidth, m_FontHeight);

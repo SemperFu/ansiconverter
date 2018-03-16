@@ -150,7 +150,7 @@ namespace MediaSupport
 			if (m_FontHeight == 8) {
 				bIsSmallFont = true;
 			}
-			aworktxt = Split(stext, vbCrLf);
+			aworktxt = Split(stext, Environment.NewLine);
 			for (int a = 0; a <= UBound(aworktxt); a++) {
 				if (Len(aworktxt(a)) > iMaxWidth) {
 					iMaxWidth = Len(aworktxt(a));

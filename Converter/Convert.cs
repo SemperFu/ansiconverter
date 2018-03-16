@@ -7,6 +7,14 @@ using System;
 using Internal;
 using Microsoft.VisualBasic;
 using System.Linq;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
 
 namespace ConverterSupport
 {
@@ -230,16 +238,16 @@ namespace ConverterSupport
 						case 9:
 							//Horizontal Tabulator (Tab), Replace with eight spaces, the default Tab-Stop for DOS
 							sResult = "        ";
-                            break;
+							break;
 							//Line Feed (LF) OKAY
 						case 10:
-                            break;
+							break;
 							//Carriage Return (CR) OKAY
 						case 13:
 						default:
 							//NOT OKAY
 							sResult = "";
-                            break;
+							break;
 					}
 				}
 			}
@@ -462,37 +470,37 @@ namespace ConverterSupport
 			if (bIncr) {
 				Data.XPos += 1;
 				if (Data.XPos > Data.maxX) {
-                    Data.YPos += 1;
+					Data.YPos += 1;
 					if (Data.YPos > Data.maxY - 1) {
-                        Data.YPos = Data.maxY - 1;
+						Data.YPos = Data.maxY - 1;
 						bReturn = false;
 					} else {
-                        Data.XPos = 1;
+						Data.XPos = 1;
 					}
 				}
 				if (Data.YPos > Data.LinesUsed) {
 					if (Data.YPos > Data.LinesUsed) {
 						if (Data.LinesUsed > 25) {
-                            Data.Yoffset += (Data.YPos - Data.LinesUsed);
+							Data.Yoffset += (Data.YPos - Data.LinesUsed);
 						}
-                        Data.LinesUsed = Data.YPos;
+						Data.LinesUsed = Data.YPos;
 					}
 				}
 				return bReturn;
 			} else {
-                Data.XPos -= 1;
+				Data.XPos -= 1;
 				if (Data.XPos < Data.minX) {
-                    Data.YPos -= 1;
+					Data.YPos -= 1;
 					if (Data.YPos < Data.minY) {
-                        Data.YPos = Data.minY;
-                        Data.XPos = Data.minX;
+						Data.YPos = Data.minY;
+						Data.XPos = Data.minX;
 						bReturn = false;
 					} else {
-                        Data.XPos = Data.maxX;
+						Data.XPos = Data.maxX;
 					}
 				}
 				if (Data.YPos < Data.Yoffset) {
-                    Data.Yoffset = Data.YPos - 1;
+					Data.Yoffset = Data.YPos - 1;
 				}
 				return bReturn;
 			}
@@ -610,10 +618,10 @@ namespace ConverterSupport
 					System.Text.UTF32Encoding u32encoding = new System.Text.UTF32Encoding();
 					return u32encoding.GetBytes(str);
 
-                case FFormats.us_ascii:
-                //System.Text.ASCIIEncoding aencoding = new System.Text.ASCIIEncoding();
-                //return encoding.GetBytes(str);
-                default:
+				case FFormats.us_ascii:
+				//System.Text.ASCIIEncoding aencoding = new System.Text.ASCIIEncoding();
+				//return encoding.GetBytes(str);
+				default:
 					System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
 					return encoding.GetBytes(str);
 			}
@@ -644,10 +652,10 @@ namespace ConverterSupport
 				case FFormats.utf_32:
 					System.Text.UTF32Encoding u32encoding = new System.Text.UTF32Encoding();
 					return u32encoding.GetString(ByteArray);
-                case FFormats.us_ascii:
-                    //System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-                    //return encoding.GetString(ByteArray);
-                default:
+				case FFormats.us_ascii:
+					//System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+					//return encoding.GetString(ByteArray);
+				default:
 					System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
 					return encoding.GetString(ByteArray);
 			}
@@ -1150,9 +1158,9 @@ namespace ConverterSupport
 			//The string is parsed from the right (LSB - Least Significant Bit)
 			//to the left (MSB - Most Significant Bit)
 			for (x = 1; x <= Length; x++) {
-                TempValue = TempValue + System.Convert.ToInt32(Strings.Mid(BinaryNumber, Length - x + 1, 1)) * 2 ^ (x - 1);
+				TempValue = TempValue + System.Convert.ToInt32(Strings.Mid(BinaryNumber, Length - x + 1, 1)) * 2 ^ (x - 1);
 
-            }
+			}
 
 			return TempValue;
 
@@ -1636,7 +1644,7 @@ namespace ConverterSupport
 				for (int id = 0; id <= pal.Entries.Count() - 1; id++) {
 					clist.Add(System.Windows.Media.Color.FromArgb(pal.Entries[id].A, pal.Entries[id].R, pal.Entries[id].G, pal.Entries[id].B));
 				}
-                BitmapPalette palnew = new System.Windows.Media.Imaging.BitmapPalette(clist);
+				BitmapPalette palnew = new System.Windows.Media.Imaging.BitmapPalette(clist);
 				byte palentry;
 				int iCnt = 0;
 				for (int x = 0; x <= width - 1; x++) {

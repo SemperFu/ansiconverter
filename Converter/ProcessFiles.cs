@@ -4,6 +4,21 @@ using System.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using Microsoft.VisualBasic;
+using Internal;
+using System.Drawing;
+using Converter.Properties;
+using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+
+
 
 public class ProcessFiles
     {
@@ -141,35 +156,35 @@ public class ProcessFiles
         public void ConvertAllFiles()
         {
             _cancelled = false;
-            oAnsi = new MediaFormats.ANSI();
-            oAnsi.InfoMsg += ProcessInfoMsg;
+            Data.oAnsi = new MediaFormats.ANSI();
+        Data.oAnsi.InfoMsg += ProcessInfoMsg;
 
-            if (Internal.AnsiColorsARGBM.Count < 256) {
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 0, 173));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 173, 0));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 173, 173));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 0, 0));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 0, 173));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 82, 0));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 173, 173));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 82, 82));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 82, 255));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 255, 82));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 255, 255));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 82, 82));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 82, 255));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 255, 82));
-                Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
-                for (int a = Internal.AnsiColorsARGBM.Count; a <= 255; a++) {
-                    Internal.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
+            if (InternalConstants.AnsiColorsARGBM.Count < 256) {
+            InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 0, 173));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 173, 0));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 173, 173));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 0, 0));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 0, 173));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 82, 0));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 173, 173, 173));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 82, 82));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 82, 255));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 255, 82));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 82, 255, 255));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 82, 82));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 82, 255));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 255, 82));
+                InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 255, 255, 255));
+                for (int a = InternalConstants.AnsiColorsARGBM.Count; a <= 255; a++) {
+                    InternalConstants.AnsiColorsARGBM.Add(System.Windows.Media.Color.FromArgb(255, 0, 0, 0));
                 }
             }
-            if (DosFnt80x25.FontSet == false) {
-                DosFnt80x25 = new MediaSupport.Ansifntdef(8, 16, Drawing.Color.FromArgb(255, 0, 0, 0), My.Resources.fnt80x25, My.Resources.dosfontback16c);
+            if (Data.DosFnt80x25.FontSet == false) {
+            Data.DosFnt80x25 = new MediaSupport.Ansifntdef(8, 16, Color.FromArgb(255, 0, 0, 0), Resources.fnt80x25, Resources.dosfontback16c);
             }
-            if (DosFnt80x50.FontSet == false) {
-                DosFnt80x50 = new MediaSupport.Ansifntdef(8, 8, Drawing.Color.FromArgb(255, 0, 0, 0), My.Resources.fnt80x50, My.Resources.dosfontback16c);
+            if (Data.DosFnt80x50.FontSet == false) {
+            Data.DosFnt80x50 = new MediaSupport.Ansifntdef(8, 8, Color.FromArgb(255, 0, 0, 0), Resources.fnt80x50, Resources.dosfontback16c);
             }
 
             int ProcessedCount = 0;
@@ -203,7 +218,7 @@ public class ProcessFiles
                 bAnimation = true;
             }
             if (sOutPutFormat == "AVI") {
-                ConverterSupport.WriteFile(ffmpegpath, My.Resources.ffmpeg, true, 0, true, true);
+                ConverterSupport.WriteFile(ffmpegpath, Resources.ffmpeg, true, 0, true, true);
             }
             bResetMappings = ResetMappings();
             OutputFileExists = (int)pOutExist;
@@ -294,12 +309,12 @@ public class ProcessFiles
                                             iOff = InStr(1, strWork1, "SAUCE00", CompareMethod.Binary);
                                         }
                                         if (iOff > 0) {
-                                            strWork1 = Microsoft.VisualBasic.Left(strWork1, iOff - 1);
+                                            strWork1 = Strings.Left(strWork1, iOff - 1);
                                         }
                                     }
-                                    strWork1 = Strings.Replace(strWork1, vbCrLf, vbLf, 1, -1, CompareMethod.Binary);
-                                    strWork1 = Strings.Replace(strWork1, vbCr, vbLf, 1, -1, CompareMethod.Binary);
-                                    strWork1 = Strings.Replace(strWork1, vbLf, vbCrLf, 1, -1, CompareMethod.Binary);
+                                    strWork1 = Strings.Replace(strWork1, Environment.NewLine, "\n", 1, -1, CompareMethod.Binary);
+                                    strWork1 = Strings.Replace(strWork1, "\r", "\n", 1, -1, CompareMethod.Binary);
+                                    strWork1 = Strings.Replace(strWork1, "\n", Environment.NewLine, 1, -1, CompareMethod.Binary);
                                 }
                                 if (sOutPutFormat == "BIN") {
                                     bConv2Unicode = false;
@@ -543,12 +558,12 @@ public class ProcessFiles
                                     //Convert HTML Encoded Unicode ASCII to ASC File
                                     strWork2 = ConverterSupport.convuniasc(strWork1);
                                     strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
-                                    if (InStr(strWork2, vbCrLf, CompareMethod.Text) > 0) {
-                                        string[] aTmp1 = Split(strWork2, vbCrLf);
+                                    if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
+                                        string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
                                             aTmp1(b) = RTrim(aTmp1(b));
                                         }
-                                        strWork2 = Join(aTmp1, vbCrLf);
+                                        strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
@@ -576,12 +591,12 @@ public class ProcessFiles
                                 if (sInputFormat == "HTML") {
                                     strWork2 = ConverterSupport.convuniasc(strWork1);
                                     strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
-                                    if (InStr(strWork2, vbCrLf, CompareMethod.Text) > 0) {
-                                        string[] aTmp1 = Split(strWork2, vbCrLf);
+                                    if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
+                                        string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
                                             aTmp1(b) = RTrim(aTmp1(b));
                                         }
-                                        strWork2 = Join(aTmp1, vbCrLf);
+                                        strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
@@ -633,12 +648,12 @@ public class ProcessFiles
                                         strWork2 = ConverterSupport.convuniasc(strWork1);
                                         strWork1 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
                                         strWork2 = ConverterSupport.convuniuni(strWork1);
-                                        if (InStr(strWork2, vbCrLf, CompareMethod.Text) > 0) {
-                                            string[] aTmp1 = Split(strWork2, vbCrLf);
+                                        if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
+                                            string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                             for (int b = 0; b <= UBound(aTmp1); b++) {
                                                 aTmp1(b) = RTrim(aTmp1(b));
                                             }
-                                            strWork2 = Join(aTmp1, vbCrLf);
+                                            strWork2 = Join(aTmp1, Environment.NewLine);
                                         } else {
                                             strWork2 = RTrim(strWork2);
                                         }
@@ -700,12 +715,12 @@ public class ProcessFiles
                                 if (sInputFormat == "HTML") {
                                     strWork2 = ConverterSupport.convuniasc(strWork1);
                                     strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
-                                    if (InStr(strWork2, vbCrLf, CompareMethod.Text) > 0) {
-                                        string[] aTmp1 = Split(strWork2, vbCrLf);
+                                    if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
+                                        string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
                                             aTmp1(b) = RTrim(aTmp1(b));
                                         }
-                                        strWork2 = Join(aTmp1, vbCrLf);
+                                        strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
@@ -754,12 +769,12 @@ public class ProcessFiles
                                 if (sInputFormat == "HTML") {
                                     strWork2 = ConverterSupport.convuniasc(strWork1);
                                     strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
-                                    if (InStr(strWork2, vbCrLf, CompareMethod.Text) > 0) {
-                                        string[] aTmp1 = Split(strWork2, vbCrLf);
+                                    if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
+                                        string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
                                             aTmp1(b) = RTrim(aTmp1(b));
                                         }
-                                        strWork2 = Join(aTmp1, vbCrLf);
+                                        strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
@@ -806,12 +821,12 @@ public class ProcessFiles
                                     //Convert HTML Encoded Unicode ASCII to ASC File
                                     strWork2 = ConverterSupport.convuniasc(strWork1);
                                     strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
-                                    if (InStr(strWork2, vbCrLf, CompareMethod.Text) > 0) {
-                                        string[] aTmp1 = Split(strWork2, vbCrLf);
+                                    if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
+                                        string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
                                             aTmp1(b) = RTrim(aTmp1(b));
                                         }
-                                        strWork1 = Join(aTmp1, vbCrLf);
+                                        strWork1 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork1 = RTrim(strWork2);
                                     }
@@ -1034,11 +1049,11 @@ public class ProcessFiles
         /// <remarks></remarks>
         public bool ResetMappings()
         {
-            bSanitize = pSanitize;
-            sCodePg = pCP;
-            bHTMLEncode = pHTMLEncode;
-            bHTMLComplete = pHTMLComplete;
-            ConverterSupport.BuildMappings(sCodePg);
+        Data.bSanitize = Data.pSanitize;
+        Data.sCodePg = Data.pCP;
+        Data.bHTMLEncode = Data.pHTMLEncode;
+        Data.bHTMLComplete = Data.pHTMLComplete;
+        ConverterSupport.Mappings.BuildMappings(Data.sCodePg);
 
             return false;
 
@@ -1051,93 +1066,93 @@ public class ProcessFiles
 
         public void InitConst()
         {
-            Internal.aCSS(0, 0) = "B0";
-            Internal.aCSS(1, 0) = "C0";
-            Internal.aCSS(2, 0) = "#000000";
-            Internal.aCSS(0, 1) = "B1";
-            Internal.aCSS(1, 1) = "C1";
-            Internal.aCSS(2, 1) = "#0000AA";
-            Internal.aCSS(0, 2) = "B2";
-            Internal.aCSS(1, 2) = "C2";
-            Internal.aCSS(2, 2) = "#00AA00";
-            Internal.aCSS(0, 3) = "B3";
-            Internal.aCSS(1, 3) = "C3";
-            Internal.aCSS(2, 3) = "#00AAAA";
-            Internal.aCSS(0, 4) = "B4";
-            Internal.aCSS(1, 4) = "C4";
-            Internal.aCSS(2, 4) = "#AA0000";
-            Internal.aCSS(0, 5) = "B5";
-            Internal.aCSS(1, 5) = "C5";
-            Internal.aCSS(2, 5) = "#AA00AA";
-            Internal.aCSS(0, 6) = "B6";
-            Internal.aCSS(1, 6) = "C6";
-            Internal.aCSS(2, 6) = "#AA5500";
-            Internal.aCSS(0, 7) = "B7";
-            Internal.aCSS(1, 7) = "C7";
-            Internal.aCSS(2, 7) = "#AAAAAA";
-            Internal.aCSS(1, 8) = "C8";
-            Internal.aCSS(2, 8) = "#555555";
-            Internal.aCSS(1, 9) = "C9";
-            Internal.aCSS(2, 9) = "#5555FF";
-            Internal.aCSS(1, 10) = "CA";
-            Internal.aCSS(2, 10) = "#55FF55";
-            Internal.aCSS(1, 11) = "CB";
-            Internal.aCSS(2, 11) = "#55FFFF";
-            Internal.aCSS(1, 12) = "CC";
-            Internal.aCSS(2, 12) = "#FF5555";
-            Internal.aCSS(1, 13) = "CD";
-            Internal.aCSS(2, 13) = "#FF55FF";
-            Internal.aCSS(1, 14) = "CE";
-            Internal.aCSS(2, 14) = "#FFFF55";
-            Internal.aCSS(1, 15) = "CF";
-            Internal.aCSS(2, 15) = "#FFFFFF";
+        InternalConstants.aCSS[0, 0] = "B0";
+        InternalConstants.aCSS[1, 0] = "C0";
+        InternalConstants.aCSS[2, 0]= "#000000";
+        InternalConstants.aCSS[0, 1]= "B1";
+        InternalConstants.aCSS[1, 1]= "C1";
+        InternalConstants.aCSS[2, 1] = "#0000AA";
+        InternalConstants.aCSS[0, 2] = "B2";
+        InternalConstants.aCSS[1, 2] = "C2";
+        InternalConstants.aCSS[2, 2] = "#00AA00";
+        InternalConstants.aCSS[0, 3] = "B3";
+        InternalConstants.aCSS[1, 3] = "C3";
+        InternalConstants.aCSS[2, 3] = "#00AAAA";
+        InternalConstants.aCSS[0, 4] = "B4";
+        InternalConstants.aCSS[1, 4] = "C4";
+        InternalConstants.aCSS[2, 4] = "#AA0000";
+        InternalConstants.aCSS[0, 5] = "B5";
+        InternalConstants.aCSS[1, 5] = "C5";
+        InternalConstants.aCSS[2, 5] = "#AA00AA";
+        InternalConstants.aCSS[0, 6] = "B6";
+        InternalConstants.aCSS[1, 6] = "C6";
+        InternalConstants.aCSS[2, 6] = "#AA5500";
+        InternalConstants.aCSS[0, 7] = "B7";
+        InternalConstants.aCSS[1, 7] = "C7";
+        InternalConstants.aCSS[2, 7] = "#AAAAAA";
+        InternalConstants.aCSS[1, 8] = "C8";
+        InternalConstants.aCSS[2, 8] = "#555555";
+        InternalConstants.aCSS[1, 9] = "C9";
+        InternalConstants.aCSS[2, 9] = "#5555FF";
+        InternalConstants.aCSS[1, 10] = "CA";
+        InternalConstants.aCSS[2, 10]= "#55FF55";
+        InternalConstants.aCSS[1, 11] = "CB";
+        InternalConstants.aCSS[2, 11] = "#55FFFF";
+        InternalConstants.aCSS[1, 12] = "CC";
+        InternalConstants.aCSS[2, 12] = "#FF5555";
+        InternalConstants.aCSS[1, 13] = "CD";
+        InternalConstants.aCSS[2, 13] = "#FF55FF";
+        InternalConstants.aCSS[1, 14] = "CE";
+        InternalConstants.aCSS[2, 14] = "#FFFF55";
+        InternalConstants.aCSS[1, 15] = "CF";
+        InternalConstants.aCSS[2, 15] = "#FFFFFF";
+    
+        InternalConstants.aCPLN = Strings.Split(InternalConstants.sCPLN, "|");
+        InternalConstants.aCPL = Strings.Split(InternalConstants.sCPL, "|");
+        InternalConstants.aCPLISO = Strings.Split(InternalConstants.sCPLISO, "|");
+        InternalConstants.aWinCPL = Strings.Split(InternalConstants.sWinCPL, "|");
+        InternalConstants.aWinCPLN = Strings.Split(InternalConstants.sWinCPLN, "|");
+            InternalConstants.aWinCPLISO = Strings.Split(InternalConstants.sWinCPLISO, "|");
 
-            Internal.aCPLN = Split(Internal.sCPLN, "|");
-            Internal.aCPL = Split(Internal.sCPL, "|");
-            Internal.aCPLISO = Split(Internal.sCPLISO, "|");
-            Internal.aWinCPL = Split(Internal.sWinCPL, "|");
-            Internal.aWinCPLN = Split(Internal.sWinCPLN, "|");
-            Internal.aWinCPLISO = Split(Internal.sWinCPLISO, "|");
-
-            if (DosFnt80x50 == null) {
-                DosFnt80x50 = new MediaSupport.Ansifntdef(8, 8, Drawing.Color.FromArgb(255, 32, 32, 32), My.Resources.dosfont80x50c16b2, My.Resources.dosfontback16c);
+            if (Data.DosFnt80x50 == null) {
+            Data.DosFnt80x50 = new MediaSupport.Ansifntdef(8, 8, Color.FromArgb(255, 32, 32, 32), Resources.dosfont80x50c16b2, Resources.dosfontback16c);
             }
-            if (DosFnt80x25 == null) {
-                DosFnt80x25 = new MediaSupport.Ansifntdef(8, 16, Drawing.Color.FromArgb(255, 32, 32, 32), My.Resources.dosfont80x25c16b2, My.Resources.dosfontback16c);
+            if (Data.DosFnt80x25 == null) {
+            Data.DosFnt80x25 = new MediaSupport.Ansifntdef(8, 16, Color.FromArgb(255, 32, 32, 32), Resources.dosfont80x25c16b2, Resources.dosfontback16c);
             }
-            WebFontList.Add(new ConverterSupport.WebFontDef("Default", "font-size:16px;", "", "font-family:DOS,monospace;font-size:16px;", "font-size:16px;", "", "font-family:DOS,monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("Terminal", "font-size:16px;", "", "font-family:Terminal,monospace;font-size:16px;", "font-size:16px;", "", "font-family:Terminal,monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("Lucida Console", "font-size:16px;", "", "font-family:\"Lucida Console\", monospace;font-size:16px;", "font-size:16px;", "", "font-family:\"Lucida Console\",monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("FixedSys", "font-size:100%;", "", "font-family:FixedSys,monospace;font-size:100%;", "font-size:100%;", "", "font-family:FixedSys,monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("VT-100", "font-size:16px;", "", "font-family:VT-100,monospace;font-size:16px;", "font-size:16px;", "", "font-family:VT-100,monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("Monaco", "font-size:100%;", "", "font-family:Monaco,monospace;font-size:100%;", "font-size:100%;", "", "font-family:Monaco,monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("Andale Mono", "font-size:100%;", "", "font-family:\"Andale Mono\",monospace;font-size:100%;", "font-size:100%;", "", "font-family:\"Andale Mono\",monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("MS Gothic", "font-size:16px;", "", "font-family:\"MS Gothic\",monospace;font-size:16px;", "font-size:16px;", "", "font-family:\"MS Gothic\",monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("Courier", "font-size:100%;", "", "font-family:Courier, monospace;font-size:100%;", "font-size:100%;", "", "font-family:Courier,monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
-            WebFontList.Add(new ConverterSupport.WebFontDef("Courier New", "font-size:100%;", "", "font-family:\"Courier New\",monospace;font-size:100%;", "font-size:100%;", "", "font-family:\"Courier New\",monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
+            Data.WebFontList.Add(new ConverterSupport.WebFontDef("Default", "font-size:16px;", "", "font-family:DOS,monospace;font-size:16px;", "font-size:16px;", "", "font-family:DOS,monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("Terminal", "font-size:16px;", "", "font-family:Terminal,monospace;font-size:16px;", "font-size:16px;", "", "font-family:Terminal,monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("Lucida Console", "font-size:16px;", "", "font-family:\"Lucida Console\", monospace;font-size:16px;", "font-size:16px;", "", "font-family:\"Lucida Console\",monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("FixedSys", "font-size:100%;", "", "font-family:FixedSys,monospace;font-size:100%;", "font-size:100%;", "", "font-family:FixedSys,monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("VT-100", "font-size:16px;", "", "font-family:VT-100,monospace;font-size:16px;", "font-size:16px;", "", "font-family:VT-100,monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("Monaco", "font-size:100%;", "", "font-family:Monaco,monospace;font-size:100%;", "font-size:100%;", "", "font-family:Monaco,monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("Andale Mono", "font-size:100%;", "", "font-family:\"Andale Mono\",monospace;font-size:100%;", "font-size:100%;", "", "font-family:\"Andale Mono\",monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("MS Gothic", "font-size:16px;", "", "font-family:\"MS Gothic\",monospace;font-size:16px;", "font-size:16px;", "", "font-family:\"MS Gothic\",monospace;font-size:16px;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("Courier", "font-size:100%;", "", "font-family:Courier, monospace;font-size:100%;", "font-size:100%;", "", "font-family:Courier,monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
+        Data.WebFontList.Add(new ConverterSupport.WebFontDef("Courier New", "font-size:100%;", "", "font-family:\"Courier New\",monospace;font-size:100%;", "font-size:100%;", "", "font-family:\"Courier New\",monospace;font-size:100%;width:8px;height:16px;overflow:hidden;border:none;"));
 
 
-            sCSSDef = "";
-            if (bCUFon == true) {
-                sCSSDef = sCSSDef + "DIV.ANSICSS {background-color:#000; color:#C6C6C6;width:%WIDTH%;padding: 5px;}\r\n" + "DIV.ANSICSS PRE {margin:0px;padding:0px;line-height:100%;font-size: 100%;}\r\n";
+            Data.sCSSDef = "";
+            if (Data.bCUFon == true) {
+            Data.sCSSDef = Data.sCSSDef + "DIV.ANSICSS {background-color:#000; color:#C6C6C6;width:%WIDTH%;padding: 5px;}\r\n" + "DIV.ANSICSS PRE {margin:0px;padding:0px;line-height:100%;font-size: 100%;}\r\n";
             } else {
-                sCSSDef = "DIV.ANSICSS {background-color:#000;color:#C6C6C6;display:inline-block;width:%WIDTH%;margin:0px;padding:0px;letter-spacing:0px;line-height:16px;%EXTRACSSDIV%}\r\n" + "DIV.ANSICSS PRE {margin:0px;padding:0px;display:block;width:100%;%EXTRACSSPRE%}\r\n" + "DIV.ANSICSS PRE SPAN {padding:0;margin-top:-1px;line-height:16px;letter-spacing:0;display:inline-block;white-space:nowrap;%EXTRACSSSPAN%}\r\n";
+            Data.sCSSDef = "DIV.ANSICSS {background-color:#000;color:#C6C6C6;display:inline-block;width:%WIDTH%;margin:0px;padding:0px;letter-spacing:0px;line-height:16px;%EXTRACSSDIV%}\r\n" + "DIV.ANSICSS PRE {margin:0px;padding:0px;display:block;width:100%;%EXTRACSSPRE%}\r\n" + "DIV.ANSICSS PRE SPAN {padding:0;margin-top:-1px;line-height:16px;letter-spacing:0;display:inline-block;white-space:nowrap;%EXTRACSSSPAN%}\r\n";
 
-                //sCSSDef = sCSSDef & "DIV.ANSICSS {background-color:#000;color:#C6C6C6;width:%WIDTH%;padding:5px;margin:0px;}" & vbCrLf & _
-                //                    "DIV.ANSICSS PRE {margin:0px;padding:0px;line-height:16px;font-size:16px;letter-spacing:0;width:%WIDTH%;%EXTRACSSPRE%}" & vbCrLf & _
-                //                    "DIV.ANSICSS PRE SPAN {margin:-1px;* margin:0px;padding:0px;line-height:16px;font-size:16px;letter-spacing:0px;white-space:nowrap;%EXTRACSSSPAN%}" & vbCrLf
+                //sCSSDef = sCSSDef & "DIV.ANSICSS {background-color:#000;color:#C6C6C6;width:%WIDTH%;padding:5px;margin:0px;}" & Environment.NewLine & _
+                //                    "DIV.ANSICSS PRE {margin:0px;padding:0px;line-height:16px;font-size:16px;letter-spacing:0;width:%WIDTH%;%EXTRACSSPRE%}" & Environment.NewLine & _
+                //                    "DIV.ANSICSS PRE SPAN {margin:-1px;* margin:0px;padding:0px;line-height:16px;font-size:16px;letter-spacing:0px;white-space:nowrap;%EXTRACSSSPAN%}" & Environment.NewLine
             }
 
             for (int x = 0; x <= 15; x++) {
                 if (x < 8) {
-                    sCSSDef = sCSSDef + "DIV.ANSICSS PRE SPAN." + Internal.aCSS(0, x) + " {background-color:" + Internal.aCSS(2, x) + ";}\r\n";
+                Data.sCSSDef = Data.sCSSDef + "DIV.ANSICSS PRE SPAN." + InternalConstants.aCSS[0, x] + " {background-color:" + InternalConstants.aCSS[2, x] + ";}\r\n";
                 }
-                sCSSDef = sCSSDef + "DIV.ANSICSS PRE SPAN." + Internal.aCSS(1, x) + " {color:" + Internal.aCSS(2, x) + ";}\r\n";
+            Data.sCSSDef = Data.sCSSDef + "DIV.ANSICSS PRE SPAN." + InternalConstants.aCSS[1, x] + " {color:" + InternalConstants.aCSS[2, x] + ";}\r\n";
             }
-            sCSSDef = sCSSDef + "DIV.ANSICSS PRE SPAN.II{background-color:" + Internal.aCSS(2, 0) + ";color:" + Internal.aCSS(2, 7) + ";}\r\n";
+        Data.sCSSDef = Data.sCSSDef + "DIV.ANSICSS PRE SPAN.II{background-color:" + InternalConstants.aCSS[2, 0] + ";color:" + InternalConstants.aCSS[2, 7] + ";}\r\n";
 
-            Internal.sSauceCSS = "";
-            Internal.sSauceCSS += "div.sauce,div.saucecomments{margin-top:5px;margin-left:20px;background-color:#000000;border:3px solid #C1C1C1;color:#555555;padding:10px;width:600px;align:right;font-family:dos, monospace;font-size:0.75em;display:inline-block;position:relative;}\r\n" + "div.sauce span.saucelabel{font-weight: bold; width: 170px;text-align: right; line-height: 1.5em;border-bottom: 1px dotted #222266;}" + "div.sauce span.saucedata{width: 400px; position: absolute;right: 5; text-align: left; color: #CCCCCC;border-bottom: 1px dotted #222266;}\r\n" + "div.sauce div.saucetitle span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetitle span.saucedata { color: #858500;}\r\n" + "div.sauce div.sauceauthor span.saucelabel { color: #55FF55;}\r\n" + "div.sauce div.sauceauthor span.saucedata { color: #008500;}\r\n" + "div.sauce div.saucegroup span.saucelabel { color: #C1C1C1;}\r\n" + "div.sauce div.saucegroup span.saucedata { color: #555555;}\r\n" + "div.sauce div.saucedatatype span.saucelabel { color: #555555;}\r\n" + "div.sauce div.saucedatatype span.saucedata { color: #444444;}\r\n" + "div.sauce div.saucefiletype span.saucelabel { color: #444444;}\r\n" + "div.sauce div.saucefiletype span.saucedata { color: #333333;}\r\n" + "div.sauce div.saucecreatedate span.saucelabel { color: #5555FF;}\r\n" + "div.sauce div.saucecreatedate span.saucedata { color: #555599;}\r\n" + "div.sauce div.saucetinfo1 span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetinfo1 span.saucedata { color: #858500;}\r\n" + "div.sauce div.saucetinfo2 span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetinfo2 span.saucedata { color: #858500;}\r\n" + "div.sauce div.saucetinfo3 span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetinfo3 span.saucedata { color: #858500;}\r\n" + "div.sauce div.sauceice{color: #FFFFFF;}\r\n";
+        InternalConstants.sSauceCSS = "";
+        InternalConstants.sSauceCSS += "div.sauce,div.saucecomments{margin-top:5px;margin-left:20px;background-color:#000000;border:3px solid #C1C1C1;color:#555555;padding:10px;width:600px;align:right;font-family:dos, monospace;font-size:0.75em;display:inline-block;position:relative;}\r\n" + "div.sauce span.saucelabel{font-weight: bold; width: 170px;text-align: right; line-height: 1.5em;border-bottom: 1px dotted #222266;}" + "div.sauce span.saucedata{width: 400px; position: absolute;right: 5; text-align: left; color: #CCCCCC;border-bottom: 1px dotted #222266;}\r\n" + "div.sauce div.saucetitle span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetitle span.saucedata { color: #858500;}\r\n" + "div.sauce div.sauceauthor span.saucelabel { color: #55FF55;}\r\n" + "div.sauce div.sauceauthor span.saucedata { color: #008500;}\r\n" + "div.sauce div.saucegroup span.saucelabel { color: #C1C1C1;}\r\n" + "div.sauce div.saucegroup span.saucedata { color: #555555;}\r\n" + "div.sauce div.saucedatatype span.saucelabel { color: #555555;}\r\n" + "div.sauce div.saucedatatype span.saucedata { color: #444444;}\r\n" + "div.sauce div.saucefiletype span.saucelabel { color: #444444;}\r\n" + "div.sauce div.saucefiletype span.saucedata { color: #333333;}\r\n" + "div.sauce div.saucecreatedate span.saucelabel { color: #5555FF;}\r\n" + "div.sauce div.saucecreatedate span.saucedata { color: #555599;}\r\n" + "div.sauce div.saucetinfo1 span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetinfo1 span.saucedata { color: #858500;}\r\n" + "div.sauce div.saucetinfo2 span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetinfo2 span.saucedata { color: #858500;}\r\n" + "div.sauce div.saucetinfo3 span.saucelabel { color: #FFFF55;}\r\n" + "div.sauce div.saucetinfo3 span.saucedata { color: #858500;}\r\n" + "div.sauce div.sauceice{color: #FFFFFF;}\r\n";
 
 
         }

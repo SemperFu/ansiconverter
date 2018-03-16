@@ -1,4 +1,14 @@
-﻿namespace MediaFormats
+﻿
+using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+namespace MediaFormats
 {
 
 

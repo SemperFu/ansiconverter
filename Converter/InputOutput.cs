@@ -17,7 +17,7 @@ namespace ConverterSupport
 	{
 
 
-		public byte[] ReadBinaryFile(string sFile)
+		public static byte[] ReadBinaryFile(string sFile)
 		{
 			byte[] bte;
 			System.IO.FileStream ofile;
@@ -100,7 +100,7 @@ namespace ConverterSupport
 		/// <para> 7 - Output Written, Existing File Renamed, iOutExists = Auto Rename Existing File</para>
 		/// 
 		///</remarks>
-		public object WriteFile(string OutFileName, object sStr, bool bForceOverwrite = false, int iOutExists = 0, bool m_NoMsg = false, bool isBinary = false)
+		public static object WriteFile(string OutFileName, object sStr, bool bForceOverwrite = false, int iOutExists = 0, bool m_NoMsg = false, bool isBinary = false)
 		{
 			bool bProceed = true;
 			string SF = "";
@@ -472,7 +472,7 @@ namespace ConverterSupport
 
 		}
 
-		public string BuildCSSforHTML()
+		public static string BuildCSSforHTML()
 		{
 			string sWorkCSS = Data.sCSSDef;
 			string sObjWidth = (Data.maxX * 8).ToString() + "px";

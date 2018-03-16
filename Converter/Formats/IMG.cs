@@ -7,6 +7,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.MarshalByRefObject;
 using System.Runtime.InteropServices;
+using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+
 namespace MediaFormats
 {
 

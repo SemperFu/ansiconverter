@@ -1,4 +1,14 @@
-﻿namespace MediaFormats
+﻿using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+
+namespace MediaFormats
 {
 
 
@@ -54,32 +64,32 @@
 			object iCmdCnt;
 			iCmdCnt = 0;
 			if (!aFile == null) {
-				aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
 			} else {
-				if (IO.File.Exists(sFile)) {
-					aAnsi = ConverterSupport.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aAnsi);
+				if (File.Exists(sFile)) {
+					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
 				}
 			}
 
-			ConverterSupport.BuildMappings(sCodePg);
+			ConverterSupport.Mappings.BuildMappings(sCodePg);
 			System.Windows.Forms.Application.DoEvents();
 			ForeColor = 7;
-			BackColor = 0;
-			LineWrap = true;
-			Blink = false;
-			Bold = 0;
-			Reversed = false;
-			LinesUsed = 0;
+			Data.BackColor = 0;
+			Data.LineWrap = true;
+			Data.Blink = false;
+			Data.Bold = 0;
+			Data.Reversed = false;
+			Data.LinesUsed = 0;
 
-			XPos = minX;
-			YPos = minY;
+			Data.XPos = Data.minX;
+			Data.YPos = Data.minY;
 			if (!aAnsi == null) {
-				if (UBound(aAnsi) > 0) {
-					iLoop = 1;
-					while (iLoop <= UBound(aAnsi)) {
-						if (iCmdCnt > UBound(aOutAnm) - 100) {
-							Array.Resize(ref aOutAnm, UBound(aOutAnm) + 1001);
+				if (Information.UBound(aAnsi) > 0) {
+					Data.iLoop = 1;
+					while (iLoop <= Information.UBound(aAnsi)) {
+						if (iCmdCnt > Information.UBound(aOutAnm) - 100) {
+							Array.Resize(ref aOutAnm, Information.UBound(aOutAnm) + 1001);
 						}
 						bDrawChar = true;
 						CurChr = (int)aAnsi(iLoop);
@@ -93,7 +103,7 @@
 								//SUB or "S"
 								if (CurChr == 26 | CurChr == 83) {
 									int iSauceOffset = IIf(CurChr == 83, 1, 0);
-									if (UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
+									if (Information.UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
 										sStr = "";
 										for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
 											sStr += Chr(aAnsi(iLoop + iLoop2));
@@ -153,12 +163,12 @@
 										} else {
 											iLoop2 = 1;
 										}
-										aOutAnm(iCmdCnt) = "A" + Right("0" + Hex(iLoop2), 2);
+										aOutAnm(iCmdCnt) = "A" + Right("0" + Conversion.Hex(iLoop2), 2);
 										iCmdCnt += 1;
 									case "B":
 										//Move Cursor Down
 										if (NumParams > 0) {
-											iLoop2 = ConverterSupport.ChkNum(aPar(1));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(1));
 											if (iLoop2 == 0) {
 												iLoop2 = 1;
 											}
@@ -166,31 +176,31 @@
 											iLoop2 = 1;
 										}
 										YPos = YPos + iLoop2;
-										aOutAnm(iCmdCnt) = "B" + Right("0" + Hex(iLoop2), 2);
+										aOutAnm(iCmdCnt) = "B" + Strings.Right("0" + Conversion.Hex(iLoop2), 2);
 										iCmdCnt += 1;
 									case "C":
 										//Move Cursor Right
 										if (NumParams > 0) {
-											iLoop2 = ConverterSupport.ChkNum(aPar(1));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(1));
 											if (iLoop2 == 0) {
 												iLoop2 = 1;
 											}
 										} else {
 											iLoop2 = 1;
 										}
-										aOutAnm(iCmdCnt) = "C" + Right("0" + Hex(iLoop2), 2);
+										aOutAnm(iCmdCnt) = "C" + Strings.Right("0" + Conversion.Hex(iLoop2), 2);
 										iCmdCnt += 1;
 									case "D":
 										//Move Cursor left
 										if (NumParams > 0) {
-											iLoop2 = ConverterSupport.ChkNum(aPar(1));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(1));
 											if (iLoop2 == 0) {
 												iLoop2 = 1;
 											}
 										} else {
 											iLoop2 = 1;
 										}
-										aOutAnm(iCmdCnt) = "D" + Right("0" + Hex(iLoop2), 2);
+										aOutAnm(iCmdCnt) = "D" + Strings.Right("0" + Conversion.Hex(iLoop2), 2);
 										iCmdCnt += 1;
 									case "H":
 										//Move Cursor
@@ -201,7 +211,7 @@
 											YPos = minY;
 										}
 										if (NumParams > 1) {
-											iLoop2 = ConverterSupport.ChkNum(aPar(2));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(2));
 											XPos = IIf(iLoop2 > 0, minX + (iLoop2 - 1), minX);
 										} else {
 											XPos = minX;
@@ -211,13 +221,13 @@
 									case "f":
 										//Move Cursor
 										if (NumParams > 0) {
-											iLoop2 = ConverterSupport.ChkNum(aPar(1));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(1));
 											YPos = IIf(iLoop2 > 0, minY + (iLoop2 - 1), minY);
 										} else {
 											YPos = minY;
 										}
 										if (NumParams > 1) {
-											iLoop2 = ConverterSupport.ChkNum(aPar(2));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(2));
 											XPos = IIf(iLoop2 > 0, minX + (iLoop2 - 1), minX);
 										} else {
 											XPos = minX;
@@ -227,7 +237,7 @@
 									case "J":
 										//ForeColor = 7 : BackColor = 0 : Blink = False : Bold = 0 : Reversed = False
 										if (NumParams > 0) {
-											switch (ConverterSupport.ChkNum(aPar(1))) {
+											switch (ConverterSupport.Convert.ChkNum(aPar(1))) {
 												case 0:
 													//erase from cursor to end of screen
 													aOutAnm(iCmdCnt) = "K";
@@ -251,7 +261,7 @@
 									case "m":
 										//Set Attribute
 										if (NumParams == 0) {
-											ForeColor = 7;
+											Data.ForeColor = 7;
 											BackColor = 0;
 											Blink = false;
 											Bold = 0;
@@ -263,7 +273,7 @@
 										}
 										for (iLoop3 = 1; iLoop3 <= NumParams; iLoop3++) {
 											object i2;
-											iLoop2 = ConverterSupport.ChkNum(aPar(iLoop3));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(iLoop3));
 											switch (iLoop2) {
 												case 0:
 													if ((string)Left(aPar(iLoop3), 1) == "0") {
@@ -279,11 +289,11 @@
 													}
 												case 1:
 													Bold = 8;
-													aOutAnm(iCmdCnt) = "T" + Hex(BackColor) + Hex(ForeColor + Bold);
+													aOutAnm(iCmdCnt) = "T" + Conversion.Hex(BackColor) + Conversion.Hex(ForeColor + Bold);
 													iCmdCnt += 1;
 												case 2:
 													Bold = 0;
-													aOutAnm(iCmdCnt) = "T" + Hex(BackColor) + Hex(ForeColor + Bold);
+													aOutAnm(iCmdCnt) = "T" + Conversion.Hex(BackColor) + Conversion.Hex(ForeColor + Bold);
 													iCmdCnt += 1;
 												case 5:
 													Blink = true;
@@ -380,7 +390,7 @@
 
 									case "K":
 										if (NumParams > 0) {
-											switch (ConverterSupport.ChkNum(aPar(1))) {
+											switch (ConverterSupport.Convert.ChkNum(aPar(1))) {
 												case 0:
 													//clear to the end of the line
 													aOutAnm(iCmdCnt) = "G";
@@ -620,7 +630,7 @@
 			string sOut = "";
 			if (bHTMLComplete == true) {
 				sOut += "<html><head>\r\n";
-				sOut += ConverterSupport.BuildCSSforHTML();
+				sOut += ConverterSupport.InputOutput.BuildCSSforHTML();
 				sOut += "</head><body>\r\n";
 			}
 
@@ -631,25 +641,25 @@
 					sOut += "<span class=\"II\" id=\"" + Hex(iLoop) + "\">&nbsp;</span>";
 					iLoop += 1;
 				}
-				sOut += vbCrLf;
+				sOut += Environment.NewLine;
 			}
-			sOut += vbCrLf + "</pre></div>\r\n";
+			sOut += Environment.NewLine + "</pre></div>\r\n";
 
 			sOut += "<script language=\"Javascript\">\r\n";
 
 			string sJS;
-			//= ByteArrayToString(My.Resources.ANSIJS)
-			sJS = ConverterSupport.ByteArrayToStr(My.Resources.ANSIJS, FFormats.us_ascii);
-			//sJS = ByteArrayToStr(My.Resources.ANSIJS2, FFormats.us_ascii)
+			//= ByteArrayToString(Resources.ANSIJS)
+			sJS = ConverterSupport.Convert.ByteArrayToStr(Resources.ANSIJS, FFormats.us_ascii);
+			//sJS = ByteArrayToStr(Resources.ANSIJS2, FFormats.us_ascii)
 
-			sJS = ConverterSupport.CutorSandR(sJS, "//VARDEFSTART", "//VARDEFEND", "I", "I", "C", 1);
-			sJS = ConverterSupport.CutorSandR(sJS, "//CALLSTART", "//CALLEND", "I", "I", "C", 1);
+			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//VARDEFSTART", "//VARDEFEND", "I", "I", "C", 1);
+			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//CALLSTART", "//CALLEND", "I", "I", "C", 1);
 
 			sJS = Replace(sJS, "//AANIMVAR", sRes, 1, 1, CompareMethod.Text);
 
 			string sMap = "";
 			sMap += "var aMappings" + ProcFilesCounter + "=[";
-			for (a = 0; a <= 255; a++) {
+			for (int a = 0; a <= 255; a++) {
 				sMap += "\"" + HTMLUniEncode(a) + "\"";
 				if (a < 255) {
 					sMap += ",";
@@ -668,7 +678,7 @@
 				sOut += "</body></html>";
 			}
 
-			return ConverterSupport.WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return ConverterSupport.InputOutput.WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
 
 		}
 		string escapchr(string sChar)
@@ -681,11 +691,11 @@
 		}
 		string HTMLUniEncode(int iChr)
 		{
-			if (Internal.aSpecH(iChr) != "") {
-				return Internal.aSpecH(iChr);
+			if (InternalConstants.aSpecH[iChr] != "") {
+				return InternalConstants.aSpecH[iChr];
 			} else {
-				if (Int(Internal.aUniCode(iChr)) != Int(iChr) | iChr == 44) {
-					return "&#" + Internal.aUniCode(iChr) + ";";
+				if (Int(InternalConstants.aUniCode[iChr]) != Int(iChr) | iChr == 44) {
+					return "&#" + InternalConstants.aUniCode[iChr] + ";";
 				} else {
 					if (iChr == 92) {
 						return Chr(iChr) + Chr(iChr);
