@@ -46,8 +46,8 @@ public class Data
     public static string outPath;
     public static MediaSupport.AviWriter oAVIFile = new MediaSupport.AviWriter();
 
-    //public Windows.Forms.Form MForm;
-    //public Windows.Forms.ToolTip ToolTip;
+    public static System.Windows.Forms.Form MForm;
+    public static System.Windows.Forms.ToolTip ToolTip;
     public static double FPS = 29.97;
 
     public static int BPS = 14400;

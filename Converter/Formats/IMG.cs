@@ -1,55 +1,39 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System;
-using System.Threading;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using System.MarshalByRefObject;
-using System.Runtime.InteropServices;
-using Microsoft.VisualBasic;
+﻿using Internal;
+using System.Drawing;
 using static Data;
-using static Microsoft.VisualBasic.Conversion;
-using static Microsoft.VisualBasic.Information;
-using static Microsoft.VisualBasic.Strings;
-using static Microsoft.VisualBasic.Interaction;
-using System;
-using Converter.Properties;
-using Internal;
 
 namespace MediaFormats
 {
+    public class IMG
+    {
+        //Friend DosFontSml As New FontDef(8, 8, 0, 0, 0, 0, -1, 0, 256, 0, 255, Color.Black.ToArgb, Color.FromArgb(255, 168, 168, 168).ToArgb)
+        //Friend DosFont As New FontDef(8, 16, 0, 0, 0, 0, -1, 1, 32, 1, 255, Color.Black.ToArgb, Color.FromArgb(255, 168, 168, 168).ToArgb)
+        public Bitmap CreateImageFromASCII(string NFOText, int TextColor = new int(), int BackColor = new int())
+        {
+            InternalConstants.m_NFOText = NFOText;
+            if (InternalConstants.m_NFOText == "")
+                InternalConstants.m_NFOText = "THIS IS A TEST.";
 
+            if (pSmallFont)
+            {
+                InternalConstants.m_NFOTextImg = DosFnt80x50.DrawTextFromString(InternalConstants.m_NFOText);
+            }
+            else
+            {
+                InternalConstants.m_NFOTextImg = DosFnt80x25.DrawTextFromString(InternalConstants.m_NFOText);
+            }
+            return InternalConstants.m_NFOTextImg;
+        }
 
-	public class IMG
-	{
-
-		//Friend DosFontSml As New FontDef(8, 8, 0, 0, 0, 0, -1, 0, 256, 0, 255, Color.Black.ToArgb, Color.FromArgb(255, 168, 168, 168).ToArgb)
-		//Friend DosFont As New FontDef(8, 16, 0, 0, 0, 0, -1, 1, 32, 1, 255, Color.Black.ToArgb, Color.FromArgb(255, 168, 168, 168).ToArgb)
-		public Bitmap CreateImageFromASCII(string NFOText, int TextColor = null, int BackColor = null)
-		{
-
-			Internal.m_NFOText = NFOText;
-			if (Internal.m_NFOText == "")
-				Internal.m_NFOText = "THIS IS A TEST.";
-
-			if (pSmallFont) {
-				Internal.m_NFOTextImg = DosFnt80x50.DrawTextFromString(Internal.m_NFOText);
-			} else {
-				Internal.m_NFOTextImg = DosFnt80x25.DrawTextFromString(Internal.m_NFOText);
-			}
-			return Internal.m_NFOTextImg;
-		}
-
-		public Bitmap CreateImageFromScreenChars()
-		{
-			Internal.m_NFOTextImg = ConverterSupport.ScreenToBitmap(pSmallFont, pNoColors);
-			//If pSmallFont Then
-			// m_NFOTextImg = DosFontSml.DrawText(False)
-			// Else
-			// m_NFOTextImg = DosFont.DrawText(False)
-			// End If
-			return Internal.m_NFOTextImg;
-		}
-	}
+        public Bitmap CreateImageFromScreenChars()
+        {
+            InternalConstants.m_NFOTextImg = ConverterSupport.Convert.ScreenToBitmap(pSmallFont, pNoColors);
+            //If pSmallFont Then
+            // m_NFOTextImg = DosFontSml.DrawText(False)
+            // Else
+            // m_NFOTextImg = DosFont.DrawText(False)
+            // End If
+            return InternalConstants.m_NFOTextImg;
+        }
+    }
 }

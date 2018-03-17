@@ -68,7 +68,7 @@ namespace ConverterSupport
 		public string DataTypeName {
 			get {
 				if (DataType >= 0 & DataType <= 8) {
-					return aDT(DataType);
+					return aDT[DataType];
 				} else {
 					return "n/a";
 				}
@@ -77,7 +77,7 @@ namespace ConverterSupport
 		public string FileTypeName {
 			get {
 				if (DataType >= 0 & DataType <= 8) {
-					if (FileType >= 0 & FileType <= UBound(aFT(DataType))) {
+					if (FileType >= 0 & FileType <= UBound((Array)aFT[DataType])) {
 						return aFT(DataType)(FileType);
 					} else {
 						return "n/a";
@@ -326,7 +326,7 @@ namespace ConverterSupport
 			for (xxx = 0; xxx <= iNum; xxx++) {
 				aComments[xxx] = "";
 			}
-			Comments = iNum;
+			Comments = System.Convert.ToByte(iNum);
 			System.Windows.Forms.Application.DoEvents();
 		}
 		public void AddComment(string sComment)
@@ -339,7 +339,7 @@ namespace ConverterSupport
 				aComments[Comments] = sComment;
 			}
 		}
-		public override string toString()
+		public override string ToString()
 		{
 			string sRes = "";
 			sRes += Chr(26) + this.ID;
@@ -370,7 +370,7 @@ namespace ConverterSupport
 		}
 		public byte[] AppendToByteArray(byte[] bte)
 		{
-			byte[] bSauce = this.toByteArray;
+			byte[] bSauce = this.toByteArray();
 			return this.MergeByteArrays(bte, bSauce);
 		}
 
@@ -420,23 +420,23 @@ namespace ConverterSupport
 
 				try {
 					this.ID = this.ReadByteArray(ref aArray, 5, "s", ref Offset);
-					this.Version[0] = this.ReadByteArray(ref aArray, 1, "b", ref Offset);
-					this.Version[1] = this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.Version[0] = System.Convert.ToByte(ReadByteArray(ref aArray, 1, "b", ref Offset));
+					this.Version[1] = System.Convert.ToByte(ReadByteArray(ref aArray, 1, "b", ref Offset));
 					this.Title = this.ReadByteArray(ref aArray, 35, "s", ref Offset);
 					this.Author = this.ReadByteArray(ref aArray, 20, "s", ref Offset);
 					this.Group = this.ReadByteArray(ref aArray, 20, "s", ref Offset);
 					this.CreatedDate = this.ReadByteArray(ref aArray, 8, "s", ref Offset);
-					this.FileSize = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 4, "h", ref Offset)));
-					this.DataType = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
-					this.FileType = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
-					this.TInfo1 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
-					this.TInfo2 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
-					this.TInfo3 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
-					this.TInfo4 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
-					this.Comments = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
-					this.Flags = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.FileSize = System.Convert.ToInt32(this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 4, "h", ref Offset))));
+					this.DataType = System.Convert.ToByte(ReadByteArray(ref aArray, 1, "b", ref Offset));
+					this.FileType = System.Convert.ToByte(ReadByteArray(ref aArray, 1, "b", ref Offset));
+					this.TInfo1 = System.Convert.ToInt16(Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset))));
+					this.TInfo2 = System.Convert.ToInt16(Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset))));
+					this.TInfo3 = System.Convert.ToInt16(Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset))));
+					this.TInfo4 = System.Convert.ToInt16(Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset))));
+					this.Comments = System.Convert.ToByte(ReadByteArray(ref aArray, 1, "b", ref Offset));
+					this.Flags = System.Convert.ToByte(this.ReadByteArray(ref aArray, 1, "b", ref Offset));
 					for (int x = 0; x <= 21; x++) {
-						this.Filler[x] = this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+						this.Filler[x] = System.Convert.ToByte(ReadByteArray(ref aArray, 1, "b", ref Offset));
 					}
 					if (UBound(aArray) >= Offset + (this.Comments * 64) + 5) {
 						if (this.Comments != 0) {
@@ -466,13 +466,13 @@ namespace ConverterSupport
 			if (File.Exists(sFile)) {
 				FileStream ofile;
 				int iSize = 0;
-				byte[] bte = this.toByteArray;
+				byte[] bte = toByteArray();
 				ofile = File.Open(sFile, FileMode.Open, FileAccess.ReadWrite);
 				ofile.Seek(0, SeekOrigin.Begin);
-				iSize = ofile.Length;
+				iSize = System.Convert.ToInt32(ofile.Length);
 				ofile.Seek(0, SeekOrigin.End);
 				object iNewSize = iSize + bte.Length;
-				ofile.SetLength(iNewSize);
+				ofile.SetLength((long)iNewSize);
 				ofile.Write(bte, 0, bte.Length);
 				ofile.Close();
 			}
@@ -483,10 +483,10 @@ namespace ConverterSupport
 			if (File.Exists(sFile)) {
 				FileStream ofile;
 				int iSize = 0;
-				byte[] bte;
+				byte[] bte =null;
 				ofile = File.Open(sFile, FileMode.Open, FileAccess.ReadWrite);
 				ofile.Seek(0, SeekOrigin.Begin);
-				iSize = ofile.Length;
+				iSize = System.Convert.ToInt32(ofile.Length);
 				int iNumRead = 0;
 				int iReadOFf = 0;
 				if (iSize > 511) {
@@ -501,10 +501,10 @@ namespace ConverterSupport
 				ofile.Read(bte, 0, iNumRead);
 				int xLoop = 0;
 				while (xLoop <= UBound(bte)) {
-					int CurChr = (int)bte[xLoop);
+					int CurChr = (int)bte[xLoop];
 					//SUB or "S"
 					if (CurChr == 26 | CurChr == 83) {
-						int iSauceOffset = IIf(CurChr == 83, 1, 0);
+						int iSauceOffset = (int)IIf(CurChr == 83, 1, 0);
 						if (UBound(bte) >= iLoop + 128 - iSauceOffset) {
 							string sStr = "";
 							for (int iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
@@ -533,13 +533,13 @@ namespace ConverterSupport
 			bool bFound = false;
 			iError = 0;
 			if (File.Exists(sFile)) {
-				byte[] bte;
+				byte[] bte =null;
 				FileStream ofile;
 				int iSize = 0;
 
 				try {
 					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
-					iSize = ofile.Length;
+					iSize = System.Convert.ToInt32(ofile.Length);
 					int iNumRead = 0;
 					int iReadOFf = 0;
 					if (iSize > 511) {
@@ -558,7 +558,7 @@ namespace ConverterSupport
 						int CurChr = (int)bte[xLoop];
 						//SUB or "S"
 						if (CurChr == 26 | CurChr == 83) {
-							int iSauceOffset = IIf(CurChr == 83, 1, 0);
+							int iSauceOffset = (int)IIf(CurChr == 83, 1, 0);
 							if (UBound(bte) >= iLoop + 128 - iSauceOffset) {
 								string sStr = "";
 								for (int iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
@@ -613,9 +613,9 @@ namespace ConverterSupport
 				//me.FileTypeName
 			}
 			if (Strings.Trim(this.CreatedDate) != "" & IsNumeric(this.CreatedDate)) {
-				cYear = Strings.Left(this.CreatedDate, 4);
-				cMonth = Strings.Mid(this.CreatedDate, 5, 2);
-				cDay = Strings.Right(this.CreatedDate, 2);
+				cYear = System.Convert.ToInt32(Left(CreatedDate, 4));
+				cMonth = System.Convert.ToInt32(Mid(CreatedDate, 5, 2));
+				cDay = System.Convert.ToInt32(Right(CreatedDate, 2));
 				sOutput += "<div class=\"saucecreatedate\"><span class=\"saucelabel\">Creation Date:</span><span class=\"saucedata\">" + cDay.ToString()+ "." + DateAndTime.MonthName(cMonth) + " " + cYear.ToString()+ "</span></div>";
 			}
 			if ((this.DataType == 1 & this.FileType >= 0 & this.FileType <= 5) | this.DataType == 2 | this.DataType == 6) {
@@ -671,7 +671,7 @@ namespace ConverterSupport
 							sRes = sRes + Strings.Right("0" + Hex(Arr[iPos]), 2);
 							break;
 						case "b":
-							sRes = Arr[iPos];
+							sRes = Arr[iPos].ToString();
 							break;
 					}
 				}
@@ -686,8 +686,8 @@ namespace ConverterSupport
 		private bool ExamineBit(byte MyByte, byte MyBit)
 		{
 			Int16 BitMask;
-			MyByte = MyByte & 0xff;
-			BitMask = Math.Pow(2, (MyBit - 1));
+			MyByte = System.Convert.ToByte(MyByte & 0xff);
+			BitMask = System.Convert.ToInt16(Math.Pow(2, (MyBit - 1)));
 			return ((MyByte & BitMask) > 0);
 		}
 		private string FlipHexVal(string sHexStr)
@@ -717,7 +717,7 @@ namespace ConverterSupport
 				strDigit = Strings.Mid(strHex, intIndex, 1);
 				intDigit = InStr("0123456789ABCDEF", UCase(strDigit)) - 1;
 				if (intDigit >= 0) {
-					intValue = intDigit * (Math.Pow(16, (strHex.Length - (long)intIndex)));
+					intValue = System.Convert.ToInt64(intDigit * (Math.Pow(16, (strHex.Length - (long)intIndex))));
 					lngResult = lngResult + intValue;
 				} else {
 					lngResult = 0;
@@ -732,7 +732,7 @@ namespace ConverterSupport
 		private byte[] HexStringToByteArray(string sHexStr)
 		{
 			int a;
-			byte[] dByte;
+			byte[] dByte =null;
 			if (sHexStr.Length % 2 != 0) {
 				return null;
 			
@@ -754,7 +754,7 @@ namespace ConverterSupport
 			byte[] bte = new byte[sStr.Length - 1];
 			int i = 0;
 			for (i = 1; i <= sStr.Length; i++) {
-				bte[i - 1] = Asc(Strings.Mid(sStr, i, 1));
+				bte[i - 1] = System.Convert.ToByte(Asc(Mid(sStr, i, 1)));
 			}
 			if (fixlength > 0 & sStr.Length < fixlength) {
 				Array.Resize(ref bte, fixlength);
@@ -781,7 +781,7 @@ namespace ConverterSupport
 			int iDim2 = 0;
 			int iDimOut = 0;
 			int i = 0;
-			byte[] bArrOut;
+			byte[] bArrOut = null;
 			iDim1 = UBound(bArr1);
 			iDim2 = UBound(bArr2);
 			iDimOut = iDim1 + iDim2 + 1;

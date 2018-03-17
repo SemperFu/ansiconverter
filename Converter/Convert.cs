@@ -378,7 +378,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public byte[] ANSIScreenToASCIIByteArray()
 		{
-			byte[] bte;
+			byte[] bte = null;
 			int cnt = 0;
 			// ERROR: Not supported in C#: ReDimStatement
 
@@ -427,7 +427,7 @@ namespace ConverterSupport
 		/// <param name="sChar">String Representation of Character to Set</param>
 		/// <returns>True, if character was set successfully</returns>
 		/// <remarks>Always adjusts values of <see cref="XPos"/> and if <see cref="maxX"/> was reached also <see cref="YPos"/>. May also adjusts global variables for <see cref="LinesUsed"/> and <see cref="Yoffset"/> if necessary</remarks>
-		public bool SetChar(string sChar)
+		public static bool SetChar(string sChar)
 		{
 			//Set Character in Global "Screen" Array at the Position of the global Loop Counter variable "iLoop"
 			//Character is automatically converted to unicode, if global parameter "bConv2Unicode" is set to "True"
@@ -708,7 +708,7 @@ namespace ConverterSupport
 		public byte[] HexStringToByteArray(string sHexStr)
 		{
 			int a;
-			byte[] dByte = new byte[]();
+			byte[] dByte = null;
 			if (sHexStr.Length % 2 != 0) {
 				return null;
 			
@@ -740,7 +740,7 @@ namespace ConverterSupport
 			int iDim2 = 0;
 			int iDimOut = 0;
 			int i = 0;
-			byte[] bArrOut;
+			byte[] bArrOut = null;
 			iDim1 = Information.UBound(bArr1);
 			iDim2 = Information.UBound(bArr2);
 			iDimOut = iDim1 + iDim2 + 1;
@@ -796,7 +796,7 @@ namespace ConverterSupport
 		/// <param name="strHex">Hex Values String</param>
 		/// <returns>Int64 Integer (Long)</returns>
 		/// <remarks></remarks>
-		public Int64 HexToDec(string strHex)
+		public static Int64 HexToDec(string strHex)
 		{
 			Int64 lngResult = 0;
 			int intIndex;
@@ -843,7 +843,7 @@ namespace ConverterSupport
 		/// <param name="MyBit">Bit to Check</param>
 		/// <returns>True or False</returns>
 		/// <remarks>Note: Bit Location is 1 based and not 0</remarks>
-		public bool ExamineBit(byte MyByte, byte MyBit)
+		public static bool ExamineBit(byte MyByte, byte MyBit)
 		{
 			Int16 BitMask;
 			MyByte = System.Convert.ToByte(MyByte & 0xff);
@@ -1379,7 +1379,7 @@ namespace ConverterSupport
 		/// <param name="nocolors">Optional, No Colors (=ASCII) (Default=False)</param>
 		/// <returns>Bitmap Frame in Format <see cref="System.Windows.Media.PixelFormat"/> = 'Indexed8'</returns>
 		/// <remarks></remarks>
-		public System.Drawing.Bitmap ScreenToBitmap(bool bSmallFnt = false, bool nocolors = false)
+		public static System.Drawing.Bitmap ScreenToBitmap(bool bSmallFnt = false, bool nocolors = false)
 		{
 			byte FntCurrChar = 0;
 			int iMaxWidth = 0;

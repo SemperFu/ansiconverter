@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+using static Microsoft.VisualBasic.Strings;
 
 namespace Converter
 {
@@ -16,13 +11,29 @@ namespace Converter
         public VideoConverterFFMPEG()
         {
             InitializeComponent();
+            strFFMPEGPath = "C:\\Documents\\VisualStudioProjects\\DirectShowVideoTest\\ffmpeg.exe";
+            intStatus = ConvStates.WaitingForParams;
+        }
+
+        //public VideoConverterFFMPEG()
+        //{
+        //    strFFMPEGPath = "C:\\Documents\\VisualStudioProjects\\DirectShowVideoTest\\ffmpeg.exe";
+        //    intStatus = ConvStates.WaitingForParams;
+        //}
+
+        public VideoConverterFFMPEG(string sourcefile, string destfile, OutTypes outformat, int quality = 0)
+        {
+            strInFile = sourcefile;
+            strOutFile = destfile;
+            OutType = outformat;
+            intQuality = quality;
+            CheckParameter();
         }
 
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
         }
-
 
         public enum OutTypes
         {
@@ -35,6 +46,7 @@ namespace Converter
             GIF = 7,
             MPG = 8
         }
+
         public enum ConvStates
         {
             Idle = 0,
@@ -45,25 +57,35 @@ namespace Converter
             ConvError = 5,
             Ready = 6
         }
+
         public System.ComponentModel.BackgroundWorker bw = new System.ComponentModel.BackgroundWorker();
+
         //FFMPEG Process Object
         private Process prcFFMPEG = new Process();
+
         //Stores Final Output Location
         private string strFinalOutput;
+
         //Stores Filename Without Path & Extension
         private string strFWOE;
+
         //Stores Selected Output File Format
         private string strOutExt;
+
         //Stores Audio Bitrate
         private string strOutAudio;
+
         //Stores Video Size
         private string strVidSize;
+
         private string strOutFile;
         private string strInFile;
         private string strOutType;
         private OutTypes OutType = OutTypes.AVI;
+
         //Stores Output Quality
         private int intQuality;
+
         private string strFFMPEGPath;
         private ConvStates intStatus;
         private double dFPS = 29.97;
@@ -72,6 +94,7 @@ namespace Converter
         private int iNumFrames = 0;
         private int iWidth = 0;
         private int iHeight = 0;
+
         public string VCodec
         {
             get { return sVCodec; }
@@ -83,6 +106,7 @@ namespace Converter
                 }
             }
         }
+
         public int VideoWidth
         {
             get { return iWidth; }
@@ -94,6 +118,7 @@ namespace Converter
                 }
             }
         }
+
         public int VideoHeight
         {
             get { return iHeight; }
@@ -105,6 +130,7 @@ namespace Converter
                 }
             }
         }
+
         public string Imagelist
         {
             get { return sImageList; }
@@ -116,6 +142,7 @@ namespace Converter
                 }
             }
         }
+
         public int Numframes
         {
             get { return iNumFrames; }
@@ -127,6 +154,7 @@ namespace Converter
                 }
             }
         }
+
         public double FPS
         {
             get { return dFPS; }
@@ -138,6 +166,7 @@ namespace Converter
                 }
             }
         }
+
         public string Output
         {
             get { return strOutFile; }
@@ -154,6 +183,7 @@ namespace Converter
                 }
             }
         }
+
         public string Input
         {
             get { return strInFile; }
@@ -170,6 +200,7 @@ namespace Converter
                 }
             }
         }
+
         public string FFMPEGPath
         {
             get { return strFFMPEGPath; }
@@ -185,6 +216,7 @@ namespace Converter
                 }
             }
         }
+
         public OutTypes OutFormat
         {
             get { return OutType; }
@@ -197,34 +229,20 @@ namespace Converter
                         OutType = value;
                     }
                 }
-
             }
         }
+
         public int Quality
         {
             get { return intQuality; }
             set { intQuality = value; }
         }
+
         public ConvStates Status
         {
             get { return intStatus; }
         }
 
-
-        public VideoConverterFFMPEG()
-        {
-            strFFMPEGPath = "C:\\Documents\\VisualStudioProjects\\DirectShowVideoTest\\ffmpeg.exe";
-            intStatus = ConvStates.WaitingForParams;
-        }
-
-        public VideoConverterFFMPEG(string sourcefile, string destfile, OutTypes outformat, int quality = 0) : this()
-        {
-            strInFile = sourcefile;
-            strOutFile = destfile;
-            OutType = outformat;
-            intQuality = quality;
-            CheckParameter();
-        }
         public void Cancel()
         {
             if (intStatus == ConvStates.Converting)
@@ -235,6 +253,7 @@ namespace Converter
                 //Done
             }
         }
+
         public void Convert()
         {
             if (intStatus == ConvStates.Ready | intStatus == ConvStates.Finished | intStatus == ConvStates.Aborted)
@@ -244,6 +263,7 @@ namespace Converter
                 intStatus = ConvStates.Converting;
             }
         }
+
         private void CheckParameter()
         {
             if (intStatus == ConvStates.Aborted | intStatus == ConvStates.Finished | intStatus == ConvStates.ConvError)
@@ -252,7 +272,7 @@ namespace Converter
             }
             if (intStatus == ConvStates.Idle | intStatus == ConvStates.WaitingForParams)
             {
-                if ((strInFile == "" & sImageList == "") | (strInFile != "" & IO.File.Exists(strInFile) == false) | strOutFile == "" | IO.File.Exists(strFFMPEGPath) == false)
+                if ((strInFile == "" & sImageList == "") | (strInFile != "" & File.Exists(strInFile) == false) | strOutFile == "" | File.Exists(strFFMPEGPath) == false)
                 {
                     intStatus = ConvStates.WaitingForParams;
                 }
@@ -262,30 +282,40 @@ namespace Converter
                 }
             }
         }
+
         private string OutTypeToStr(OutTypes ot)
         {
             switch (ot)
             {
                 case OutTypes.AVI:
                     return "avi";
+
                 case OutTypes.FLV:
                     return "flv";
+
                 case OutTypes.MKV:
                     return "mkv";
+
                 case OutTypes.MP4:
                     return "mp4";
+
                 case OutTypes.VOB:
                     return "vob";
+
                 case OutTypes.WMV:
                     return "wmv";
+
                 case OutTypes.GIF:
                     return "gif";
+
                 case OutTypes.MPG:
                     return "mpg";
+
                 default:
                     return "avi";
             }
         }
+
         private object ConvertFile()
         {
             //Function To Convert File
@@ -334,7 +364,6 @@ namespace Converter
                 {
                     strFFMPEGCmd += " -frames " + iNumFrames;
                 }
-
             }
             if (iHeight != 0 & iWidth != 0)
             {
@@ -354,21 +383,16 @@ namespace Converter
 
             //        Dim cmd As String = " -i """ & input & """ -ar " & strOutAudio & " -b 64k -r 24 -s " & strVidSize & "-qscale " & intQuality & " -y """ & output & """" 'ffmpeg commands -y replace
 
-
             if (strFinalOutput != "" & strFWOE != "" & strOutExt != "" & strOutAudio != "" & strVidSize != "")
             {
                 strOutput = strFinalOutput + strFWOE + strOutExt;
-
-
             }
             else
             {
                 //MessageBox.Show("Ensure all settings are properly made!") 'If Something Not Set
 
                 //Exit Function
-
             }
-
 
             psiProcInfo.FileName = strFFMPEGPath;
             //Location Of FFMPEG.EXE
@@ -393,38 +417,28 @@ namespace Converter
 
             //Me.btnStart.Enabled = False
 
-
             do
             {
                 //Cancelled?
                 if (bw.CancellationPending)
                 {
                     return 1;
-                    return;
-
                 }
 
                 strFFMPEGOut = srFFMPEG.ReadLine();
                 //Read Source File Line By Line
-
             } while (!(prcFFMPEG.HasExited & strFFMPEGOut == null | strFFMPEGOut == ""));
             //Read Until There Is Nothing Left
 
             intStatus = ConvStates.Finished;
             return 0;
-
         }
-
 
         // ERROR: Handles clauses are not supported in C#
         private void bgwConvert_DoWork(System.Object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             ConvertFile();
             //Function / Sub That Must Start
-
         }
-
     }
-
 }
-

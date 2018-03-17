@@ -1,16 +1,23 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
 /// <summary>
 /// Represents a list of files in list <see cref="ListInputFiles"/> to be processed by the converter
 /// </summary>
 /// <remarks></remarks>
-public class FileListItem : Windows.Forms.Control
+public class FileListItem : System.Windows.Forms.Control
 {
 
 	private string m_Name;
 	private string m_FullPath;
 	private FFormats m_Format;
-	private Drawing.Color m_Color;
-	private Windows.Forms.Label m_Label;
+	private Color m_Color;
+	private System.Windows.Forms.Label m_Label;
 	private bool m_Selected;
 
 	private FTypes m_FType;
@@ -20,8 +27,8 @@ public class FileListItem : Windows.Forms.Control
 	/// <value></value>
 	/// <returns></returns>
 	/// <remarks></remarks>
-	public Windows.Forms.Form Form {
-		get { return MForm; }
+	public System.Windows.Forms.Form Form {
+		get { return Data.MForm; }
 		set { MForm = value; }
 	}
 	/// <summary>
@@ -30,9 +37,9 @@ public class FileListItem : Windows.Forms.Control
 	/// <value></value>
 	/// <returns></returns>
 	/// <remarks></remarks>
-	public Windows.Forms.ToolTip TT {
-		get { return ToolTip; }
-		set { ToolTip = value; }
+	public System.Windows.Forms.ToolTip TT {
+		get { return Data.ToolTip; }
+		set { Data.ToolTip = value; }
 	}
 	/// <summary>
 	/// Main Constructor for this class, pre-setting vital properties right away
@@ -49,18 +56,22 @@ public class FileListItem : Windows.Forms.Control
 		this.m_Format = Format;
 		switch (Format) {
 			case FFormats.us_ascii:
-				this.m_Color = Drawing.Color.Black;
+				this.m_Color = Color.Black;
+				break;
 			case FFormats.utf_16:
-				this.m_Color = Drawing.Color.Blue;
+				this.m_Color = Color.Blue;
+				break;
 			case FFormats.utf_8:
-				this.m_Color = Drawing.Color.Red;
+				this.m_Color = Color.Red;
+				break;
 			default:
-				this.m_Color = Drawing.Color.Black;
+				this.m_Color = Color.Black;
+				break;
 		}
-		this.m_Label = new Windows.Forms.Label();
+		this.m_Label = new System.Windows.Forms.Label();
 		this.m_Label.Text = this.m_Name;
 		this.m_Label.ForeColor = this.m_Color;
-		this.m_Label.BackColor = Drawing.Color.White;
+		this.m_Label.BackColor = Color.White;
 		this.m_FType = FTyp;
 		MForm.Controls.Add(this.Label);
 		//AddHandler Me.m_Label.Click, AddressOf filelistitem_click
@@ -79,11 +90,11 @@ public class FileListItem : Windows.Forms.Control
 		this.m_Name = "";
 		this.m_FullPath = "";
 		this.m_Format = FFormats.us_ascii;
-		this.m_Color = Drawing.Color.Red;
-		this.m_Label = new Windows.Forms.Label();
+		this.m_Color = Color.Red;
+		this.m_Label = new System.Windows.Forms.Label();
 		this.m_Label.Text = this.m_Name;
 		this.m_Label.ForeColor = this.m_Color;
-		this.m_Label.BackColor = Drawing.Color.White;
+		this.m_Label.BackColor = Color.White;
 		this.m_FType = FTypes.ASCII;
 		//AddHandler Me.m_Label.Click, AddressOf filelistitem_click
 		this.m_Selected = false;
@@ -105,10 +116,10 @@ public class FileListItem : Windows.Forms.Control
 		set {
 			if (value != this.m_Selected) {
 				this.m_Selected = value;
-				if (this.m_Label.BackColor == Drawing.Color.White) {
-					this.m_Label.BackColor = Drawing.Color.Yellow;
+				if (this.m_Label.BackColor == Color.White) {
+					this.m_Label.BackColor = Color.Yellow;
 				} else {
-					this.m_Label.BackColor = Drawing.Color.White;
+					this.m_Label.BackColor = Color.White;
 				}
 			}
 
@@ -120,7 +131,7 @@ public class FileListItem : Windows.Forms.Control
 	/// <value></value>
 	/// <returns></returns>
 	/// <remarks></remarks>
-	public Drawing.Color Color {
+	public Color Color {
 		get { return this.m_Color; }
 	}
 	/// <summary>
@@ -129,7 +140,7 @@ public class FileListItem : Windows.Forms.Control
 	/// <value></value>
 	/// <returns></returns>
 	/// <remarks></remarks>
-	public Windows.Forms.Label Label {
+	public System.Windows.Forms.Label Label {
 		get { return this.m_Label; }
 	}
 	/// <summary>
@@ -175,9 +186,9 @@ public class FileListItem : Windows.Forms.Control
 	/// <param name="fctrl"></param>
 	/// <param name="sStr"></param>
 	/// <remarks></remarks>
-	public void ToolTipAndEvents(Windows.Forms.Control fctrl, string sStr)
+	public void ToolTipAndEvents(System.Windows.Forms.Control fctrl, string sStr)
 	{
-		ToolTip.SetToolTip(fctrl, sStr);
+		Data.ToolTip.SetToolTip(fctrl, sStr);
 		fctrl.MouseHover += tooltip_MouseHover;
 		fctrl.MouseLeave += tooltip_MouseLeave;
 	}

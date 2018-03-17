@@ -1,4 +1,6 @@
-﻿namespace Messaging
+﻿using System.Collections.Generic;
+
+namespace Messaging
 {
 	class Messaging
 	{
