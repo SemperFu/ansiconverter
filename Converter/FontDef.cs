@@ -310,7 +310,7 @@ namespace MediaSupport
 			if (!m_FontBmp == null) {
 				if (m_FontBmp.PixelFormat == PixelFormat.Indexed) {
 					cp = m_FontBmp.Palette;
-					for (a = 0; a <= cp.Entries.Count - 1; a++) {
+					for (int a = 0; a <= cp.Entries.Count - 1; a++) {
 						if (cp.Entries(a).Equals(col)) {
 							iResult = a;
 							break; // TODO: might not be correct. Was : Exit For

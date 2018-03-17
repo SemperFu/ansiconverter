@@ -31,16 +31,16 @@ namespace MediaFormats
 			int iLoop2;
 			string sStr = "";
 
-			if (!aFile == null) {
-				aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aFile);
+			if (!(aFile == null)) {
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
 			} else {
-				if (IO.File.Exists(sFile)) {
-					aAnsi = ConverterSupport.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aAnsi);
+				if (File.Exists(sFile)) {
+					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
 				}
 			}
 
-			ConverterSupport.BuildMappings(sCodePg);
+			ConverterSupport.Mappings.BuildMappings(sCodePg);
 
 			ForeColor = 7;
 			BackColor = 0;
@@ -64,7 +64,7 @@ namespace MediaFormats
 					iLoop = 1;
 					while (iLoop <= UBound(aAnsi)) {
 						bDrawChar = true;
-						CurChr = (int)aAnsi(iLoop);
+						CurChr = (int)aAnsi[iLoop];
 						switch (AnsiMode) {
 							case 0:
 								//@
@@ -78,7 +78,7 @@ namespace MediaFormats
 									if (UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
 										sStr = "";
 										for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
-											sStr += Chr(aAnsi(iLoop + iLoop2));
+											sStr += Chr(aAnsi[iLoop + iLoop2]);
 										}
 										if (sStr == "SAUCE") {
 											bDrawChar = false;
@@ -96,7 +96,7 @@ namespace MediaFormats
 									AnsiMode = 2;
 									bDrawChar = false;
 								} else {
-									if (ConverterSupport.SetChar(Chr(64)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(64)) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									} else {
 										bDrawChar = true;
@@ -104,7 +104,7 @@ namespace MediaFormats
 									}
 								}
 							case 2:
-								string sCol = Strings.Right("0" + Hex(CurChr).ToString, 2);
+								string sCol = Strings.Right("0" + Hex(CurChr)..ToString() 2);
 								string sFC = Strings.Right(sCol, 1);
 								string sBC = Strings.Left(sCol, 1);
 								BackColor = ConverterSupport.HexToDec((string)sBC);
@@ -136,7 +136,7 @@ namespace MediaFormats
 									//ignore
 								case 26:
 								default:
-									if (ConverterSupport.SetChar(Chr(CurChr)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
 							}

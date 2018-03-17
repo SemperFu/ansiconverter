@@ -661,7 +661,7 @@ namespace ConverterSupport
 			if (DtaType == "b") {
 				iLen = 1;
 			}
-			for (a = 1; a <= iLen; a++) {
+			for (int a = 1; a <= iLen; a++) {
 				if (UBound(Arr) >= inArrPos) {
 					switch (DtaType) {
 						case "s":
@@ -699,7 +699,7 @@ namespace ConverterSupport
 				return sHexStr;
 				
 			}
-			for (a = sHexStr.Length - 1; a >= 1; a += -2) {
+			for (int a = sHexStr.Length - 1; a >= 1; a += -2) {
 				sResult += Strings.Mid(sHexStr, a, 2);
 			}
 			System.Windows.Forms.Application.DoEvents();
@@ -740,7 +740,7 @@ namespace ConverterSupport
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			if (sHexStr.Length > 2) {
-				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
+				for (int a = 1; a <= sHexStr.Length - 1; a += 2) {
 					dByte[(a - 1) / 2] = (byte)this.Hex2Int64(Mid(sHexStr, a, 2));
 				}
 			} else {

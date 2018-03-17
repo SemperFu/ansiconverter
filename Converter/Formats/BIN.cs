@@ -29,16 +29,16 @@ namespace MediaFormats
 			string sStr = "";
 
 			string sCol = "";
-			if (!aFile == null) {
-				aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aFile);
+			if (!(aFile == null)) {
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
 			} else {
-				if (IO.File.Exists(sFile)) {
-					aAnsi = ConverterSupport.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aAnsi);
+				if (File.Exists(sFile)) {
+					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
 				}
 			}
 
-			ConverterSupport.BuildMappings(sCodePg);
+			ConverterSupport.Mappings.BuildMappings(sCodePg);
 
 			ForeColor = 7;
 			BackColor = 0;
@@ -62,7 +62,7 @@ namespace MediaFormats
 					iLoop = 1;
 					while (iLoop <= UBound(aAnsi)) {
 						bDrawChar = true;
-						CurChr = (int)aAnsi(iLoop);
+						CurChr = (int)aAnsi[iLoop];
 
 						//SUB or "S"
 						if (CurChr == 26 | CurChr == 83) {
@@ -70,7 +70,7 @@ namespace MediaFormats
 							if (UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
 								sStr = "";
 								for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
-									sStr += Chr(aAnsi(iLoop + iLoop2));
+									sStr += Chr(aAnsi[iLoop + iLoop2]);
 								}
 								if (sStr == "SAUCE") {
 									bDrawChar = false;
@@ -87,7 +87,7 @@ namespace MediaFormats
 							if (UBound(aAnsi) >= iLoop + 1) {
 								sStr = CurChr;
 								iLoop += 1;
-								CurChr = (int)aAnsi(iLoop);
+								CurChr = (int)aAnsi[iLoop];
 								sCol = Right("0" + Hex(CurChr), 2);
 								ForeColor = ConverterSupport.HexToDec(Right(sCol, 1));
 								BackColor = ConverterSupport.HexToDec(Left(sCol, 1));
@@ -99,7 +99,7 @@ namespace MediaFormats
 								}
 								CurChr = sStr;
 								if (CurChr == 0) {
-									if (!ConverterSupport.SetChar(" ")) {
+									if (!ConverterSupport.Convert.SetChar(" ")) {
 										iLoop = UBound(aAnsi) + 1;
 									}
 									bDrawChar = false;
@@ -108,7 +108,7 @@ namespace MediaFormats
 						}
 
 						if (bDrawChar == true) {
-							if (ConverterSupport.SetChar(Chr(CurChr)) == false) {
+							if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
 								iLoop = UBound(aAnsi) + 1;
 							}
 						}

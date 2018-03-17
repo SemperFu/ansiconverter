@@ -32,16 +32,16 @@ namespace MediaFormats
 			string sEsc;
 			bool bEnde;
 			string[] aPar;
-			if (!aFile == null) {
-				aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aFile);
+			if (!(aFile == null)) {
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
 			} else {
-				if (IO.File.Exists(sFile)) {
-					aAnsi = ConverterSupport.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.MergeByteArrays(ConverterSupport.NullByteArray, aAnsi);
+				if (File.Exists(sFile)) {
+					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
 				}
 			}
 
-			ConverterSupport.BuildMappings(sCodePg);
+			ConverterSupport.Mappings.BuildMappings(sCodePg);
 
 			ForeColor = 7;
 			BackColor = 0;
@@ -65,7 +65,7 @@ namespace MediaFormats
 					iLoop = 1;
 					while (iLoop <= UBound(aAnsi)) {
 						bDrawChar = true;
-						CurChr = (int)aAnsi(iLoop);
+						CurChr = (int)aAnsi[iLoop];
 						switch (AnsiMode) {
 							case 0:
 								//ESC
@@ -79,7 +79,7 @@ namespace MediaFormats
 									if (UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
 										sStr = "";
 										for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
-											sStr += Chr(aAnsi(iLoop + iLoop2));
+											sStr += Chr(aAnsi[iLoop + iLoop2]);
 										}
 										if (sStr == "SAUCE") {
 											bDrawChar = false;
@@ -98,7 +98,7 @@ namespace MediaFormats
 									AnsiMode = 2;
 									bDrawChar = false;
 								} else {
-									if (ConverterSupport.SetChar(Chr(27)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(27)) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									} else {
 										bDrawChar = true;
@@ -109,7 +109,7 @@ namespace MediaFormats
 
 
 								aRRSize = UBound(aAnsi);
-								sEsc = Chr(CurChr);
+								sEsc = Chr(CurChr).ToString();
 								//0-9 or ; or ?
 								if ((CurChr >= 48 & CurChr <= 57) | CurChr == 59 | CurChr == 63) {
 									bEnde = false;
@@ -118,8 +118,8 @@ namespace MediaFormats
 										if (iLoop > aRRSize) {
 											bEnde = true;
 										} else {
-											CurChr = aAnsi(iLoop);
-											sEsc += (string)Chr(CurChr);
+											CurChr = aAnsi[iLoop];
+											sEsc += (string)Chr(CurChr).ToString();
 											//A-Z, a-z
 											if ((CurChr >= 65 & CurChr <= 90) | (CurChr >= 97 & CurChr <= 122) | CurChr == 27) {
 												bEnde = true;
@@ -142,8 +142,8 @@ namespace MediaFormats
 										int iPar1;
 										int iPar2;
 										int iPar3;
-										iPar1 = (int)aPar(1);
-										iPar2 = (int)aPar(2);
+										iPar1 = (int)aPar[1];
+										iPar2 = (int)aPar[2];
 										iPar3 = (int)aPar(3);
 										if (iPar1 == 0 & iPar2 == 0 & iPar3 == 40) {
 											ForeColor = 7;
@@ -222,7 +222,7 @@ namespace MediaFormats
 									//ignore
 								case 26:
 								default:
-									if (ConverterSupport.SetChar(Chr(CurChr)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
 							}

@@ -67,7 +67,7 @@ namespace MediaSupport
 						Convert.SetBit(ref bt, btCnt);
 					}
 					if (btCnt == 8) {
-						FntBits(crCnt) += Strings.Right("00" + Hex(bt).ToString, 2);
+						FntBits(crCnt) += Strings.Right("00" + Hex(bt)..ToString() 2);
 						bt = 0;
 						btCnt = 0;
 						crCnt += 1;

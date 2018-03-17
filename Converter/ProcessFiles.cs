@@ -266,7 +266,7 @@ public class ProcessFiles
                 OutFileWrite = sOutF;
                 //  RaiseEvent InfoMsg("Target Output: " & sOutF & ",rOutPathInput=" & rOutPathInput & ",rReplaceExt=" & rReplaceExt & ",txtExt=" & txtExt & ",outPath=" & outPath)
                 ProcFilesCounter += 1;
-                if (OutputFileExists == 1 & IO.File.Exists(sOutF)) {
+                if (OutputFileExists == 1 & File.Exists(sOutF)) {
                     if (InfoMsg != null) {
                         InfoMsg("Output File [i]" + sOutF + "[/i] exists. SKIP!", false, false);
                     }
@@ -297,7 +297,7 @@ public class ProcessFiles
                             if (bSkipIt == false) {
                                 if (sOutPutFormat == "UTF" | sOutPutFormat == "ANS" | sOutPutFormat == "BBS") {
                                     //Read ASC File to a Byte Array
-                                    bteWork1 = ConverterSupport.ReadBinaryFile(sFileNam);
+                                    bteWork1 = ConverterSupport.InputOutput.ReadBinaryFile(sFileNam);
                                 }
                                 if (sOutPutFormat == "HTML" | sOutPutFormat == "IMG") {
                                     //Read ASC File as a String
@@ -340,9 +340,9 @@ public class ProcessFiles
                                     Ret = ConverterSupport.WriteFile(sOutF, "", bForceOverwrite, OutputFileExists, true, false);
                                     VideoFile = Ret(1);
                                     OutFileWrite = VideoFile;
-                                    TempVideoFolder = IO.Path.Combine(IO.Path.GetTempPath, "ANSIToVideoTemp");
-                                    if (!IO.Directory.Exists(TempVideoFolder)) {
-                                        IO.Directory.CreateDirectory(TempVideoFolder);
+                                    TempVideoFolder = Path.Combine(Path.GetTempPath, "ANSIToVideoTemp");
+                                    if (!Directory.Exists(TempVideoFolder)) {
+                                        Directory.CreateDirectory(TempVideoFolder);
                                     } else {
                                         foreach (string fil in Directory.GetFiles(TempVideoFolder)) {
                                             try {
@@ -407,7 +407,7 @@ public class ProcessFiles
                                 }
                             }
                             if (bSkipIt == false) {
-                                bteWork1 = ConverterSupport.ReadBinaryFile(sFileNam);
+                                bteWork1 = ConverterSupport.InputOutput.ReadBinaryFile(sFileNam);
                                 if (FTyp == FFormats.utf_16) {
                                     //Read UTF-16 Encoded Text File to a String Variable
                                     strWork1 = ConverterSupport.ByteArrayToStr(bteWork1, FFormats.utf_16);
@@ -583,7 +583,7 @@ public class ProcessFiles
                             case "ANS":
                                 if (sInputFormat == "ASC") {
                                     //Create ANSI from ASC File
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "PCB" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT" | sInputFormat == "BIN") {
                                     Ret = ConverterSupport.OutputANS(sOutF);
@@ -606,7 +606,7 @@ public class ProcessFiles
                                     for (iLp = 1; iLp <= iLen; iLp++) {
                                         bteWork1(iLp - 1) = Asc(Mid(strWork2, iLp, 1));
                                     }
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "UTF") {
                                     strWork2 = "";
@@ -614,7 +614,7 @@ public class ProcessFiles
                                         strWork2 += Microsoft.VisualBasic.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
                                     bteWork1 = ConverterSupport.HexStringToByteArray(strWork2);
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                             case "HTML":
                                 if (sInputFormat == "ANS" | sInputFormat == "PCB" | sInputFormat == "BIN" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
@@ -684,13 +684,13 @@ public class ProcessFiles
                                 if (selUTF == "UTF16") {
                                     //Save as UTF-16 Encoded Text File
                                     bteWork2 = ConverterSupport.StrToByteArray(strWork1, FFormats.utf_16);
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.MergeByteArrays(Internal.UTF16Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.UTF16Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 //MainForm.rUTF8.Checked = True Then
                                 if (selUTF == "UTF8") {
                                     //Save as UTF-8 Encoded Text File
                                     bteWork2 = ConverterSupport.StrToByteArray(strWork1, FFormats.utf_8);
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.MergeByteArrays(Internal.UTF8Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.UTF8Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
 
                                 }
 
@@ -710,7 +710,7 @@ public class ProcessFiles
                                 }
                                 if (sInputFormat == "ASC") {
                                     //Create PCBoard @ Styled ANSI from ASC File
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.MergeByteArrays(Internal.PCBHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.PCBHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "HTML") {
                                     strWork2 = ConverterSupport.convuniasc(strWork1);
@@ -866,7 +866,7 @@ public class ProcessFiles
                                 }
                                 MediaSupport.VideoConverterFFMPEG vc2 = new MediaSupport.VideoConverterFFMPEG();
                                 vc2.FFMPEGPath = ffmpegpath;
-                                vc2.Imagelist = IO.Path.Combine(TempVideoFolder, IO.Path.GetFileNameWithoutExtension(OutFileWrite) + "_%05d.PNG");
+                                vc2.Imagelist = Path.Combine(TempVideoFolder, Path.GetFileNameWithoutExtension(OutFileWrite) + "_%05d.PNG");
                                 vc2.Output = OutFileWrite;
                                 vc2.FPS = FPS;
                                 vc2.Numframes = iFramesCount;
@@ -997,8 +997,8 @@ public class ProcessFiles
             }
             if (sOutPutFormat == "AVI") {
                 try {
-                    IO.File.Delete(ffmpegpath);
-                    IO.Directory.Delete(TempVideoFolder);
+                    File.Delete(ffmpegpath);
+                    Directory.Delete(TempVideoFolder);
 
                 } catch (Exception ex) {
                 }

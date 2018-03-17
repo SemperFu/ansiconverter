@@ -53,7 +53,7 @@ public class Data
     public static int BPS = 14400;
     public static int LastFrame = 3;
     public static bool bMakeVideo = false;
-    public static string ffmpegpath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "ansiconvffmpeg.exe");
+    public static string ffmpegpath = System.Path.Combine(System.Path.GetTempPath(), "ansiconvffmpeg.exe");
     public static int iFramesCount = 0;
     public static string sCodePg;
     public static string sCodePgOut;

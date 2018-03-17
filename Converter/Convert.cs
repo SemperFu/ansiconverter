@@ -45,7 +45,7 @@ namespace ConverterSupport
 			if ((int)iUChr < 128 & (int)iUChr > 0) {
 				result = Strings.Chr(iUChr).ToString();
 			} else {
-				for (a = 128; a <= 255; a++) {
+				for (int a = 128; a <= 255; a++) {
 					if (iUChr.ToString() == InternalConstants.aUniCode[a]) {
 						result = Strings.Chr(a).ToString();
 						break; // TODO: might not be correct. Was : Exit For
@@ -122,7 +122,7 @@ namespace ConverterSupport
 			a = 38;
 			DestChr = AscConv(a);
 			swork = Strings.Replace(swork, Strings.Chr(a).ToString(), DestChr, 1, -1, CompareMethod.Binary);
-			for (a = 1; a <= 255; a++) {
+			for (int a = 1; a <= 255; a++) {
 				if ((a < 48 | a > 57) & (a < 65 | a > 90) & (a < 97 | a > 122) & a != 35 & a != 59 & a != 38) {
 					//Ignore 0-9, a-z, A-Z, # , ; and of course &  
 					DestChr = AscConv(a);
@@ -189,14 +189,14 @@ namespace ConverterSupport
 			int a;
 			string sHex;
 			string sChar;
-			for (a = 128; a <= 255; a++) {
+			for (int a = 128; a <= 255; a++) {
 				sHex = "&#x" + (string)Conversion.Hex(InternalConstants.aUniCode[a]) + ";";
 				sChar = "&#" + (string)InternalConstants.aUniCode[a] + ";";
 				swork = Strings.Replace(swork, sHex, Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 				swork = Strings.Replace(swork, sChar, Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 			}
 			System.Windows.Forms.Application.DoEvents();
-			for (a = 32; a <= 255; a++) {
+			for (int a = 32; a <= 255; a++) {
 				if (InternalConstants.aSpecH[a] != "") {
 					swork = Strings.Replace(swork, InternalConstants.aSpecH[a], Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 				}
@@ -350,7 +350,7 @@ namespace ConverterSupport
 			if (DtaType == "b") {
 				iLen = 1;
 			}
-			for (a = 1; a <= iLen; a++) {
+			for (int a = 1; a <= iLen; a++) {
 				if (Information.UBound(Arr) >= Data.iLoop) {
 					switch (DtaType) {
 						case "s":
@@ -527,7 +527,7 @@ namespace ConverterSupport
 		/// <param name="iVal">Value (as Object) to check</param>
 		/// <returns>Integer Value</returns>
 		/// <remarks></remarks>
-		public int ChkNum(object iVal)
+		public static int ChkNum(object iVal)
 		{
 			if (Strings.Trim((string)iVal) != "" & !(iVal == null) & Information.IsNumeric(iVal)) {
 				return (int)iVal;
@@ -588,7 +588,7 @@ namespace ConverterSupport
 			if (sHexStr.Length % 2 != 0) {
 				return sHexStr;
 			}
-			for (a = sHexStr.Length - 1; a >= 1; a += -2) {
+			for (int a = sHexStr.Length - 1; a >= 1; a += -2) {
 				sResult += Strings.Mid(sHexStr, a, 2);
 			}
 			System.Windows.Forms.Application.DoEvents();
@@ -716,7 +716,7 @@ namespace ConverterSupport
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			if (sHexStr.Length > 2) {
-				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
+				for (int a = 1; a <= sHexStr.Length - 1; a += 2) {
 					dByte[(a - 1) / 2] = (byte)HexToDec(Strings.Mid(sHexStr, a, 2));
 					if (a / 1000 == (int)a / 1000)
 						System.Windows.Forms.Application.DoEvents();
@@ -764,7 +764,7 @@ namespace ConverterSupport
 		/// </summary>
 		/// <returns>Byte() = New Byte(){0}</returns>
 		/// <remarks></remarks>
-		public byte[] NullByteArray()
+		public static byte[] NullByteArray()
 		{
 			byte[] aByte = { 0 };
 			return aByte;
@@ -887,9 +887,9 @@ namespace ConverterSupport
 		public System.Globalization.CultureInfo SetCultureInfo(int NumDigits)
 		{
 			System.Globalization.CultureInfo nfio = new System.Globalization.CultureInfo("en-US");
-			nfio.NumberFormat.NumberDecimalDigits = NumDigits;
-			nfio.NumberFormat.NumberDecimalSeparator = ".";
-			nfio.NumberFormat.NumberGroupSeparator = ",";
+			nfNumberFormat.NumberDecimalDigits = NumDigits;
+			nfNumberFormat.NumberDecimalSeparator = ".";
+			nfNumberFormat.NumberGroupSeparator = ",";
 
 			return nfio;
 		}
@@ -1106,7 +1106,7 @@ namespace ConverterSupport
 			int a;
 			string sResult;
 			sResult = "";
-			for (a = 1; a <= sStr.Length; a++) {
+			for (int a = 1; a <= sStr.Length; a++) {
 				sResult += Strings.Right("0" + (string)Conversion.Hex(Strings.Asc(Strings.Mid(sStr, a, 1))), 2);
 				if (a < sStr.Length) {
 					sResult += sep;
@@ -1364,7 +1364,7 @@ namespace ConverterSupport
 				return null;
 			}
 			if (sHexStr.Length > 2) {
-				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
+				for (int a = 1; a <= sHexStr.Length - 1; a += 2) {
 					sResult += Strings.ChrW((int)HexToDec(Mid(sHexStr, a, 2)));
 				}
 			} else {
@@ -1536,7 +1536,7 @@ namespace ConverterSupport
 		/// <param name="YIndex">Optional, <see cref="Yoffset"/> Location to use (Default = 0)</param>
 		/// <returns>Bitmap Frame in Format <see cref="System.Windows.Media.PixelFormat"/> = 'Indexed8'</returns>
 		/// <remarks></remarks>
-		public System.Drawing.Bitmap CreateVideoFrame(bool bSmallFnt = false, bool nocolors = false, int YIndex = 0)
+		public static System.Drawing.Bitmap CreateVideoFrame(bool bSmallFnt = false, bool nocolors = false, int YIndex = 0)
 		{
 			byte FntCurrChar = 0;
 			int iMaxWidth = 0;

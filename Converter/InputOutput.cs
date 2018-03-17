@@ -20,7 +20,7 @@ namespace ConverterSupport
 		public static byte[] ReadBinaryFile(string sFile)
 		{
 			byte[] bte;
-			System.IO.FileStream ofile;
+			System.FileStream ofile;
 			int iSize = 0;
 			if (File.Exists(sFile)) {
 				ofile = File.Open(sFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -49,7 +49,7 @@ namespace ConverterSupport
 			try {
 				// Create an instance of StreamReader to read from a file.
 				// The using statement also closes the StreamReader.
-				//Io.File.GetAttributes(sFile).
+				//File.GetAttributes(sFile).
 				using (StreamReader sr = new StreamReader(sFile, true)) {
 					// Dim encoding As New System.Text.ASCIIEncoding
 					 // ERROR: Not supported in C#: ReDimStatement
@@ -244,7 +244,7 @@ namespace ConverterSupport
 								}
 								img = img.GetThumbnailImage(iThWidth, iThHeight, null, null);
 							}
-							switch (LCase(IO.Path.GetExtension(OutFileName))) {
+							switch (LCase(Path.GetExtension(OutFileName))) {
 								case ".png":
 									f = System.Drawing.Imaging.ImageFormat.Png;
                                     break;
@@ -306,7 +306,7 @@ namespace ConverterSupport
 			};
 			FFormats sRes = FFormats.us_ascii;
 			int i = 0;
-			System.IO.FileStream ofile;
+			System.FileStream ofile;
 			if (File.Exists(sFile)) {
 				if (GetFileSizeNum(sFile) > 0) {
 					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
@@ -332,7 +332,7 @@ namespace ConverterSupport
 			FTypes sRes = FTypes.ASCII;
 			byte[] eBte;
 			string sData = "";
-			System.IO.FileStream ofile;
+			System.FileStream ofile;
 			if (File.Exists(sFile)) {
 				if (GetFileSizeNum(sFile) > 0) {
 					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
@@ -466,7 +466,7 @@ namespace ConverterSupport
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				bteWork1 = ConverterSupport.MergeByteArrays(bteWork1, ConverterSupport.StrToByteArray(oSauce.BuildHTML(true)));
+				bteWork1 = ConverterSupport.Convert.MergeByteArrays(bteWork1, ConverterSupport.StrToByteArray(oSauce.BuildHTML(true)));
 			}
 			return WriteFile(sOutFile, bteWork1, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 
