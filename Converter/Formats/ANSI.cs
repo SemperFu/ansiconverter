@@ -50,11 +50,11 @@ namespace MediaFormats
 			cBPF = 0;
 			iFramesCount = 0;
 			if ((!(aFile == null))) {
-				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
 			} else {
 				if (File.Exists(sFile)) {
 					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aAnsi);
 				}
 			}
 			ConverterSupport.Mappings.BuildMappings(sCodePg);
@@ -118,7 +118,7 @@ namespace MediaFormats
 										}
 									}
 								}
-                                break;
+								break;
 							case 1:
 								//[
 								if (CurChr == 91) {
@@ -132,7 +132,7 @@ namespace MediaFormats
 										AnsiMode = 0;
 									}
 								}
-                                break;
+								break;
 							case 2:
 								object aRRSize;
 								aRRSize = UBound(aAnsi);
@@ -158,7 +158,7 @@ namespace MediaFormats
 										}
 									}
 								}
-                                
+								
 								if (AnsiMode == 2) {
 
 									aPar = BuildParams(sEsc);
@@ -187,7 +187,7 @@ namespace MediaFormats
 											//If bDebug = True Then Console.WriteLine("Adjusted Pos Y: " & YPos)
 											// End If
 											cBPF -= 1;
-                                            break;
+											break;
 										case "B":
 											//Move Cursor Down
 											if (NumParams > 0) {
@@ -214,7 +214,7 @@ namespace MediaFormats
 											//If bDebug = True Then Console.WriteLine("Adjusted Pos Y: " & YPos)
 											// End If
 											cBPF -= 1;
-                                            break;
+											break;
 										case "C":
 											//Move Cursor Right
 											if (NumParams > 0) {
@@ -231,7 +231,7 @@ namespace MediaFormats
 											}
 
 											cBPF -= 1;
-                                            break;
+											break;
 										case "D":
 											//Move Cursor left
 											if (NumParams > 0) {
@@ -251,7 +251,7 @@ namespace MediaFormats
 												}
 											}
 											cBPF -= 1;
-                                            break;
+											break;
 										case "H":
 											//Move Cursor to pos
 
@@ -295,7 +295,7 @@ namespace MediaFormats
 											// If bDebug = True Then Console.WriteLine("Adjusted Pos X: " & XPos & ", Y: " & YPos)
 											// End If
 											cBPF -= 1;
-                                            break;
+											break;
 										case "f":
 											//Move Cursor to pos
 											if (NumParams > 0) {
@@ -338,7 +338,7 @@ namespace MediaFormats
 											// If bDebug = True Then Console.WriteLine("Adjusted Pos X: " & XPos & ", Y: " & YPos)
 											// End If
 											cBPF -= 1;
-                                            break;
+											break;
 										case "J":
 											//ForeColor = 7 : BackColor = 0 : Blink = False : Bold = 0 : Reversed = False
 											if (NumParams > 0) {
@@ -351,7 +351,7 @@ namespace MediaFormats
 																ClearLine(Y);
 															}
 														}
-                                                        break;
+														break;
 													//   If bDebug = True Then Console.WriteLine("Clear Cursor to End of Screen X:" & XPos & ", Y: " & YPos)
 													case 1:
 														//Erase from beginning of screen to cursor
@@ -361,7 +361,7 @@ namespace MediaFormats
 																ClearLine(Y);
 															}
 														}
-                                                        break;
+														break;
 													//If bDebug = True Then Console.WriteLine("Clear Beginning of Screen to Cursor X:" & XPos & ", Y: " & YPos)
 													case 2:
 														//Clear screen and home cursor
@@ -369,9 +369,9 @@ namespace MediaFormats
 															ClearLine(Y);
 														}
 
-                                                        XPos = minX;
+														XPos = minX;
 														YPos = minY;
-                                                        break;
+														break;
 													//If bDebug = True Then Console.WriteLine("Clear Screen X:" & XPos & ", Y: " & YPos)
 												}
 											//Erase from cursor to end of screen
@@ -386,7 +386,7 @@ namespace MediaFormats
 											}
 
 											cBPF -= 1;
-                                            break;
+											break;
 										case "m":
 											//Set Attribute
 											if (NumParams == 0) {
@@ -408,120 +408,120 @@ namespace MediaFormats
 															Bold = 0;
 															Reversed = false;
 														}
-                                                        break;
+														break;
 													case 1:
 														Bold = 8;
-                                                        break;
+														break;
 													case 2:
 														Bold = 0;
-                                                        break;
+														break;
 													case 5:
 														Blink = true;
-                                                        break;
-                                                    case 7:
+														break;
+													case 7:
 														i2 = ForeColor;
 														ForeColor = BackColor;
 														BackColor = (int)i2;
 														Reversed = true;
-                                                        break;
+														break;
 													case 22:
 														Bold = 0;
-                                                        break;
+														break;
 													case 25:
 														Blink = false;
-                                                        break;
+														break;
 													case 27:
 														i2 = ForeColor;
 														ForeColor = BackColor;
 														BackColor = (int)i2;
 														Reversed = false;
-                                                        break;
+														break;
 													case 30:
 														ForeColor = 0;
-                                                        break;
-                                                    case 31:
+														break;
+													case 31:
 														ForeColor = 4;
-                                                        break;
-                                                    case 32:
+														break;
+													case 32:
 														ForeColor = 2;
-                                                        break;
-                                                    case 33:
+														break;
+													case 33:
 														ForeColor = 6;
-                                                        break;
-                                                    case 34:
+														break;
+													case 34:
 														ForeColor = 1;
-                                                        break;
-                                                    case 35:
+														break;
+													case 35:
 														ForeColor = 5;
-                                                        break;
-                                                    case 36:
+														break;
+													case 36:
 														ForeColor = 3;
-                                                        break;
-                                                    case 37:
+														break;
+													case 37:
 														ForeColor = 7;
-                                                        break;
-                                                    case 40:
+														break;
+													case 40:
 														BackColor = 0;
-                                                        break;
-                                                    case 41:
+														break;
+													case 41:
 														BackColor = 4;
-                                                        break;
-                                                    case 42:
+														break;
+													case 42:
 														BackColor = 2;
-                                                        break;
-                                                    case 43:
+														break;
+													case 43:
 														BackColor = 6;
-                                                        break;
-                                                    case 44:
+														break;
+													case 44:
 														BackColor = 1;
-                                                        break;
-                                                    case 45:
+														break;
+													case 45:
 														BackColor = 5;
-                                                        break;
-                                                    case 46:
+														break;
+													case 46:
 														BackColor = 3;
-                                                        break;
-                                                    case 47:
+														break;
+													case 47:
 														BackColor = 7;
-                                                        break;
-                                                }
+														break;
+												}
 												cBPF -= 1;
 											}
-                                            break;
-                                        case "K":
+											break;
+										case "K":
 											if (NumParams > 0) {
 												switch (ConverterSupport.Convert.ChkNum(aPar[1])) {
 													case 0:
 														//clear to the end of the line
 														ClearLineFromCursor(YPos, XPos);
-                                                        break;
-                                                    case 1:
+														break;
+													case 1:
 														//Erase from beginning of line to cursor
 														ClearLineToCursor(YPos, XPos);
-                                                        break;
-                                                    case 2:
+														break;
+													case 2:
 														//Erase line containing the cursor
 														ClearLine(YPos);
-                                                        break;
-                                                }
+														break;
+												}
 											} else {
 												ClearLineFromCursor(YPos, XPos);
 												//clear to the end of the line
 											}
 											cBPF -= 1;
-                                            break;
-                                        //iLoop2 = XPos
-                                        //Do While iLoop2 <= maxX
-                                        // iLoop2 = IIf(SetChar("-1"), iLoop2 + 1, maxX + 1)
-                                        // Loop
-                                        case "s":
+											break;
+										//iLoop2 = XPos
+										//Do While iLoop2 <= maxX
+										// iLoop2 = IIf(SetChar("-1"), iLoop2 + 1, maxX + 1)
+										// Loop
+										case "s":
 											StoreX = XPos;
 											StoreY = YPos;
 											//save cursor position
 											cBPF -= 2;
-                                            break;
-                                        //If bDebug = True Then Console.WriteLine("Save pos X: " & XPos & ", Y:" & YPos)
-                                        case "u":
+											break;
+										//If bDebug = True Then Console.WriteLine("Save pos X: " & XPos & ", Y:" & YPos)
+										case "u":
 											// If bDebug = True Then Console.WriteLine("Restore pos X: " & StoreX & ", Y:" & StoreY & ", Old Pos X: " & XPos & ", Y:" & YPos)
 											XPos = StoreX;
 											YPos = StoreY;
@@ -534,16 +534,16 @@ namespace MediaFormats
 												}
 												LinesUsed = YPos;
 											}
-                                            break;
-                                            // If YPos < Yoffset Then
-                                            //Yoffset = YPos - 1
-                                            break;
+											break;
+											// If YPos < Yoffset Then
+											//Yoffset = YPos - 1
+											break;
 										//End If
 										case "n":
 											//Report Cursor Position
 											cBPF -= 2;
-                                            break;
-                                        case "h":
+											break;
+										case "h":
 											//Set Display Mode
 											//<[=Xh   X = Mode, 7 = Turn ON linewrap
 											if (NumParams > 0) {
@@ -553,8 +553,8 @@ namespace MediaFormats
 												}
 
 											}
-                                            break;
-                                        case "l":
+											break;
+										case "l":
 											//Set Display Mode
 											//<[=7l  = Truncate Lines longer than 80 chars
 											if (NumParams > 0) {
@@ -563,13 +563,13 @@ namespace MediaFormats
 													LineWrap = false;
 												}
 											}
-                                            break;
-                                        default:
+											break;
+										default:
 											if (bDebug) {
-												Console.WriteLine("Unknown ANSI Command: " + Chr(CurChr) + " (" + CurChr.ToString + ") Params: " + Join(aPar, "|").ToString);
+												Console.WriteLine("Unknown ANSI Command: " + Chr(CurChr).ToString() + " (" + CurChr.ToString + ") Params: " + Join(aPar, "|").ToString);
 											}
-                                            break;
-                                    }
+											break;
+									}
 									bDrawChar = false;
 									AnsiMode = 0;
 								}
@@ -591,22 +591,22 @@ namespace MediaFormats
 										}
 										LinesUsed = YPos;
 									}
-                                    break;
-                                //If YPos < Yoffset Then
-                                //Yoffset = YPos
-                                //End If
-                                // restore X in linefeed so's to support *nix type files
-                                case 13:
-                                    // XPos = 1
-                                    //ignore
-                                    break;
-                                case 26:
+									break;
+								//If YPos < Yoffset Then
+								//Yoffset = YPos
+								//End If
+								// restore X in linefeed so's to support *nix type files
+								case 13:
+									// XPos = 1
+									//ignore
+									break;
+								case 26:
 								default:
 									if (ConverterSupport.Convert.SetChar(Chr(CurChr).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
-                                    break;
-                            }
+									break;
+							}
 						}
 						if (YPos > LinesUsed) {
 							//   If LinesUsed > 25 Then
@@ -627,11 +627,11 @@ namespace MediaFormats
 								//oAVIFile.AddFrame(Frame)
 								//If bDebug Then
 								//
-								string newOutFile = Path.Combine(TempVideoFolder, Path.GetFileNameWithoutExtension(OutFileWrite) + "_" + Strings.Right("00000" + iFramesCount..ToString() 5) + ".PNG");
+								string newOutFile = Path.Combine(TempVideoFolder, Path.GetFileNameWithoutExtension(OutFileWrite) + "_" + Strings.Right("00000" + iFramesCount.ToString(), 5) + ".PNG");
 								Frame.Save(newOutFile, System.Drawing.Imaging.ImageFormat.Png);
 								if (iFramesCount / 10 == (int)iFramesCount / 10) {
 									if (InfoMsg != null) {
-										InfoMsg("[b]" + Strings.Right("     " + iFramesCount..ToString() 5) + "[/b] (" + Strings.Right("   " + Math.Round(iLoop * multiplier, 2)..ToString() 6) + "%)", true, true);
+										InfoMsg("[b]" + Strings.Right("     " + iFramesCount.ToString(),5) + "[/b] (" + Strings.Right("   " + Math.Round(iLoop * multiplier, 2).ToString(),6) + "%)", true, true);
 									}
 								}
 
@@ -650,7 +650,7 @@ namespace MediaFormats
 						if (LastFrame > 0 & !(Frame == null)) {
 							for (int tmpi = 1; tmpi <= Math.Floor(FPS * LastFrame); tmpi++) {
 								iFramesCount += 1;
-								string newOutFile = Path.Combine(TempVideoFolder, Path.GetFileNameWithoutExtension(OutFileWrite) + "_" + Strings.Right("00000" + iFramesCount..ToString() 5) + ".PNG");
+								string newOutFile = Path.Combine(TempVideoFolder, Path.GetFileNameWithoutExtension(OutFileWrite) + "_" + Strings.Right("00000" + iFramesCount.ToString(),5) + ".PNG");
 								Frame.Save(newOutFile, System.Drawing.Imaging.ImageFormat.Png);
 								if (InfoMsg != null) {
 									InfoMsg("[b]" + Strings.Right("     " + iFramesCount.ToString(), 5) + "[/b] (100.00%)", true, true);

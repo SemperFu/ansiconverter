@@ -360,7 +360,7 @@ namespace MediaSupport
 			int b;
 			int bc;
 			int fc;
-			for (b = 0; b <= (16 * 8) - 1; b++) {
+			for (int b = 0; b <= (16 * 8) - 1; b++) {
 				byte[] cTemp = new byte[(bmap.Width * bmap.Height) - 1];
 				bArray[b] = cTemp;
 			}
@@ -372,7 +372,7 @@ namespace MediaSupport
 					c = bmap.GetPixel(x, y);
 					if (c.Equals(m_FontTranspColor)) {
 						int d = 0;
-						for (b = 0; b <= (16 * 8) - 1; b++) {
+						for (int b = 0; b <= (16 * 8) - 1; b++) {
 							bArray[b](a) = d;
 							if (b + 1 % 16 == 0) {
 								d += 1;
@@ -382,7 +382,7 @@ namespace MediaSupport
 						}
 					} else if (c.Equals(m_FontColor)) {
 						int d = 0;
-						for (b = 0; b <= (16 * 8) - 1; b++) {
+						for (int b = 0; b <= (16 * 8) - 1; b++) {
 							bArray(b)(a) = d;
 							if (b + 1 % 8 == 0) {
 								d += 1;
@@ -396,7 +396,7 @@ namespace MediaSupport
 			}
 			fc = 0;
 			bc = 0;
-			for (b = 0; b <= (16 * 8) - 1; b++) {
+			for (int b = 0; b <= (16 * 8) - 1; b++) {
 				GCHandle MyGC = GCHandle.Alloc(bArray[b], GCHandleType.Pinned);
 				//MyPointer = Marshal.AllocHGlobal(Marshal.SizeOf(bArray(b)))
 				//Marshal.StructureToPtr(bArray(b), MyPointer, False)

@@ -472,7 +472,7 @@ namespace MediaFormats
 									//<[=7l  = Truncate Lines longer than 80 chars
 									default:
 
-										Console.WriteLine("Unknown ANSI Command: " + Chr(CurChr) + " (" + CurChr.ToString + ") Params: " + Join(aPar, "|").ToString + ",File: " + sFile + ", Pos: " + iLoop.ToString);
+										Console.WriteLine("Unknown ANSI Command: " + Chr(CurChr).ToString() + " (" + CurChr.ToString + ") Params: " + Join(aPar, "|").ToString + ",File: " + sFile + ", Pos: " + iLoop.ToString);
 										break;
 								}
 
@@ -712,7 +712,7 @@ namespace MediaFormats
 			sOut += "<div class=ANSICSS id=\"anm" + ProcFilesCounter + "\"><pre>\r\n";
 			iLoop = 0;
 			for (int a = 1; a <= 25; a++) {
-				for (b = minX; b <= maxX; b++) {
+				for (int b = minX; b <= maxX; b++) {
 					sOut += "<span class=\"II\" id=\"" + Hex(iLoop) + "\">&nbsp;</span>";
 					iLoop += 1;
 				}

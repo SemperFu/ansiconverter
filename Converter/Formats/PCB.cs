@@ -32,11 +32,11 @@ namespace MediaFormats
 			string sStr = "";
 
 			if (!(aFile == null)) {
-				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
 			} else {
 				if (File.Exists(sFile)) {
 					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aAnsi);
 				}
 			}
 
@@ -126,8 +126,8 @@ namespace MediaFormats
 								}
 							case 2:
 								if (UBound(aAnsi) >= iLoop + 1) {
-									if (ConverterSupport.isHex(Chr(CurChr)) & ConverterSupport.isHex(Chr(aAnsi(iLoop + 1)))) {
-										BackColor = ConverterSupport.smaller(ConverterSupport.HexToDec((string)Chr(CurChr)), 7);
+									if (ConverterSupport.isHex(Chr(CurChr).ToString()) & ConverterSupport.isHex(Chr(aAnsi(iLoop + 1)))) {
+										BackColor = ConverterSupport.smaller(ConverterSupport.HexToDec((string)Chr(CurChr).ToString()), 7);
 										ForeColor = ConverterSupport.HexToDec((string)Chr(aAnsi(iLoop + 1)));
 										if (ForeColor > 7) {
 											Bold = 8;
@@ -175,7 +175,7 @@ namespace MediaFormats
 									//ignore
 								case 26:
 								default:
-									if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(CurChr).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
 							}

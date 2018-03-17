@@ -40,7 +40,7 @@ namespace ConverterSupport
 		{
 
 			//Converts a Single Unicode ASCII Code to DOS ASCII String
-			int a;
+			
 			string result = "";
 			if ((int)iUChr < 128 & (int)iUChr > 0) {
 				result = Strings.Chr(iUChr).ToString();
@@ -122,7 +122,7 @@ namespace ConverterSupport
 			a = 38;
 			DestChr = AscConv(a);
 			swork = Strings.Replace(swork, Strings.Chr(a).ToString(), DestChr, 1, -1, CompareMethod.Binary);
-			for (int a = 1; a <= 255; a++) {
+			for (a = 1; a <= 255; a++) {
 				if ((a < 48 | a > 57) & (a < 65 | a > 90) & (a < 97 | a > 122) & a != 35 & a != 59 & a != 38) {
 					//Ignore 0-9, a-z, A-Z, # , ; and of course &  
 					DestChr = AscConv(a);
@@ -189,14 +189,14 @@ namespace ConverterSupport
 			int a;
 			string sHex;
 			string sChar;
-			for (int a = 128; a <= 255; a++) {
+			for (a = 128; a <= 255; a++) {
 				sHex = "&#x" + (string)Conversion.Hex(InternalConstants.aUniCode[a]) + ";";
 				sChar = "&#" + (string)InternalConstants.aUniCode[a] + ";";
 				swork = Strings.Replace(swork, sHex, Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 				swork = Strings.Replace(swork, sChar, Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 			}
 			System.Windows.Forms.Application.DoEvents();
-			for (int a = 32; a <= 255; a++) {
+			for (a = 32; a <= 255; a++) {
 				if (InternalConstants.aSpecH[a] != "") {
 					swork = Strings.Replace(swork, InternalConstants.aSpecH[a], Strings.Chr(a).ToString(), 1, -1, CompareMethod.Text);
 				}
@@ -259,7 +259,7 @@ namespace ConverterSupport
 		/// <param name="schr"></param>
 		/// <returns></returns>
 		/// <remarks></remarks>
-		public string seekascuni(string schr)
+		public static string seekascuni(string schr)
 		{
 			//Convert a Single DOS ASCII String Character to Unicode or HTML Encoded Unicode
 			int iASC = Strings.Asc(schr);
@@ -350,7 +350,7 @@ namespace ConverterSupport
 			if (DtaType == "b") {
 				iLen = 1;
 			}
-			for (int a = 1; a <= iLen; a++) {
+			for (a = 1; a <= iLen; a++) {
 				if (Information.UBound(Arr) >= Data.iLoop) {
 					switch (DtaType) {
 						case "s":
@@ -588,7 +588,7 @@ namespace ConverterSupport
 			if (sHexStr.Length % 2 != 0) {
 				return sHexStr;
 			}
-			for (int a = sHexStr.Length - 1; a >= 1; a += -2) {
+			for (a = sHexStr.Length - 1; a >= 1; a += -2) {
 				sResult += Strings.Mid(sHexStr, a, 2);
 			}
 			System.Windows.Forms.Application.DoEvents();
@@ -716,7 +716,7 @@ namespace ConverterSupport
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			if (sHexStr.Length > 2) {
-				for (int a = 1; a <= sHexStr.Length - 1; a += 2) {
+				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
 					dByte[(a - 1) / 2] = (byte)HexToDec(Strings.Mid(sHexStr, a, 2));
 					if (a / 1000 == (int)a / 1000)
 						System.Windows.Forms.Application.DoEvents();
@@ -887,9 +887,9 @@ namespace ConverterSupport
 		public System.Globalization.CultureInfo SetCultureInfo(int NumDigits)
 		{
 			System.Globalization.CultureInfo nfio = new System.Globalization.CultureInfo("en-US");
-			nfNumberFormat.NumberDecimalDigits = NumDigits;
-			nfNumberFormat.NumberDecimalSeparator = ".";
-			nfNumberFormat.NumberGroupSeparator = ",";
+            nfio.NumberFormat.NumberDecimalDigits = NumDigits;
+            nfio.NumberFormat.NumberDecimalSeparator = ".";
+            nfio.NumberFormat.NumberGroupSeparator = ",";
 
 			return nfio;
 		}
@@ -1103,7 +1103,7 @@ namespace ConverterSupport
 		{
 			//as String
 			//sStr as String
-			int a;
+			
 			string sResult;
 			sResult = "";
 			for (int a = 1; a <= sStr.Length; a++) {
@@ -1364,7 +1364,7 @@ namespace ConverterSupport
 				return null;
 			}
 			if (sHexStr.Length > 2) {
-				for (int a = 1; a <= sHexStr.Length - 1; a += 2) {
+				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
 					sResult += Strings.ChrW((int)HexToDec(Mid(sHexStr, a, 2)));
 				}
 			} else {

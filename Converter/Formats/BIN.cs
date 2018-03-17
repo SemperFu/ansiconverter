@@ -30,11 +30,11 @@ namespace MediaFormats
 
 			string sCol = "";
 			if (!(aFile == null)) {
-				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
 			} else {
 				if (File.Exists(sFile)) {
 					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aAnsi);
 				}
 			}
 
@@ -108,7 +108,7 @@ namespace MediaFormats
 						}
 
 						if (bDrawChar == true) {
-							if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
+							if (ConverterSupport.Convert.SetChar(Chr(CurChr).ToString()) == false) {
 								iLoop = UBound(aAnsi) + 1;
 							}
 						}

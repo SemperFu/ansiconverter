@@ -34,11 +34,11 @@ namespace MediaFormats
 			string sStr = "";
 
 			if (!(aFile == null)) {
-				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
 			} else {
 				if (File.Exists(sFile)) {
 					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aAnsi);
 				}
 			}
 
@@ -145,17 +145,17 @@ namespace MediaFormats
 									if (YPos > LinesUsed) {
 										LinesUsed = YPos;
 									}
-                                    break;
+									break;
 									// restore X in linefeed so's to support *nix type files
 								case 13:
-                                    break;
+									break;
 									//ignore
 								case 26:
 								default:
 									if (ConverterSupport.Convert.SetChar(Chr(CurChr).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
-                                    break;
+									break;
 							}
 						}
 						iLoop += 1;

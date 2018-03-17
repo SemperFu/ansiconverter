@@ -33,11 +33,11 @@ namespace MediaFormats
 			bool bEnde;
 			string[] aPar;
 			if (!(aFile == null)) {
-				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
 			} else {
 				if (File.Exists(sFile)) {
 					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aAnsi);
 				}
 			}
 
@@ -92,19 +92,21 @@ namespace MediaFormats
 										}
 									}
 								}
+                                break;
 							case 1:
 								//[
 								if (CurChr == 91) {
 									AnsiMode = 2;
 									bDrawChar = false;
 								} else {
-									if (ConverterSupport.Convert.SetChar(Chr(27)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(27).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									} else {
 										bDrawChar = true;
 										AnsiMode = 0;
 									}
 								}
+                                break;
 							case 2:
 
 
@@ -138,13 +140,13 @@ namespace MediaFormats
 									}
 									aPar = BuildParams(sEsc);
 									int NumParams = UBound(aPar);
-									if (Chr(CurChr) == "m" & NumParams == 3) {
+									if (Chr(CurChr).ToString() == "m" & NumParams == 3) {
 										int iPar1;
 										int iPar2;
 										int iPar3;
-										iPar1 = (int)aPar[1];
-										iPar2 = (int)aPar[2];
-										iPar3 = (int)aPar(3);
+										iPar1 = Convert.ToInt32(aPar[1]);
+										iPar2 = Convert.ToInt32(aPar[2]);
+										iPar3 = Convert.ToInt32(aPar[3]);
 										if (iPar1 == 0 & iPar2 == 0 & iPar3 == 40) {
 											ForeColor = 7;
 											BackColor = 0;
@@ -160,50 +162,67 @@ namespace MediaFormats
 											switch (iPar2) {
 												case 30:
 													ForeColor = 0;
+                                                    break;
 												case 31:
 													ForeColor = 4;
-												case 32:
+                                                    break;
+                                                case 32:
 													ForeColor = 2;
-												case 33:
+                                                    break;
+                                                case 33:
 													ForeColor = 6;
-												case 34:
+                                                    break;
+                                                case 34:
 													ForeColor = 1;
-												case 35:
+                                                    break;
+                                                case 35:
 													ForeColor = 5;
-												case 36:
+                                                    break;
+                                                case 36:
 													ForeColor = 3;
-												case 37:
+                                                    break;
+                                                case 37:
 													ForeColor = 7;
-											}
+                                                    break;
+                                            }
 											switch (iPar3) {
 												case 40:
 													BackColor = 0;
-												case 41:
+                                                    break;
+                                                case 41:
 													BackColor = 4;
-												case 42:
+                                                    break;
+                                                case 42:
 													BackColor = 2;
-												case 43:
+                                                    break;
+                                                case 43:
 													BackColor = 6;
-												case 44:
+                                                    break;
+                                                case 44:
 													BackColor = 1;
-												case 45:
+                                                    break;
+                                                case 45:
 													BackColor = 5;
-												case 46:
+                                                    break;
+                                                case 46:
 													BackColor = 3;
-												case 47:
+                                                    break;
+                                                case 47:
 													BackColor = 7;
-											}
+                                                    break;
+                                            }
 										}
 									} else {
 										if (bDebug) {
-											Console.WriteLine("Unsupported WildCat 2.X Command: " + Chr(CurChr) + " or invalid number of parameters: " + NumParams.ToString);
+											Console.WriteLine("Unsupported WildCat 2.X Command: " + Chr(CurChr).ToString() + " or invalid number of parameters: " + NumParams.ToString());
 										}
 									}
 									bDrawChar = false;
 									AnsiMode = 0;
 
 								}
-						}
+                                break;
+                        }
 						if (bDrawChar == true & AnsiMode == 0) {
 							switch (CurChr) {
 								case 10:
@@ -217,15 +236,17 @@ namespace MediaFormats
 									if (YPos > LinesUsed) {
 										LinesUsed = YPos;
 									}
-									// restore X in linefeed so's to support *nix type files
-								case 13:
+                                    break;
+                                // restore X in linefeed so's to support *nix type files
+                                case 13:
 									//ignore
 								case 26:
 								default:
-									if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(CurChr).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
-							}
+                                    break;
+                            }
 						}
 						iLoop += 1;
 						if (iLoop / 1000 == (int)iLoop / 1000)
@@ -243,10 +264,10 @@ namespace MediaFormats
 			string sWork = str;
 			string sCurr = "";
 			bool bEnde2 = false;
-			string[] aParams;
+			string[] aParams = null;
 			 // ERROR: Not supported in C#: ReDimStatement
 
-			aParams(0) = 0;
+			aParams[0] = 0;
 			if (sWork.Length > 1) {
 				while (sWork.Length > 0) {
 					iLp2 = 0;
@@ -270,7 +291,7 @@ namespace MediaFormats
 					}
 					pcount += 1;
 					Array.Resize(ref aParams, pcount + 1);
-					aParams(pcount) = sCurr;
+					aParams[pcount] = sCurr;
 				}
 			}
 			//System.Windows.Forms.Application.DoEvents()

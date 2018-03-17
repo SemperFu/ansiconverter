@@ -32,11 +32,11 @@ namespace MediaFormats
 			string sStr = "";
 
 			if (!(aFile == null)) {
-				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aFile);
+				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
 			} else {
 				if (File.Exists(sFile)) {
 					aAnsi = ConverterSupport.InputOutput.ReadBinaryFile(sFile);
-					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray, aAnsi);
+					aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aAnsi);
 				}
 			}
 
@@ -96,15 +96,16 @@ namespace MediaFormats
 									AnsiMode = 2;
 									bDrawChar = false;
 								} else {
-									if (ConverterSupport.Convert.SetChar(Chr(64)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(64).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									} else {
 										bDrawChar = true;
 										AnsiMode = 0;
 									}
 								}
+                                break;
 							case 2:
-								string sCol = Strings.Right("0" + Hex(CurChr)..ToString() 2);
+								string sCol = Strings.Right("0" + Hex(CurChr).ToString(), 2);
 								string sFC = Strings.Right(sCol, 1);
 								string sBC = Strings.Left(sCol, 1);
 								BackColor = ConverterSupport.HexToDec((string)sBC);
@@ -117,6 +118,7 @@ namespace MediaFormats
 								}
 								AnsiMode = 0;
 								bDrawChar = false;
+                                break;
 						}
 						if (bDrawChar == true & AnsiMode == 0) {
 							switch (CurChr) {
@@ -131,14 +133,16 @@ namespace MediaFormats
 									if (YPos > LinesUsed) {
 										LinesUsed = YPos;
 									}
+                                    break;
 									// restore X in linefeed so's to support *nix type files
 								case 13:
 									//ignore
 								case 26:
 								default:
-									if (ConverterSupport.Convert.SetChar(Chr(CurChr)) == false) {
+									if (ConverterSupport.Convert.SetChar(Chr(CurChr).ToString()) == false) {
 										iLoop = UBound(aAnsi) + 1;
 									}
+                                    break;
 							}
 						}
 						iLoop += 1;
