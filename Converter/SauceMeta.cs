@@ -1,4 +1,16 @@
-﻿namespace ConverterSupport
+﻿using Converter.Properties;
+using Microsoft.VisualBasic;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+using System;
+using Converter.Properties;
+using Internal;
+using System.IO;
+
+namespace ConverterSupport
 {
 
 
@@ -312,7 +324,7 @@
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			for (xxx = 0; xxx <= iNum; xxx++) {
-				aComments(xxx) = "";
+				aComments[xxx] = "";
 			}
 			Comments = iNum;
 			System.Windows.Forms.Application.DoEvents();
@@ -322,16 +334,16 @@
 			Comments += 1;
 			Array.Resize(ref aComments, Comments + 1);
 			if (sComment.Length > 64) {
-				aComments(Comments) = Strings.Left(sComment, 64);
+				aComments[Comments] = Strings.Left(sComment, 64);
 			} else {
-				aComments(Comments) = sComment;
+				aComments[Comments] = sComment;
 			}
 		}
 		public override string toString()
 		{
 			string sRes = "";
 			sRes += Chr(26) + this.ID;
-			sRes += this.ByteArrayToString(this.Version, Chr(48));
+			sRes += this.ByteArrayToString(this.Version, Chr(48).ToString());
 			sRes += Strings.Left(this.Title + Space(35), 35);
 			sRes += Strings.Left(this.Author + Space(20), 20);
 			sRes += Strings.Left(this.Group + Space(20), 20);
@@ -349,7 +361,7 @@
 			if (this.Comments > 0) {
 				sRes += "COMNT";
 				for (int x = 0; x <= UBound(this.aComments); x++) {
-					sRes += Strings.Left(this.aComments(x) + Space(64), 64);
+					sRes += Strings.Left(this.aComments[x] + Space(64), 64);
 				}
 			}
 			System.Windows.Forms.Application.DoEvents();
@@ -392,7 +404,7 @@
 			if (this.Comments > 0) {
 				bte = this.MergeByteArrays(bte, this.StringToBytearray("COMNT"));
 				for (int x = 0; x <= UBound(this.aComments); x++) {
-					bte = this.MergeByteArrays(bte, this.StringToBytearray(this.aComments(x), 64));
+					bte = this.MergeByteArrays(bte, this.StringToBytearray(this.aComments[x], 64));
 				}
 			}
 			System.Windows.Forms.Application.DoEvents();
@@ -407,32 +419,32 @@
 			if (UBound(aArray) >= Offset + 128 - 1) {
 
 				try {
-					this.ID = this.ReadByteArray(aArray, 5, "s", Offset);
-					this.Version(0) = this.ReadByteArray(aArray, 1, "b", Offset);
-					this.Version(1) = this.ReadByteArray(aArray, 1, "b", Offset);
-					this.Title = this.ReadByteArray(aArray, 35, "s", Offset);
-					this.Author = this.ReadByteArray(aArray, 20, "s", Offset);
-					this.Group = this.ReadByteArray(aArray, 20, "s", Offset);
-					this.CreatedDate = this.ReadByteArray(aArray, 8, "s", Offset);
-					this.FileSize = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(aArray, 4, "h", Offset)));
-					this.DataType = (int)this.ReadByteArray(aArray, 1, "b", Offset);
-					this.FileType = (int)this.ReadByteArray(aArray, 1, "b", Offset);
-					this.TInfo1 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(aArray, 2, "h", Offset)));
-					this.TInfo2 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(aArray, 2, "h", Offset)));
-					this.TInfo3 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(aArray, 2, "h", Offset)));
-					this.TInfo4 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(aArray, 2, "h", Offset)));
-					this.Comments = (int)this.ReadByteArray(aArray, 1, "b", Offset);
-					this.Flags = (int)this.ReadByteArray(aArray, 1, "b", Offset);
+					this.ID = this.ReadByteArray(ref aArray, 5, "s", ref Offset);
+					this.Version[0] = this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.Version[1] = this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.Title = this.ReadByteArray(ref aArray, 35, "s", ref Offset);
+					this.Author = this.ReadByteArray(ref aArray, 20, "s", ref Offset);
+					this.Group = this.ReadByteArray(ref aArray, 20, "s", ref Offset);
+					this.CreatedDate = this.ReadByteArray(ref aArray, 8, "s", ref Offset);
+					this.FileSize = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 4, "h", ref Offset)));
+					this.DataType = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.FileType = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.TInfo1 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
+					this.TInfo2 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
+					this.TInfo3 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
+					this.TInfo4 = this.Hex2Int64(this.FlipHexVal(this.ReadByteArray(ref aArray, 2, "h", ref Offset)));
+					this.Comments = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
+					this.Flags = (int)this.ReadByteArray(ref aArray, 1, "b", ref Offset);
 					for (int x = 0; x <= 21; x++) {
-						this.Filler(x) = this.ReadByteArray(aArray, 1, "b", Offset);
+						this.Filler[x] = this.ReadByteArray(ref aArray, 1, "b", ref Offset);
 					}
 					if (UBound(aArray) >= Offset + (this.Comments * 64) + 5) {
 						if (this.Comments != 0) {
-							sStr = this.ReadByteArray(aArray, 5, "s", Offset);
+							sStr = this.ReadByteArray(ref aArray, 5, "s", ref Offset);
 							if (sStr == "COMNT") {
 								this.SetComments((int)this.Comments);
 								for (int iLoop2 = 1; iLoop2 <= this.Comments; iLoop2++) {
-									this.aComments(iLoop2) = this.ReadByteArray(aArray, 64, "s", Offset);
+									this.aComments[iLoop2] = this.ReadByteArray(ref aArray, 64, "s", ref Offset);
 								}
 							}
 						}
@@ -451,14 +463,14 @@
 		}
 		public void AddToFile(string sFile)
 		{
-			if (IO.File.Exists(sFile)) {
-				System.IO.FileStream ofile;
+			if (File.Exists(sFile)) {
+				FileStream ofile;
 				int iSize = 0;
 				byte[] bte = this.toByteArray;
-				ofile = IO.File.Open(sFile, IO.FileMode.Open, IO.FileAccess.ReadWrite);
-				ofile.Seek(0, IO.SeekOrigin.Begin);
+				ofile = File.Open(sFile, FileMode.Open, FileAccess.ReadWrite);
+				ofile.Seek(0, SeekOrigin.Begin);
 				iSize = ofile.Length;
-				ofile.Seek(0, IO.SeekOrigin.End);
+				ofile.Seek(0, SeekOrigin.End);
 				object iNewSize = iSize + bte.Length;
 				ofile.SetLength(iNewSize);
 				ofile.Write(bte, 0, bte.Length);
@@ -468,12 +480,12 @@
 		public bool RemoveFromFile(string sFile)
 		{
 			bool bRemoved = false;
-			if (IO.File.Exists(sFile)) {
-				System.IO.FileStream ofile;
+			if (File.Exists(sFile)) {
+				FileStream ofile;
 				int iSize = 0;
 				byte[] bte;
-				ofile = IO.File.Open(sFile, IO.FileMode.Open, IO.FileAccess.ReadWrite);
-				ofile.Seek(0, IO.SeekOrigin.Begin);
+				ofile = File.Open(sFile, FileMode.Open, FileAccess.ReadWrite);
+				ofile.Seek(0, SeekOrigin.Begin);
 				iSize = ofile.Length;
 				int iNumRead = 0;
 				int iReadOFf = 0;
@@ -485,18 +497,18 @@
 				}
 				 // ERROR: Not supported in C#: ReDimStatement
 
-				ofile.Seek(iReadOFf, IO.SeekOrigin.Begin);
+				ofile.Seek(iReadOFf, SeekOrigin.Begin);
 				ofile.Read(bte, 0, iNumRead);
 				int xLoop = 0;
 				while (xLoop <= UBound(bte)) {
-					int CurChr = (int)bte(xLoop);
+					int CurChr = (int)bte[xLoop);
 					//SUB or "S"
 					if (CurChr == 26 | CurChr == 83) {
 						int iSauceOffset = IIf(CurChr == 83, 1, 0);
 						if (UBound(bte) >= iLoop + 128 - iSauceOffset) {
 							string sStr = "";
-							for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
-								sStr += Chr(bte(xLoop + iLoop2));
+							for (int iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
+								sStr += Chr(bte[xLoop + iLoop2]);
 							}
 							if (sStr == "SAUCE") {
 								xLoop += 1 - iSauceOffset;
@@ -520,13 +532,13 @@
 		{
 			bool bFound = false;
 			iError = 0;
-			if (IO.File.Exists(sFile)) {
+			if (File.Exists(sFile)) {
 				byte[] bte;
-				System.IO.FileStream ofile;
+				FileStream ofile;
 				int iSize = 0;
 
 				try {
-					ofile = IO.File.Open(sFile, IO.FileMode.Open, IO.FileAccess.Read);
+					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
 					iSize = ofile.Length;
 					int iNumRead = 0;
 					int iReadOFf = 0;
@@ -538,19 +550,19 @@
 					}
 					 // ERROR: Not supported in C#: ReDimStatement
 
-					ofile.Seek(iReadOFf, IO.SeekOrigin.Begin);
+					ofile.Seek(iReadOFf, SeekOrigin.Begin);
 					ofile.Read(bte, 0, iNumRead);
 					ofile.Close();
 					int xLoop = 0;
 					while (xLoop <= UBound(bte)) {
-						int CurChr = (int)bte(xLoop);
+						int CurChr = (int)bte[xLoop];
 						//SUB or "S"
 						if (CurChr == 26 | CurChr == 83) {
 							int iSauceOffset = IIf(CurChr == 83, 1, 0);
 							if (UBound(bte) >= iLoop + 128 - iSauceOffset) {
 								string sStr = "";
-								for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
-									sStr += Chr(bte(xLoop + iLoop2));
+								for (int iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
+									sStr += Chr(bte[xLoop + iLoop2]);
 								}
 								if (sStr == "SAUCE") {
 									xLoop += 1 - iSauceOffset;
@@ -604,21 +616,21 @@
 				cYear = Strings.Left(this.CreatedDate, 4);
 				cMonth = Strings.Mid(this.CreatedDate, 5, 2);
 				cDay = Strings.Right(this.CreatedDate, 2);
-				sOutput += "<div class=\"saucecreatedate\"><span class=\"saucelabel\">Creation Date:</span><span class=\"saucedata\">" + cDay.ToString + "." + MonthName(cMonth) + " " + cYear.ToString + "</span></div>";
+				sOutput += "<div class=\"saucecreatedate\"><span class=\"saucelabel\">Creation Date:</span><span class=\"saucedata\">" + cDay.ToString()+ "." + DateAndTime.MonthName(cMonth) + " " + cYear.ToString()+ "</span></div>";
 			}
 			if ((this.DataType == 1 & this.FileType >= 0 & this.FileType <= 5) | this.DataType == 2 | this.DataType == 6) {
 				//width
 				if (this.TInfo1 != 0) {
-					sOutput += "<div class=\"saucetinfo1\"><span class=\"saucelabel\">Width:</span><span class=\"saucedata\">" + this.TInfo1.ToString + "</span></div>";
+					sOutput += "<div class=\"saucetinfo1\"><span class=\"saucelabel\">Width:</span><span class=\"saucedata\">" + this.TInfo1.ToString()+ "</span></div>";
 				}
 				//height
 				if (this.TInfo2 != 0) {
-					sOutput += "<div class=\"saucetinfo2\"><span class=\"saucelabel\">Height:</span><span class=\"saucedata\">" + this.TInfo2.ToString + "</span></div>";
+					sOutput += "<div class=\"saucetinfo2\"><span class=\"saucelabel\">Height:</span><span class=\"saucedata\">" + this.TInfo2.ToString()+ "</span></div>";
 				}
 			}
 			if (this.DataType == 1 & this.FileType == 3 & this.TInfo3 != 0) {
 				//# RIP colors
-				sOutput += "<div class=\"saucetinfo3\"><span class=\"saucelabel\"># Colors:</span><span class=\"saucedata\">" + this.TInfo3.ToString + "</span></div>";
+				sOutput += "<div class=\"saucetinfo3\"><span class=\"saucelabel\"># Colors:</span><span class=\"saucedata\">" + this.TInfo3.ToString()+ "</span></div>";
 			}
 			// Ice Colors
 			if (this.DataType == 1 & this.ExamineBit(this.Flags, 0) == true) {
@@ -626,7 +638,7 @@
 			}
 			if (this.DataType == 2 & this.TInfo3 != 0) {
 				//Bits per Pixel
-				sOutput += "<div class=\"saucetinfo3\"><span class=\"saucelabel\">Bits per Pixel:</span><span class=\"saucedata\">" + this.TInfo3.ToString + "</span></div>";
+				sOutput += "<div class=\"saucetinfo3\"><span class=\"saucelabel\">Bits per Pixel:</span><span class=\"saucedata\">" + this.TInfo3.ToString() + "</span></div>";
 			}
 
 			sOutput += "</div>";
@@ -634,7 +646,7 @@
 			if (this.Comments > 0 & bGenCmts == true) {
 				sOutput += "<div class=\"saucecomments\"><ol>";
 				for (int x = 0; x <= UBound(this.aComments); x++) {
-					sOutput += "<li>" + Strings.Trim(this.aComments(x)) + "</li>";
+					sOutput += "<li>" + Strings.Trim(this.aComments[x]) + "</li>";
 				}
 				sOutput += "</ol></div>";
 			}
@@ -653,11 +665,14 @@
 				if (UBound(Arr) >= inArrPos) {
 					switch (DtaType) {
 						case "s":
-							sRes = sRes + Chr(Arr(iPos));
+							sRes = sRes + Chr(Arr[iPos]);
+							break;
 						case "h":
-							sRes = sRes + Strings.Right("0" + Hex(Arr(iPos)), 2);
+							sRes = sRes + Strings.Right("0" + Hex(Arr[iPos]), 2);
+							break;
 						case "b":
-							sRes = Arr(iPos);
+							sRes = Arr[iPos];
+							break;
 					}
 				}
 				iPos += 1;
@@ -673,7 +688,7 @@
 			Int16 BitMask;
 			MyByte = MyByte & 0xff;
 			BitMask = Math.Pow(2, (MyBit - 1));
-			ExamineBit = ((MyByte & BitMask) > 0);
+			return ((MyByte & BitMask) > 0);
 		}
 		private string FlipHexVal(string sHexStr)
 		{
@@ -682,7 +697,7 @@
 			string sResult = "";
 			if (sHexStr.Length % 2 != 0) {
 				return sHexStr;
-				return;
+				
 			}
 			for (a = sHexStr.Length - 1; a >= 1; a += -2) {
 				sResult += Strings.Mid(sHexStr, a, 2);
@@ -720,16 +735,16 @@
 			byte[] dByte;
 			if (sHexStr.Length % 2 != 0) {
 				return null;
-				return;
+			
 			}
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			if (sHexStr.Length > 2) {
 				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
-					dByte((a - 1) / 2) = (byte)this.Hex2Int64(Mid(sHexStr, a, 2));
+					dByte[(a - 1) / 2] = (byte)this.Hex2Int64(Mid(sHexStr, a, 2));
 				}
 			} else {
-				dByte(0) = (byte)this.Hex2Int64(sHexStr);
+				dByte[0] = (byte)this.Hex2Int64(sHexStr);
 			}
 			System.Windows.Forms.Application.DoEvents();
 			return dByte;
@@ -739,13 +754,13 @@
 			byte[] bte = new byte[sStr.Length - 1];
 			int i = 0;
 			for (i = 1; i <= sStr.Length; i++) {
-				bte(i - 1) = Asc(Strings.Mid(sStr, i, 1));
+				bte[i - 1] = Asc(Strings.Mid(sStr, i, 1));
 			}
 			if (fixlength > 0 & sStr.Length < fixlength) {
 				Array.Resize(ref bte, fixlength);
 				while (i <= fixlength) {
 					i += 1;
-					bte(i - 1) = 32;
+					bte[i - 1] = 32;
 				}
 			}
 			System.Windows.Forms.Application.DoEvents();
@@ -755,7 +770,7 @@
 		{
 			string result = "";
 			for (int a = 0; a <= ByteArray.Length - 1; a++) {
-				result += IIf(ByteArray(a) == 0, NullByte, Chr(ByteArray(a)));
+				result += IIf(ByteArray[a] == 0, NullByte, Chr(ByteArray[a]));
 			}
 			System.Windows.Forms.Application.DoEvents();
 			return result;
@@ -773,14 +788,14 @@
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			for (i = 0; i <= iDim1; i++) {
-				bArrOut(i) = bArr1(i);
+				bArrOut[i] = bArr1[i];
 			}
 			System.Windows.Forms.Application.DoEvents();
 			for (i = 0; i <= iDim2; i++) {
-				bArrOut(iDim1 + 1 + i) = bArr2(i);
+				bArrOut[iDim1 + 1 + i] = bArr2[i];
 			}
 			System.Windows.Forms.Application.DoEvents();
-			MergeByteArrays = bArrOut;
+			return  bArrOut;
 		}
 	}
 }

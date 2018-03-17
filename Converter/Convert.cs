@@ -12,9 +12,9 @@ using static Microsoft.VisualBasic.Conversion;
 using static Microsoft.VisualBasic.Information;
 using static Microsoft.VisualBasic.Strings;
 using static Microsoft.VisualBasic.Interaction;
-using System;
+
 using Converter.Properties;
-using Internal;
+using System.Drawing;
 
 namespace ConverterSupport
 {
@@ -282,23 +282,23 @@ namespace ConverterSupport
 			string sStr = "";
 			oSauce = new SauceMeta();
 			oSauce.ID = ReadByteArray(ref aAnsi, 5, "s");
-			oSauce.Version[0] = ReadByteArray(ref aAnsi, 1, "b");
-			oSauce.Version[1] = ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.Version[0] = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
+			oSauce.Version[1] = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
 			oSauce.Title = ReadByteArray(ref aAnsi, 35, "s");
 			oSauce.Author = ReadByteArray(ref aAnsi, 20, "s");
 			oSauce.Group = ReadByteArray(ref aAnsi, 20, "s");
 			oSauce.CreatedDate = ReadByteArray(ref aAnsi, 8, "s");
-			oSauce.FileSize = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 4, "h")));
-			oSauce.DataType = (int)ReadByteArray(ref aAnsi, 1, "b");
-			oSauce.FileType = (int)ReadByteArray(ref aAnsi, 1, "b");
-			oSauce.TInfo1 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
-			oSauce.TInfo2 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
-			oSauce.TInfo3 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
-			oSauce.TInfo4 = HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
-			oSauce.Comments = (int)ReadByteArray(ref aAnsi, 1, "b");
-			oSauce.Flags = (int)ReadByteArray(ref aAnsi, 1, "b");
+			oSauce.FileSize = (int)HexToDec(FlipHex(ReadByteArray(ref aAnsi, 4, "h")));
+			oSauce.DataType = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
+			oSauce.FileType = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
+			oSauce.TInfo1 = (short)HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.TInfo2 = (short)HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.TInfo3 = (short)HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.TInfo4 = (short)HexToDec(FlipHex(ReadByteArray(ref aAnsi, 2, "h")));
+			oSauce.Comments = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
+			oSauce.Flags = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
 			for (int x = 0; x <= 21; x++) {
-				oSauce.Filler[x] = ReadByteArray(ref aAnsi, 1, "b");
+				oSauce.Filler[x] = System.Convert.ToByte(ReadByteArray(ref aAnsi, 1, "b"));
 			}
 			if (Information.UBound(aAnsi) >= iLoop + (oSauce.Comments * 64) + 5) {
 				if (oSauce.Comments != 0) {
@@ -396,7 +396,7 @@ namespace ConverterSupport
 						} else {
 							if (Data.Screen[x, y].Chr != Strings.Chr(255).ToString()) {
 								cnt += 1;
-								bte[cnt] = Strings.Asc(Data.Screen[x, y].Chr);
+								bte[cnt] = System.Convert.ToByte(Strings.Asc(Data.Screen[x, y].Chr));
 							} else {
 								cnt += 1;
 								bte[cnt] = 32;
@@ -452,7 +452,7 @@ namespace ConverterSupport
 					}
 				} else {
 					if (sChar.Length == 1) {
-						Data.Screen[Data.XPos, Data.YPos].DosChar = Strings.Asc(sChar);
+						Data.Screen[Data.XPos, Data.YPos].DosChar = System.Convert.ToByte(Strings.Asc(sChar));
 					}
 					Data.Screen[Data.XPos, Data.YPos].ForeColor = Data.ForeColor;
 					Data.Screen[Data.XPos, Data.YPos].BackColor = Data.BackColor;
@@ -529,7 +529,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public int ChkNum(object iVal)
 		{
-			if (Strings.Trim(iVal) != "" & !iVal == null & Information.IsNumeric(iVal)) {
+			if (Strings.Trim((string)iVal) != "" & !(iVal == null) & Information.IsNumeric(iVal)) {
 				return (int)iVal;
 			} else {
 				return 0;
@@ -557,16 +557,16 @@ namespace ConverterSupport
 		public string Decimal2BaseN(int value, int outBase)
 		{
 			int quotient;
-			double reminder;
+			object reminder;
 			int denominator;
 			string result = "";
 			denominator = outBase;
 			quotient = value;
 			do {
 				reminder = quotient % denominator;
-				quotient = Math.Floor(quotient / denominator);
-				if (reminder >= 10) {
-					reminder = (string)Strings.Chr(65 + (reminder - 10));
+				quotient = (int)Math.Floor((double)(quotient / denominator));
+				if ((int)reminder >= 10) {
+					reminder = Strings.Chr(65 + ((int)reminder - 10)).ToString();
 				}
 				result += reminder.ToString();
 			} while (!(quotient == 0));
@@ -692,7 +692,7 @@ namespace ConverterSupport
 				 // ERROR: Not supported in C#: ReDimStatement
 
 				for (int a = 1; a <= sStr.Length; a++) {
-					bte[a - 1] = Strings.Asc(Strings.Mid(sStr, a, 1));
+					bte[a - 1] = System.Convert.ToByte(Asc(Mid(sStr, a, 1)));
 					if (a / 1000 == (int)a / 1000)
 						System.Windows.Forms.Application.DoEvents();
 				}
@@ -779,7 +779,7 @@ namespace ConverterSupport
 		public byte[] NullByteArray(int numb)
 		{
 			int i = 0;
-			byte[] bArrOut;
+			byte[] bArrOut = null; //declar
 			 // ERROR: Not supported in C#: ReDimStatement
 
 			for (i = 0; i <= numb - 1; i++) {
@@ -805,9 +805,11 @@ namespace ConverterSupport
 			Int64 intValue;
 			for (intIndex = strHex.Length; intIndex >= 1; intIndex += -1) {
 				strDigit = Strings.Mid(strHex, intIndex, 1);
-				intDigit = Strings.InStr("0123456789ABCDEF", strDigit.ToUpper) - 1;
+				intDigit = Strings.InStr("0123456789ABCDEF", strDigit.ToUpper()) - 1;
 				if (intDigit >= 0) {
-					intValue = intDigit * (Math.Pow(16, (strHex.Length - (long)intIndex)));
+					//intValue = intDigit * (Math.Pow(16, (strHex.Length - (long)intIndex)));
+					intValue = intDigit * (16 ^ (strHex.Length - (long)(intIndex)));
+
 					lngResult = lngResult + intValue;
 				} else {
 					lngResult = 0;
@@ -827,11 +829,11 @@ namespace ConverterSupport
 		public void ClearBit(ref byte MyByte, byte MyBit)
 		{
 			Int16 BitMask;
-			MyByte = MyByte & 0xff;
-			// Create a bitmask with the 2 to the nth power bit set:
-			BitMask = Math.Pow(2, (MyBit - 1));
-			// Clear the nth Bit:
-			MyByte = MyByte & !BitMask;
+			MyByte = System.Convert.ToByte(MyByte & 0xff);
+            // Create a bitmask with the 2 to the nth power bit set:
+            BitMask = (short)(2 ^ (MyBit - 1));
+            // Clear the nth Bit:
+            MyByte = MyByte & !BitMask;
 		}
 
 		/// <summary>
@@ -844,8 +846,8 @@ namespace ConverterSupport
 		public bool ExamineBit(byte MyByte, byte MyBit)
 		{
 			Int16 BitMask;
-			MyByte = MyByte & 0xff;
-			BitMask = Math.Pow(2, (MyBit - 1));
+			MyByte = System.Convert.ToByte(MyByte & 0xff);
+			BitMask = System.Convert.ToInt16(Math.Pow(2, (MyBit - 1)));
 			return ((MyByte & BitMask) > 0);
 		}
 
@@ -858,9 +860,9 @@ namespace ConverterSupport
 		public void SetBit(ref byte MyByte, byte MyBit)
 		{
 			Int16 BitMask;
-			MyByte = MyByte & 0xff;
-			BitMask = Math.Pow(2, (MyBit - 1));
-			MyByte = MyByte | BitMask;
+			MyByte = System.Convert.ToByte(MyByte & 0xff);
+			BitMask = System.Convert.ToInt16(Math.Pow(2, (MyBit - 1)));
+			MyByte = System.Convert.ToByte(MyByte | BitMask);
 		}
 
 		/// <summary>
@@ -872,9 +874,9 @@ namespace ConverterSupport
 		public void ToggleBit(ref byte MyByte, byte MyBit)
 		{
 			Int16 BitMask;
-			MyByte = MyByte & 0xff;
-			BitMask = Math.Pow(2, (MyBit - 1));
-			MyByte = MyByte ^ BitMask;
+			MyByte = System.Convert.ToByte(MyByte & 0xff);
+			BitMask = System.Convert.ToInt16(Math.Pow(2, (MyBit - 1)));
+			MyByte = System.Convert.ToByte(MyByte ^ BitMask);
 		}
 		/// <summary>
 		/// Returns en-US based <see cref="System.Globalization.CultureInfo"/> with <paramref>NumDigits</paramref> decimal digits
@@ -994,16 +996,16 @@ namespace ConverterSupport
 			iCount = 0;
 			if (sMode.ToUpper() == "R") {
 				if (Num != "" & Information.IsNumeric(Num)) {
-					SInp = Strings.Replace(SInp, sFrom, sTo, 1, System.Convert.ToInt32(Num), 1);
+					SInp = Strings.Replace(SInp, sFrom, sTo, 1, System.Convert.ToInt32(Num), CompareMethod.Text);
 				} else {
-					SInp = Strings.Replace(SInp, sFrom, sTo, 1, -1, 1);
+					SInp = Strings.Replace(SInp, sFrom, sTo, 1, -1, CompareMethod.Text);
 				}
 			} else {
 				if (sFromIE.ToUpper() == "A") {
 					iFrom = 1;
 					sFromIE = "I";
 				} else {
-					iFrom = Strings.InStr(1, SInp, sFrom, 1);
+					iFrom = Strings.InStr(1, SInp, sFrom, CompareMethod.Text);
 				}
 				if (iFrom > 0) {
 					Ende = false;
@@ -1038,7 +1040,7 @@ namespace ConverterSupport
 							iTo = sTemp.Length + 1;
 							sToIE = "I";
 						} else {
-							iTo = Strings.InStr(1, sTemp, sTo, 1);
+							iTo = Strings.InStr(1, sTemp, sTo, CompareMethod.Text);
 						}
 						//sTemp = right(SInp,len(SInp)- instr(1,SInp,sFrom,1))
 						if (iTo > 0) {
@@ -1063,7 +1065,7 @@ namespace ConverterSupport
 					if (bFound == true) {
 						SInp = sPart1 + sPart2;
 					}
-					iFrom = Strings.InStr(1, SInp, sFrom, 1);
+					iFrom = Strings.InStr(1, SInp, sFrom, CompareMethod.Text);
 					System.Windows.Forms.Application.DoEvents();
 				}
 			}
@@ -1340,13 +1342,11 @@ namespace ConverterSupport
 
 			//Open a FileStream the length of the image being inserted  
 			using (FileStream stream = new FileStream(sFile.Trim(), FileMode.Open)) {
-				//Create a new byte array the size of the length of the file  
-				imgData = new byte[System.Convert.ToInt32(len - 1)] {
-					
-				};
+                //Create a new byte array the size of the length of the file  
+                imgData = new byte[len - 1];
 
 				//Read the byte array into the buffer  
-				stream.Read(imgData, 0, len);
+				stream.Read(imgData, 0, (int)len);
 			}
 			return imgData;
 		}
@@ -1365,10 +1365,10 @@ namespace ConverterSupport
 			}
 			if (sHexStr.Length > 2) {
 				for (a = 1; a <= sHexStr.Length - 1; a += 2) {
-					sResult += Strings.ChrW(HexToDec(Strings.Mid(sHexStr, a, 2)));
+					sResult += Strings.ChrW((int)HexToDec(Mid(sHexStr, a, 2)));
 				}
 			} else {
-				sResult += Strings.ChrW(HexToDec(sHexStr));
+				sResult += Strings.ChrW((int)HexToDec(sHexStr));
 			}
 			return sResult;
 		}
@@ -1409,7 +1409,7 @@ namespace ConverterSupport
 			int stride = width;
 			//CType((width * pf.BitsPerPixel + 7) / 8, Integer)
 			byte[] pixels = new byte[height * stride];
-			object palnew = new System.Windows.Media.Imaging.BitmapPalette(InternalConstants.AnsiColorsARGBM);
+            BitmapPalette palnew = new System.Windows.Media.Imaging.BitmapPalette(InternalConstants.AnsiColorsARGBM);
 			int iCnt = 0;
 			byte ByteEntry = 0;
 			bool bSet = false;
@@ -1422,17 +1422,17 @@ namespace ConverterSupport
 						UseForeColID = Data.Screen[PosX, PosY].ForeColor + Data.Screen[PosX, PosY].Bold;
 						UseBackColID = Data.Screen[PosX, PosY].BackColor;
 						for (int x = 0; x <= FWidth - 1; x++) {
-							if (ExamineBit(CurrBt, x + 1)) {
+							if (ExamineBit(CurrBt, System.Convert.ToByte(x + 1))) {
 								if (nocolors == true) {
 									colval = 7;
 								} else {
-									colval = UseForeColID;
+									colval = System.Convert.ToByte(UseForeColID);
 								}
 							} else {
 								if (nocolors == true) {
 									colval = 0;
 								} else {
-									colval = UseBackColID;
+									colval = System.Convert.ToByte(UseBackColID);
 								}
 							}
 							pixels[iCnt] = colval;
@@ -1447,10 +1447,10 @@ namespace ConverterSupport
 				enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(myBMSource));
 				MemoryStream mem = new MemoryStream();
 				enc.Save(mem);
-				return System.Drawing.Bitmap.FromStream(mem);
+				return new Bitmap(System.Drawing.Bitmap.FromStream(mem));
 
 			} catch (Exception ex) {
-				return new System.Drawing.Bitmap(width: 100, height: 100, stride: 100, Format: System.Drawing.Imaging.PixelFormat.Format8bppIndexed, scan0: 0);
+				return new System.Drawing.Bitmap(width: 100, height: 100, stride: 100, format: System.Drawing.Imaging.PixelFormat.Format8bppIndexed, scan0: new IntPtr(0));
 			}
 
 		}
@@ -1493,7 +1493,7 @@ namespace ConverterSupport
 			int stride = width;
 			//CType((width * pf.BitsPerPixel + 7) / 8, Integer)
 			byte[] pixels = new byte[height * stride];
-			object palnew = new System.Windows.Media.Imaging.BitmapPalette(InternalConstants.AnsiColorsARGBM);
+            BitmapPalette palnew = new System.Windows.Media.Imaging.BitmapPalette(InternalConstants.AnsiColorsARGBM);
 			int iCnt = 0;
 			byte ByteEntry = 0;
 			bool bSet = false;
@@ -1504,10 +1504,10 @@ namespace ConverterSupport
 						FntCurrChar = Bte[((PosY - 1) * TextWidth) + PosX - 1];
 						CurrBt = (byte)HexToDec(Strings.Mid(fnt.FntBits[FntCurrChar], (y * 2) + 1, 2));
 						for (int x = 0; x <= FWidth - 1; x++) {
-							if (ExamineBit(CurrBt, x + 1)) {
-								colval = UseForeColID;
+							if (ExamineBit(CurrBt, System.Convert.ToByte(x + 1))) {
+								colval = System.Convert.ToByte(UseForeColID);
 							} else {
-								colval = UseBackColID;
+								colval = System.Convert.ToByte(UseBackColID);
 							}
 							pixels[iCnt] = colval;
 							iCnt += 1;
@@ -1521,10 +1521,10 @@ namespace ConverterSupport
 				enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(myBMSource));
 				MemoryStream mem = new MemoryStream();
 				enc.Save(mem);
-				return System.Drawing.Bitmap.FromStream(mem);
+				return new Bitmap(Image.FromStream(mem));
 
 			} catch (Exception ex) {
-				return new System.Drawing.Bitmap(width: 100, height: 100, stride: 100, Format: System.Drawing.Imaging.PixelFormat.Format8bppIndexed, scan0: 0);
+				return new System.Drawing.Bitmap(width: 100, height: 100, stride: 100, format: System.Drawing.Imaging.PixelFormat.Format8bppIndexed, scan0: new IntPtr(0));
 			}
 
 		}
@@ -1564,7 +1564,7 @@ namespace ConverterSupport
 			int stride = width;
 			//CType((width * pf.BitsPerPixel + 7) / 8, Integer)
 			byte[] pixels = new byte[height * stride];
-			object palnew = new System.Windows.Media.Imaging.BitmapPalette(InternalConstants.AnsiColorsARGBM);
+            BitmapPalette palnew = new System.Windows.Media.Imaging.BitmapPalette(InternalConstants.AnsiColorsARGBM);
 			int iCntVid = 0;
 			byte ByteEntry = 0;
 			bool bSet = false;
@@ -1587,17 +1587,17 @@ namespace ConverterSupport
 						UseForeColIDVid = Data.Screen[XPosV, YPosV].ForeColor + Data.Screen[XPosV, YPosV].Bold;
 						UseBackColIDVid = Data.Screen[XPosV, YPosV].BackColor;
 						for (int xVid = 0; xVid <= FWidth - 1; xVid++) {
-							if (ExamineBit(CurrBt, xVid + 1)) {
+							if (ExamineBit(CurrBt, System.Convert.ToByte(xVid + 1))) {
 								if (nocolors == true) {
 									colvalVid = 7;
 								} else {
-									colvalVid = UseForeColIDVid;
+									colvalVid = System.Convert.ToByte(UseForeColIDVid);
 								}
 							} else {
 								if (nocolors == true) {
 									colvalVid = 0;
 								} else {
-									colvalVid = UseBackColIDVid;
+									colvalVid = System.Convert.ToByte(UseBackColIDVid);
 								}
 							}
 							pixels[iCntVid] = colvalVid;
@@ -1612,9 +1612,9 @@ namespace ConverterSupport
 				enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(myBMSource));
 				MemoryStream mem = new MemoryStream();
 				enc.Save(mem);
-				return System.Drawing.Bitmap.FromStream(mem);
+				return new Bitmap(System.Drawing.Bitmap.FromStream(mem));
 			} catch (Exception ex) {
-				return new System.Drawing.Bitmap(width: 100, height: 100, stride: 100, Format: System.Drawing.Imaging.PixelFormat.Format8bppIndexed, scan0: 0);
+				return new System.Drawing.Bitmap(width: 100, height: 100, stride: 100, format: System.Drawing.Imaging.PixelFormat.Format8bppIndexed, scan0: new IntPtr(0));
 
 
 			}
@@ -1660,7 +1660,7 @@ namespace ConverterSupport
 				enc.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(myBMSource));
 				MemoryStream mem = new MemoryStream();
 				enc.Save(mem);
-				newbm = System.Drawing.Bitmap.FromStream(mem);
+				newbm = new Bitmap(System.Drawing.Bitmap.FromStream(mem));
 
 			} catch (Exception ex) {
 			}
@@ -1683,7 +1683,7 @@ namespace ConverterSupport
 			for (int a = 0; a <= cp.Entries.Count() - 1; a++) {
 				if (cp.Entries[a].R == col.R & cp.Entries[a].G == col.G & cp.Entries[a].B == col.B & (bIgnoreAlpha == true | (bIgnoreAlpha == false & cp.Entries[a].A == col.A))) {
 					bFound = true;
-					iResult = a;
+					iResult = System.Convert.ToByte(a);
 					break; // TODO: might not be correct. Was : Exit For
 				}
 			}
