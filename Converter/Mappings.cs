@@ -7,7 +7,7 @@ namespace ConverterSupport
 {
     public class Mappings
     {
-        private void BuildMappings(string sCodePg)
+        public static void BuildMappings(string sCodePg)
         {
             //----------------------------------------------------------------------------------------------
             //Special Characters
@@ -49,7 +49,7 @@ namespace ConverterSupport
         //---------------------------------------------------------------------------------------------------------
         //Named HTML Entities Mapping
         //---------------------------------------------------------------------------------------------------------
-        private void BuildCodePage437(ref string[] aWork)
+        private static void BuildCodePage437(ref string[] aWork)
         {
             //Named HTML Entities Specific for Codepages 437
             aWork[155] = "&cent;";
@@ -104,7 +104,7 @@ namespace ConverterSupport
         }
 
         //---------------------------------------------------------------------------------------------------------
-        private void BuildCodePage850(ref string[] aWork)
+        private static void BuildCodePage850(ref string[] aWork)
         {
             //Named HTML Entities Specific for Codepages 850
             aWork[155] = "&oslash;";
@@ -201,7 +201,7 @@ namespace ConverterSupport
 
         //---------------------------------------------------------------------------------------------------------
 
-        private void BuildCodePage437and850(ref string[] aWork)
+        private static void BuildCodePage437and850(ref string[] aWork)
         {
             //Named HTML Entities shared by CP 437 and CP 850
 
@@ -311,7 +311,7 @@ namespace ConverterSupport
 
         //---------------------------------------------------------------------------------------------------------
 
-        private void BuildWindows(ref string[] aWork)
+        private static void BuildWindows(ref string[] aWork)
         {
             //Named HTML Entities Specific for Windows Character Set
             //Incomplete
@@ -351,7 +351,7 @@ namespace ConverterSupport
 
         //---------------------------------------------------------------------------------------------------------
 
-        private void BuildBasic(ref string[] aWork)
+        private static void BuildBasic(ref string[] aWork)
         {
             //Named HTML Entities unique to CP437, CP850 and Windows Character Set (almost)
             aWork[34] = "&quot;";

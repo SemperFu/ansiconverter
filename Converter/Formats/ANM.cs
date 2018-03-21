@@ -59,10 +59,12 @@ namespace MediaFormats
 			string sEsc = "";
 			string sRes = "";
 			LineWrap = false;
-			object aOutAnm = null;
+			object[] aOutAnm = new Object[5000];
+
+			//aOutAnm = Data.RedimPreserve(aOutAnm, 5000);
 			 // ERROR: Not supported in C#: ReDimStatement
 
-			object iCmdCnt;
+			int iCmdCnt;
 			iCmdCnt = 0;
 			if (!(aFile == null)) {
 				aAnsi = ConverterSupport.Convert.MergeByteArrays(ConverterSupport.Convert.NullByteArray(), aFile);
@@ -103,7 +105,7 @@ namespace MediaFormats
 								}
 								//SUB or "S"
 								if (CurChr == 26 | CurChr == 83) {
-									int iSauceOffset = IIf(CurChr == 83, 1, 0);
+									int iSauceOffset = (int) IIf(CurChr == 83, 1, 0);
 									if (Information.UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
 										sStr = "";
 										for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
@@ -134,7 +136,7 @@ namespace MediaFormats
 								}
 								break;
 							case 2:
-								object aRRSize;
+								int aRRSize;
 								aRRSize = UBound(aAnsi);
 								sEsc = Chr(CurChr).ToString();
 								//0-9 or ;
@@ -213,34 +215,34 @@ namespace MediaFormats
 										//Move Cursor
 										if (NumParams > 0) {
 											iLoop2 = ConverterSupport.Convert.ChkNum(aPar[1]);
-											YPos = IIf(iLoop2 > 0, minY + (iLoop2 - 1), minY);
+											YPos = (int) IIf(iLoop2 > 0, minY + (iLoop2 - 1), minY);
 										} else {
 											YPos = minY;
 										}
 										if (NumParams > 1) {
 											iLoop2 = ConverterSupport.Convert.ChkNum(aPar[2]);
-											XPos = IIf(iLoop2 > 0, minX + (iLoop2 - 1), minX);
+											XPos = (int) IIf(iLoop2 > 0, minX + (iLoop2 - 1), minX);
 										} else {
 											XPos = minX;
 										}
-										aOutAnm[iCmdCnt] = "P" + escapchr(Chr(XPos + 45)) + escapchr(Chr(YPos + 96));
+										aOutAnm[iCmdCnt] = "P" + escapchr(Chr(XPos + 45).ToString()) + escapchr(Chr(YPos + 96).ToString());
 										iCmdCnt += 1;
 										break;
 									case "f":
 										//Move Cursor
 										if (NumParams > 0) {
 											iLoop2 = ConverterSupport.Convert.ChkNum(aPar[1]);
-											YPos = IIf(iLoop2 > 0, minY + (iLoop2 - 1), minY);
+											YPos = (int)IIf(iLoop2 > 0, minY + (iLoop2 - 1), minY);
 										} else {
 											YPos = minY;
 										}
 										if (NumParams > 1) {
 											iLoop2 = ConverterSupport.Convert.ChkNum(aPar[2]);
-											XPos = IIf(iLoop2 > 0, minX + (iLoop2 - 1), minX);
+											XPos = (int)IIf(iLoop2 > 0, minX + (iLoop2 - 1), minX);
 										} else {
 											XPos = minX;
 										}
-										aOutAnm[iCmdCnt] = "P" + escapchr(Chr(XPos + 45)) + escapchr(Chr(YPos + 96));
+										aOutAnm[iCmdCnt] = "P" + escapchr(Chr(XPos + 45).ToString()) + escapchr(Chr(YPos + 96).ToString());
 										iCmdCnt += 1;
 										break;
 									case "J":
@@ -285,10 +287,10 @@ namespace MediaFormats
 										}
 										for (int iLoop3 = 1; iLoop3 <= NumParams; iLoop3++) {
 											object i2;
-											iLoop2 = ConverterSupport.Convert.ChkNum(aPar(iLoop3));
+											iLoop2 = ConverterSupport.Convert.ChkNum(aPar[iLoop3]);
 											switch (iLoop2) {
 												case 0:
-													if ((string)Left(aPar(iLoop3), 1) == "0") {
+													if ((string)Left(aPar[iLoop3], 1) == "0") {
 														ForeColor = 7;
 														BackColor = 0;
 														Blink = false;
@@ -318,7 +320,7 @@ namespace MediaFormats
 												case 7:
 													i2 = ForeColor;
 													ForeColor = BackColor;
-													BackColor = i2;
+													BackColor = (int)i2;
 													Reversed = true;
 													aOutAnm[iCmdCnt] = "T" + Hex(BackColor) + Hex(ForeColor + Bold);
 													iCmdCnt += 1;
@@ -336,7 +338,7 @@ namespace MediaFormats
 												case 27:
 													i2 = ForeColor;
 													ForeColor = BackColor;
-													BackColor = i2;
+													BackColor = (int)i2;
 													Reversed = false;
 													aOutAnm[iCmdCnt] = "T" + Hex(BackColor) + Hex(ForeColor + Bold);
 													iCmdCnt += 1;
@@ -370,6 +372,7 @@ namespace MediaFormats
 													ForeColor = 5;
 													aOutAnm[iCmdCnt] = "T" + Hex(BackColor) + Hex(ForeColor + Bold);
 													iCmdCnt += 1;
+                                                    break;
 												case 36:
 													ForeColor = 3;
 													aOutAnm[iCmdCnt] = "T" + Hex(BackColor) + Hex(ForeColor + Bold);
@@ -422,7 +425,7 @@ namespace MediaFormats
 													break;
 											}
 										}
-
+                                        break;
 									case "K":
 										if (NumParams > 0) {
 											switch (ConverterSupport.Convert.ChkNum(aPar[1])) {
@@ -472,12 +475,13 @@ namespace MediaFormats
 									//<[=7l  = Truncate Lines longer than 80 chars
 									default:
 
-										Console.WriteLine("Unknown ANSI Command: " + Chr(CurChr).ToString() + " (" + CurChr.ToString + ") Params: " + Join(aPar, "|").ToString + ",File: " + sFile + ", Pos: " + iLoop.ToString);
+										Console.WriteLine("Unknown ANSI Command: " + Chr(CurChr).ToString() + " (" + CurChr.ToString() + ") Params: " + Join(aPar, "|").ToString() + ",File: " + sFile + ", Pos: " + iLoop.ToString());
 										break;
 								}
 
 								bDrawChar = false;
 								AnsiMode = 0;
+                                break;
 						}
 
 						if (bDrawChar == true & AnsiMode == 0) {
@@ -513,7 +517,7 @@ namespace MediaFormats
 
 			string SubBlock = "F";
 			int SubCnt = 1;
-			string[] aTmp;
+			string[] aTmp = new string[iCmdCnt-1];
 			string sPrevCmd;
 			int ExecCnt;
 			string sCurCmd = "";
@@ -526,7 +530,7 @@ namespace MediaFormats
 				sPrevCmd = "";
 				ExecCnt = 0;
 				for (iLoop2 = 0; iLoop2 <= iCmdCnt - 1; iLoop2++) {
-					sCurCmd = Microsoft.VisualBasic.Left(aOutAnm[iLoop2], 1);
+					sCurCmd = Strings.Left(aOutAnm[iLoop2].ToString(), 1);
 					if (sPrevCmd != sCurCmd) {
 						if (sPrevCmd != "") {
 							switch (sPrevCmd) {
@@ -585,7 +589,7 @@ namespace MediaFormats
 						switch (sCurCmd) {
 							//Case "P" : sCombStr = aOutAnm[iLoop2] : sPrevCmd = sCurCmd
 							case "T":
-								sCombStr = aOutAnm[iLoop2];
+								sCombStr = aOutAnm[iLoop2].ToString();
 								sPrevCmd = sCurCmd;
 								break;
 							case "S":
@@ -605,7 +609,7 @@ namespace MediaFormats
 								sPrevCmd = sCurCmd;
 								break;
 							case "X":
-								sCombStr = Right(aOutAnm[iLoop2], aOutAnm[iLoop2].ToString.Length - 1);
+								sCombStr = Right(aOutAnm[iLoop2].ToString(), aOutAnm[iLoop2].ToString().Length - 1);
 								ExecCnt = 1;
 								sPrevCmd = sCurCmd;
 								break;
@@ -619,7 +623,7 @@ namespace MediaFormats
 						switch (sCurCmd) {
 							//Case "P" : sCombStr = aOutAnm[iLoop2]
 							case "T":
-								sCombStr = aOutAnm[iLoop2];
+								sCombStr = aOutAnm[iLoop2].ToString();
 								break;
 							case "S":
 								ExecCnt += 1;
@@ -634,7 +638,7 @@ namespace MediaFormats
 								ExecCnt += 1;
 								break;
 							case "X":
-								sCombStr += ";" + Right(aOutAnm[iLoop2], aOutAnm[iLoop2].ToString.Length - 1);
+								sCombStr += ";" + Right(aOutAnm[iLoop2].ToString(), aOutAnm[iLoop2].ToString().Length - 1);
 								ExecCnt += 1;
 								break;
 						}
@@ -727,8 +731,8 @@ namespace MediaFormats
 			sJS = ConverterSupport.Convert.ByteArrayToStr(Resources.ANSIJS, FFormats.us_ascii);
 			//sJS = ByteArrayToStr(Resources.ANSIJS2, FFormats.us_ascii)
 
-			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//VARDEFSTART", "//VARDEFEND", "I", "I", "C", 1);
-			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//CALLSTART", "//CALLEND", "I", "I", "C", 1);
+			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//VARDEFSTART", "//VARDEFEND", "I", "I", "C", "1");
+			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//CALLSTART", "//CALLEND", "I", "I", "C", "1");
 
 			sJS = Replace(sJS, "//AANIMVAR", sRes, 1, 1, CompareMethod.Text);
 
@@ -753,10 +757,10 @@ namespace MediaFormats
 				sOut += "</body></html>";
 			}
 
-			return ConverterSupport.InputOutput.WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return (string[]) ConverterSupport.InputOutput.WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
 
 		}
-		string escapchr(string sChar)
+		static string escapchr(string sChar)
 		{
 			if (sChar == "\\") {
 				return sChar + sChar;
@@ -764,7 +768,7 @@ namespace MediaFormats
 				return sChar;
 			}
 		}
-		string HTMLUniEncode(int iChr)
+		static string HTMLUniEncode(int iChr)
 		{
 			if (InternalConstants.aSpecH[iChr] != "") {
 				return InternalConstants.aSpecH[iChr];

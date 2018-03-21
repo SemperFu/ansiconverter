@@ -911,7 +911,7 @@ namespace ConverterSupport
 		/// <param name="numdigits">Numer of Decimal Point to round to</param>
 		/// <returns>Formated Value as String</returns>
 		/// <remarks></remarks>
-		public string USStringRound(float Value, int numdigits)
+		public static string USStringRound(float Value, int numdigits)
 		{
 
             var t = Math.Round(Value, numdigits); 
@@ -954,7 +954,7 @@ namespace ConverterSupport
 		/// <param name="RegExopt">RegEx Options</param>
 		/// <returns>True is pattern matches, False if it does not</returns>
 		/// <remarks></remarks>
-		public bool RegExTest(string sStr, string sPattern, System.Text.RegularExpressions.RegexOptions RegExOpt = 0)
+		public static bool RegExTest(string sStr, string sPattern, System.Text.RegularExpressions.RegexOptions RegExOpt = 0)
 		{
 			if (!IsNothing(RegExOpt) && !IsNothing(RegexOptions.Multiline)) {
 				sStr = Strings.Replace(sStr, Environment.NewLine, "\n", 1, -1, CompareMethod.Text);
@@ -1373,7 +1373,7 @@ namespace ConverterSupport
 		/// <param name="sHexStr">Hex Values String</param>
 		/// <returns>Unicode String</returns>
 		/// <remarks></remarks>
-		public string HexStringToString(string sHexStr)
+		public static string HexStringToString(string sHexStr)
 		{
 			int a;
 			string sResult = "";

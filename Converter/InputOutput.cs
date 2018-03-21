@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using Microsoft.VisualBasic;
 using Internal;
+using System.Text.RegularExpressions;
 
 using System.Linq;
 using static Data;
@@ -30,14 +31,14 @@ namespace ConverterSupport
 		public static byte[] ReadBinaryFile(string sFile)
 		{
 			byte[] bte;
-			System.FileStream ofile;
+			FileStream ofile;
 			int iSize = 0;
 			if (File.Exists(sFile)) {
 				ofile = File.Open(sFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 				ofile.Seek(0, SeekOrigin.Begin);
-				iSize = ofile.Length - 1;
-				 // ERROR: Not supported in C#: ReDimStatement
-
+				iSize = System.Convert.ToInt32(ofile.Length - 1);
+                // ERROR: Not supported in C#: ReDimStatement
+                bte = new byte[iSize];
 				ofile.Read(bte, 0, iSize + 1);
 				ofile.Close();
 				return bte;
@@ -61,12 +62,13 @@ namespace ConverterSupport
 				// The using statement also closes the StreamReader.
 				//File.GetAttributes(sFile).
 				using (StreamReader sr = new StreamReader(sFile, true)) {
-					// Dim encoding As New System.Text.ASCIIEncoding
-					 // ERROR: Not supported in C#: ReDimStatement
+                    // Dim encoding As New System.Text.ASCIIEncoding
+                    // ERROR: Not supported in C#: ReDimStatement
+                    Bte = new byte[sr.BaseStream.Length - 1];
 
-					sr.BaseStream.Read(Bte, 0, sr.BaseStream.Length);
+					sr.BaseStream.Read(Bte, 0, System.Convert.ToInt32(sr.BaseStream.Length));
 					//sAll = encoding.GetString(Bte)
-					sAll = ConverterSupport.ByteArrayToString(Bte);
+					sAll = ConverterSupport.Convert.ByteArrayToString(Bte);
 				}
 			} catch (Exception e) {
 			}
@@ -232,7 +234,7 @@ namespace ConverterSupport
 
 							int iThWidth = 150;
 							double iSFact = iThWidth / img.Width;
-							int iThHeight = img.Height * iSFact;
+							int iThHeight = System.Convert.ToInt32(img.Height * iSFact);
 
 							if (bCreateThumbs == true) {
 								switch (iThumbsResOpt) {
@@ -240,19 +242,23 @@ namespace ConverterSupport
 										//Scale Percent
 										iThWidth = (img.Width / 100) * iThumbsScale;
 										iThHeight = (img.Height / 100) * iThumbsScale;
-									case 1:
+                                        break;
+                                    case 1:
 										iThWidth = iThumbsWidth;
 										iSFact = iThWidth / img.Width;
 										iThHeight = img.Height * iSFact;
-									case 2:
+                                        break;
+                                    case 2:
 										iThHeight = iThumbsHeight;
 										iSFact = iThHeight / img.Height;
 										iThWidth = img.Width * iSFact;
-									case 3:
+                                        break;
+                                    case 3:
 										iThWidth = iThumbsWidth;
 										iThHeight = iThumbsHeight;
+                                        break;
 								}
-								img = img.GetThumbnailImage(iThWidth, iThHeight, null, null);
+								img = img.GetThumbnailImage(iThWidth, iThHeight, null, IntPtr.Zero);
 							}
 							switch (LCase(Path.GetExtension(OutFileName))) {
 								case ".png":
@@ -316,7 +322,7 @@ namespace ConverterSupport
 			};
 			FFormats sRes = FFormats.us_ascii;
 			int i = 0;
-			System.FileStream ofile;
+			FileStream ofile;
 			if (File.Exists(sFile)) {
 				if (GetFileSizeNum(sFile) > 0) {
 					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
@@ -342,22 +348,23 @@ namespace ConverterSupport
 			FTypes sRes = FTypes.ASCII;
 			byte[] eBte;
 			string sData = "";
-			System.FileStream ofile;
+			FileStream ofile;
 			if (File.Exists(sFile)) {
 				if (GetFileSizeNum(sFile) > 0) {
 					ofile = File.Open(sFile, FileMode.Open, FileAccess.Read);
-					int iSize = ofile.Length - 1;
+					int iSize = System.Convert.ToInt32(ofile.Length - 1);
 					if (iSize > 10000)
 						iSize = 10000;
-					 // ERROR: Not supported in C#: ReDimStatement
+                    // ERROR: Not supported in C#: ReDimStatement
+                    eBte = new byte[iSize];
 
-					ofile.Seek(0, SeekOrigin.Begin);
+                    ofile.Seek(0, SeekOrigin.Begin);
 					ofile.Read(eBte, 0, iSize + 1);
 					ofile.Close();
-					sData = ConverterSupport.ByteArrayToString(eBte);
+					sData = ConverterSupport.Convert.ByteArrayToString(eBte);
 				}
 			}
-			if (sData != "" & !sData == null) {
+			if (sData != "" & !(sData == null)) {
 				if (InStr(1, sData,Strings.Chr(27) + "[", CompareMethod.Text) > 0) {
 					if (InStr(1, sData,Strings.Chr(27) + "[0;0;40m", CompareMethod.Text) > 0) {
 						sRes = FTypes.WC2;
@@ -368,16 +375,16 @@ namespace ConverterSupport
 					if (InStr(1, sData, "<div", CompareMethod.Text) > 0 | InStr(1, sData, "&lt;", CompareMethod.Text) > 0 | InStr(1, sData, "&nbsp;", CompareMethod.Text) > 0 | InStr(1, sData, ";&#", CompareMethod.Text) > 0) {
 						sRes = FTypes.HTML;
 					} else {
-						if (ConverterSupport.RegExTest(sData, "@X[0-9A-F]{2}", RegularExpressions.RegexOptions.Singleline) == true) {
+						if (ConverterSupport.Convert.RegExTest(sData, "@X[0-9A-F]{2}", RegexOptions.Singleline) == true) {
 							sRes = FTypes.PCB;
 						} else {
-							if (ConverterSupport.RegExTest(sData, "@[0-9A-F]{2}@", RegularExpressions.RegexOptions.Singleline) == true) {
+							if (ConverterSupport.Convert.RegExTest(sData, "@[0-9A-F]{2}@", RegexOptions.Singleline) == true) {
 								sRes = FTypes.WC3;
 							} else {
-								if (InStr(1, sData,Strings.Chr(22) +Strings.Chr(1), CompareMethod.Binary) > 0) {
+								if (InStr(1, sData,Chr(22).ToString() + Chr(1).ToString(), CompareMethod.Binary) > 0) {
 									sRes = FTypes.AVT;
 								} else {
-									if (InStr(1, sData,Strings.Chr(7), CompareMethod.Binary) > 0) {
+									if (InStr(1, sData,Chr(7).ToString(), CompareMethod.Binary) > 0) {
 										sRes = FTypes.Bin;
 									} else {
 										sRes = FTypes.ASCII;
@@ -399,22 +406,22 @@ namespace ConverterSupport
 			string slSize = "";
 			//GB
 			if (lSize > 1024000000) {
-				slSize = (string)ConverterSupport.USStringRound(lSize / 1024000000, 2) + " GB";
+				slSize = (string)ConverterSupport.Convert.USStringRound((float)(lSize / 1024000000), 2) + " GB";
 			} else {
 				//MB
 				if (lSize > 1024000) {
-					slSize = (string)ConverterSupport.USStringRound(lSize / 1024000, 2) + " MB";
+					slSize = (string)ConverterSupport.Convert.USStringRound((float)(lSize / 1024000), 2) + " MB";
 				} else {
 					//KB
 					if (lSize > 1024) {
-						slSize = (string)ConverterSupport.USStringRound(lSize / 1024, 2) + " KB";
+						slSize = (string)ConverterSupport.Convert.USStringRound((float)(lSize / 1024), 2) + " KB";
 					//Bytes
 					} else {
-						slSize = (string)lSize + " B";
+						slSize = lSize.ToString() + " B";
 					}
 				}
 			}
-			return lSize;
+			return lSize.ToString();
 		}
 
 		public long GetFileSizeNum(string sFile)
@@ -435,8 +442,8 @@ namespace ConverterSupport
 			string sFileBase = Path.GetFileNameWithoutExtension(sInpFile);
 			string sExt = "." + txtExt;
 
-			sDir = Interaction.IIf(Data.rOutPathInput, Path.GetDirectoryName(sInpFile), Data.outPath);
-			sFile = Interaction.IIf(Data.rReplaceExt, sFileBase + sExt, sFile + sExt);
+			sDir = (string) IIf(Data.rOutPathInput, Path.GetDirectoryName(sInpFile), Data.outPath);
+			sFile = (string) IIf(Data.rReplaceExt, sFileBase + sExt, sFile + sExt);
 			sResult = Path.Combine(sDir, sFile);
 
 			return sResult;
@@ -469,22 +476,23 @@ namespace ConverterSupport
 				sOut += "</body></html>";
 			}
 			iLen = Strings.Len(sOut);
-			 // ERROR: Not supported in C#: ReDimStatement
+            // ERROR: Not supported in C#: ReDimStatement
+            bteWork1 = new byte[iLen - 1];
 
 			for (iLp2 = 1; iLp2 <= iLen; iLp2++) {
-				bteWork1[iLp2 - 1] = Strings.Asc(Strings.Mid(sOut, iLp2, 1));
+				bteWork1[iLp2 - 1] = Asc(Mid(sOut, iLp2, 1));
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				bteWork1 = ConverterSupport.Convert.MergeByteArrays(bteWork1, ConverterSupport.StrToByteArray(oSauce.BuildHTML(true)));
+				bteWork1 = ConverterSupport.Convert.MergeByteArrays(bteWork1, ConverterSupport.Convert.StrToByteArray(oSauce.BuildHTML(true)));
 			}
-			return WriteFile(sOutFile, bteWork1, Data.bForceOverwrite, Data.OutputFileExists, false, true);
+			return (string[]) WriteFile(sOutFile, bteWork1, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 
 		}
 
 		public static string BuildCSSforHTML()
 		{
-			string sWorkCSS = Data.sCSSDef;
+			string sWorkCSS = Data.sCSSDef.ToString();
 			string sObjWidth = (Data.maxX * 8).ToString() + "px";
 			string sOut = "";
 
@@ -494,13 +502,13 @@ namespace ConverterSupport
 				if (Data.bAnimation == true) {
                     
                     sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSDIV%", Data.WebFontList[Data.SelectedWebFont].AnimEXTRACSSDIV, 1, -1, CompareMethod.Text);
-					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSPRE%", Data.WebFontList.Item(Data.SelectedWebFont).AnimEXTRACSSPRE, 1, -1, CompareMethod.Text);
-					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSSPAN%", Data.WebFontList.Item(Data.SelectedWebFont).AnimEXTRACSSSPAN, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSPRE%", Data.WebFontList[Data.SelectedWebFont].AnimEXTRACSSPRE, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSSPAN%", Data.WebFontList[Data.SelectedWebFont].AnimEXTRACSSSPAN, 1, -1, CompareMethod.Text);
 				} else {
                     
-                    sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSDIV%", Data.WebFontList.Item(Data.SelectedWebFont).StaticEXTRACSSDIV, 1, -1, CompareMethod.Text);
-					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSPRE%", Data.WebFontList.Item(Data.SelectedWebFont).StaticEXTRACSSPRE, 1, -1, CompareMethod.Text);
-					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSSPAN%", Data.WebFontList.Item(Data.SelectedWebFont).StaticEXTRACSSSPAN, 1, -1, CompareMethod.Text);
+                    sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSDIV%", Data.WebFontList[Data.SelectedWebFont].StaticEXTRACSSDIV, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSPRE%", Data.WebFontList[Data.SelectedWebFont].StaticEXTRACSSPRE, 1, -1, CompareMethod.Text);
+					sWorkCSS = Strings.Replace(sWorkCSS, "%EXTRACSSSPAN%", Data.WebFontList[Data.SelectedWebFont].StaticEXTRACSSSPAN, 1, -1, CompareMethod.Text);
 				}
 				sWorkCSS = Strings.Replace(sWorkCSS, "%WIDTH%", sObjWidth, 1, -1, CompareMethod.Text);
 				if (Data.bOutputSauce == true & Data.bHasSauce == true) {
@@ -575,7 +583,7 @@ namespace ConverterSupport
 				sOut += "</body></html>";
 			}
 
-			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
+			return (string[]) WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 
@@ -597,7 +605,7 @@ namespace ConverterSupport
                         Data.BackColor = Data.Screen[x, y].BackColor;
 					}
 					if (Data.Screen[x, y].Chr != Strings.Chr(0).ToString()) {
-						if (Data.Screen[x, y].Chr != Strings.Chr(255).tostring()) {
+						if (Data.Screen[x, y].Chr != Strings.Chr(255).ToString()) {
 							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
@@ -611,9 +619,9 @@ namespace ConverterSupport
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				sOut += Data.oSauce.toString();
+				sOut += Data.oSauce.ToString();
 			}
-			return WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
+			return (string[]) WriteFile(sOutFile, sOut, bForceOverwrite, OutputFileExists, false, false);
 
 		}
 
@@ -633,8 +641,8 @@ namespace ConverterSupport
                         Data.BackColor = Data.Screen[x, y].BackColor;
 						sOut = sOut +Strings.Chr(22) +Strings.Chr(1) +Strings.Chr(BackColor * 16 + ForeColor);
 					}
-					if (Data.Screen[x, y].Chr !=Strings.Chr(0)) {
-						if (Data.Screen[x, y].Chr !=Strings.Chr(255)) {
+					if (Data.Screen[x, y].Chr !=Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr !=Strings.Chr(255).ToString()) {
 							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
@@ -648,9 +656,9 @@ namespace ConverterSupport
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				sOut += Data.oSauce.toString();
+				sOut += Data.oSauce.ToString();
 			}
-			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
+			return (string[]) WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 		public static string[] OutputWC2(string sOutFile)
@@ -710,9 +718,9 @@ namespace ConverterSupport
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				sOut += Data.oSauce.toString();
+				sOut += Data.oSauce.ToString();
 			}
-			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
+			return (string[]) WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 		public static string[] OutputWC3(string sOutFile)
@@ -732,8 +740,8 @@ namespace ConverterSupport
                         Data.BackColor = Data.Screen[x, y].BackColor;
 						sOut = sOut + "@" +Conversion.Hex(Data.BackColor) +Conversion.Hex(Data.ForeColor) + "@";
 					}
-					if (Data.Screen[x, y].Chr !=Strings.Chr(0)) {
-						if (Data.Screen[x, y].Chr !=Strings.Chr(255)) {
+					if (Data.Screen[x, y].Chr !=Strings.Chr(0).ToString()) {
+						if (Data.Screen[x, y].Chr !=Strings.Chr(255).ToString()) {
 							sOut = sOut + Data.Screen[x, y].Chr;
 						} else {
 							sOut = sOut;
@@ -747,9 +755,9 @@ namespace ConverterSupport
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				sOut += Data.oSauce.toString();
+				sOut += Data.oSauce.ToString();
 			}
-			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
+			return (string[])WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
 
@@ -819,17 +827,17 @@ namespace ConverterSupport
 							Cnt += 1;
 							aOut[Cnt] = 91;
 							Cnt += 1;
-							aOut[Cnt] = Interaction.IIf(Bold != 0, 49, 48);
+							aOut[Cnt] = (byte) IIf(Bold != 0, 49, 48);
 							Cnt += 1;
 							aOut[Cnt] = 59;
 							Cnt += 1;
-							aOut[Cnt] =Strings.Asc(Strings.Left(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
+							aOut[Cnt] = Asc(Strings.Left(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
 							Cnt += 1;
-							aOut[Cnt] =Strings.Asc(Strings.Right(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
+							aOut[Cnt] = Asc(Strings.Right(InternalConstants.AnsiForeColors[Data.ForeColor], 1));
 							Cnt += 1;
 							aOut[Cnt] = 59;
 							Cnt += 1;
-							aOut[Cnt] =Strings.Asc(Strings.Left(InternalConstants.AnsiBackColors[Data.BackColor], 1));
+							aOut[Cnt] = Asc(Strings.Left(InternalConstants.AnsiBackColors[Data.BackColor], 1));
 							Cnt += 1;
 							aOut[Cnt] =Strings.Asc(Strings.Right(InternalConstants.AnsiBackColors[Data.BackColor], 1));
 							Cnt += 1;
@@ -853,7 +861,7 @@ namespace ConverterSupport
 								Cnt += 1;
 								aOut[Cnt] = 91;
 								Cnt += 1;
-								aOut[Cnt] = Interaction.IIf(Data.Bold != 0, 49, 48);
+								aOut[Cnt] = (byte) IIf(Data.Bold != 0, 49, 48);
 								Cnt += 1;
 								aOut[Cnt] = 59;
 								Cnt += 1;
@@ -933,10 +941,10 @@ namespace ConverterSupport
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
 				aOut = Convert.MergeByteArrays(aOut, Data.oSauce.toByteArray());
 			}
-			return WriteFile(sOutFile, aOut, Data.bForceOverwrite, Data.OutputFileExists, false, true);
+			return (string[])WriteFile(sOutFile, aOut, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 			aOut = null;
 		}
-		public int NumSpaces(int xOffset, int yOffset)
+		public static int NumSpaces(int xOffset, int yOffset)
 		{
 			int iNums = 1;
 			bool bEnd = false;
@@ -984,18 +992,18 @@ namespace ConverterSupport
                         Data.BackColor = Data.Screen[x, y].BackColor;
 						intC =Strings.Asc(Data.Screen[x, y].Chr);
 					}
-					aOut[Cnt] = intC;
+					aOut[Cnt] = System.Convert.ToByte(intC);
 					Cnt += 1;
-					aOut[Cnt] = System.Convert.ToInt32(Conversion.Hex(Data.BackColor) + Conversion.Hex(Data.ForeColor), 16);
+					aOut[Cnt] = System.Convert.ToByte(Conversion.Hex(Data.BackColor) + Conversion.Hex(Data.ForeColor), 16);
 					Cnt += 1;
 				}
 				bFiller = false;
 				System.Windows.Forms.Application.DoEvents();
 			}
 			if (Data.bOutputSauce == true & Data.bHasSauce == true) {
-				aOut = Convert.MergeByteArrays(aOut, Data.oSauce.toByteArray);
+				aOut = Convert.MergeByteArrays(aOut, Data.oSauce.toByteArray());
 			}
-			return WriteFile(sOutFile, aOut, Data.bForceOverwrite, Data.OutputFileExists, false, true);
+			return (string[])WriteFile(sOutFile, aOut, Data.bForceOverwrite, Data.OutputFileExists, false, true);
 			aOut = null;
 
 		}

@@ -45,7 +45,7 @@ namespace Internal
 			109
 			//<[255D<[40m "<" = ESC
 		};
-		public byte[] PCBHdr = new byte[] {
+		public static byte[] PCBHdr = new byte[] {
 			64,
 			88,
 			48,

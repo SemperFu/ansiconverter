@@ -1,4 +1,5 @@
 ﻿using Converter.Properties;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -126,4 +127,15 @@ public class Data
     public const int minY = 1;
 
     public static int maxY = 1500;
+
+
+    //from Applied Microsoft.NET framework Programming - Jeffrey Richter
+    public static Array RedimPreserve(Array origArray, Int32 desiredSize)
+    {
+        System.Type t = origArray.GetType().GetElementType();
+        Array newArray = Array.CreateInstance(t, desiredSize);
+        Array.Copy(origArray, 0, newArray, 0, Math.Min(origArray.Length, desiredSize));
+        return newArray;
+    }
+
 }

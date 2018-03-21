@@ -249,8 +249,8 @@ public class ProcessFiles
                 }
                 string sFileNam = ListInputFiles[a].FullPath;
                 cBPF = 0;
-                FFormats FTyp = ListInputFiles.[a].Format;
-                sInputFormat = InternalConstants.aInp(ListInputFiles[a].Type);
+                FFormats FTyp = ListInputFiles[a].Format;
+                sInputFormat = InternalConstants.aInp[ListInputFiles[a].Type];
                 if (PreviousInputFormat == "") {
                     PreviousInputFormat = sInputFormat;
                 }
@@ -598,7 +598,8 @@ public class ProcessFiles
                                     bteWork1 = ConverterSupport.Convert.ANSIScreenToASCIIByteArray();
                                     Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, bteWork1, bForceOverwrite, OutputFileExists, false, true);
                                 }
-                            case "ANS":
+                            break;
+                        case "ANS":
                                 if (sInputFormat == "ASC") {
                                     //Create ANSI from ASC File
                                     Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
@@ -734,7 +735,7 @@ public class ProcessFiles
                                 }
                                 if (sInputFormat == "ASC") {
                                     //Create PCBoard @ Styled ANSI from ASC File
-                                    Ret = ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.PCBHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = (string[]) ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.PCBHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "HTML") {
                                     strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
@@ -818,42 +819,43 @@ public class ProcessFiles
                                     //Convert ASCII from Byte Array to Custom Class/Array
                                     oAnsi.ProcessANSIFile(sFileNam, bteWork1);
                                     maxX = 160;
-                                    Screen = ConverterSupport.ResizeScreen(Screen, maxX, LinesUsed);
-                                    Ret = ConverterSupport.OutputBin(sOutF);
+                                    Data.Screen = ConverterSupport.Convert.ResizeScreen(Data.Screen, maxX, LinesUsed);
+                                    Ret = ConverterSupport.InputOutput.OutputBin(sOutF);
                                 }
                                 if (sInputFormat == "UTF") {
                                     //Convert Unicode Text File to ASCII Byte Array and from there to Custom Class to Binary
                                     strWork2 = "";
                                     for (iLp = 2; iLp <= strWork1.Length; iLp++) {
-                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
+                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.Convert.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
-                                    oAnsi.ProcessANSIFile(sFileNam, ConverterSupport.InputOutput.HexStringToByteArray(strWork2));
+                                    oAnsi.ProcessANSIFile(sFileNam, ConverterSupport.Convert.HexStringToByteArray(strWork2));
                                     maxX = 160;
-                                    Screen = ConverterSupport.ResizeScreen(Screen, maxX, LinesUsed);
-                                    Ret = ConverterSupport.OutputBin(sOutF);
+                                Data.Screen = ConverterSupport.Convert.ResizeScreen(Data.Screen, maxX, LinesUsed);
+                                    Ret = ConverterSupport.InputOutput.OutputBin(sOutF);
                                 }
+                            break;
                             case "IMG":
-                                Drawing.Bitmap i;
+                                Bitmap i;
                                 bool bLocNoColors = pNoColors;
 
                                 if (sInputFormat == "UTF") {
                                     strWork2 = "";
                                     for (iLp = 2; iLp <= strWork1.Length; iLp++) {
-                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
+                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.Convert.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
-                                    strWork1 = ConverterSupport.HexStringToString(strWork2);
+                                    strWork1 = ConverterSupport.Convert.HexStringToString(strWork2);
                                     bLocNoColors = true;
                                 }
                                 if (sInputFormat == "HTML") {
                                     //Convert HTML Encoded Unicode ASCII to ASC File
-                                    strWork2 = ConverterSupport.convuniasc(strWork1);
-                                    strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
+                                    strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
+                                    strWork2 = Replace(strWork2, Chr(255).ToString(), " ", 1, -1, CompareMethod.Binary);
                                     if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
                                         string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
-                                            aTmp1(b) = RTrim(aTmp1(b));
+                                            aTmp1[b] = RTrim(aTmp1[b]);
                                         }
                                         strWork1 = Join(aTmp1, Environment.NewLine);
                                     } else {
@@ -864,12 +866,12 @@ public class ProcessFiles
                                 if (sInputFormat == "ANS" | sInputFormat == "PCB" | sInputFormat == "BIN" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
                                     //Save ANSI as ASCII
                                     if (pNoColors == true) {
-                                        bteWork1 = ConverterSupport.ANSIScreenToASCIIByteArray();
-                                        strWork1 = ConverterSupport.ByteArrayToString(bteWork1);
+                                        bteWork1 = ConverterSupport.Convert.ANSIScreenToASCIIByteArray();
+                                        strWork1 = ConverterSupport.Convert.ByteArrayToString(bteWork1);
                                     }
-                                    i = MediaFormats.CreateImageFromScreenChars();
+                                    i = MediaFormats.IMG.CreateImageFromScreenChars();
                                 } else {
-                                    i = MediaFormats.CreateImageFromASCII(strWork1, null, null);
+                                    i = MediaFormats.IMG.CreateImageFromASCII(strWork1, 0, 0);
                                 }
 
                                 if (bLocNoColors == true) {
@@ -877,7 +879,8 @@ public class ProcessFiles
                                 } else {
                                 }
 
-                                Ret = ConverterSupport.InputOutput.WriteFile(sOutF, i, bForceOverwrite, OutputFileExists, false, true);
+                                Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, i, bForceOverwrite, OutputFileExists, false, true);
+                            break;
                             case "AVI":
                                 //oAVIFile.Close()
                                 if (InfoMsg != null) {
@@ -893,7 +896,7 @@ public class ProcessFiles
                                     iAVIWidth = DosFnt80x25.Width * 80;
                                     iAVIHeight = DosFnt80x25.Height * 25;
                                 }
-                                MediaSupport.VideoConverterFFMPEG vc2 = new MediaSupport.VideoConverterFFMPEG();
+                                Converter.VideoConverterFFMPEG vc2 = new Converter.VideoConverterFFMPEG();
                                 vc2.FFMPEGPath = ffmpegpath;
                                 vc2.Imagelist = Path.Combine(TempVideoFolder, Path.GetFileNameWithoutExtension(OutFileWrite) + "_%05d.PNG");
                                 vc2.Output = OutFileWrite;
@@ -904,28 +907,36 @@ public class ProcessFiles
                                 vc2.VCodec = VidCodec;
                                 switch (VidFmt) {
                                     case "AVI":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.AVI;
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.AVI;
+                                    break;
                                     case "WMV":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.WMV;
-                                    case "FLV":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.FLV;
-                                    case "MKV":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.MKV;
-                                    case "GIF":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.GIF;
-                                    //vc2.VCodec = "gif"
-                                    case "VOB":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.VOB;
-                                    case "MPG":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.MPG;
-                                    case "MP4":
-                                        vc2.OutFormat = MediaSupport.VideoConverterFFMPEG.OutTypes.MP4;
-                                }
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.WMV;
+                                    break;
+                                case "FLV":
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.FLV;
+                                    break;
+                                case "MKV":
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.MKV;
+                                    break;
+                                case "GIF":
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.GIF;
+                                    break;
+                                //vc2.VCodec = "gif"
+                                case "VOB":
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.VOB;
+                                    break;
+                                case "MPG":
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.MPG;
+                                    break;
+                                case "MP4":
+                                        vc2.OutFormat = Converter.VideoConverterFFMPEG.OutTypes.MP4;
+                                    break;
+                            }
                                 //iFramesCount
 
-                                if (vc2.Status == MediaSupport.VideoConverterFFMPEG.ConvStates.Ready) {
+                                if (vc2.Status == Converter.VideoConverterFFMPEG.ConvStates.Ready) {
                                     vc2.Convert();
-                                    while (vc2.Status != MediaSupport.VideoConverterFFMPEG.ConvStates.Aborted & vc2.Status != MediaSupport.VideoConverterFFMPEG.ConvStates.Finished) {
+                                    while (vc2.Status != Converter.VideoConverterFFMPEG.ConvStates.Aborted & vc2.Status != Converter.VideoConverterFFMPEG.ConvStates.Finished) {
                                         System.Threading.Thread.Sleep(200);
                                         System.Windows.Forms.Application.DoEvents();
                                     }
@@ -942,8 +953,9 @@ public class ProcessFiles
                                 }
 
 
-
-                        }
+                            break;
+                    }
+                   
 
 
                         if (System.Convert.ToInt32(Ret[0]) >= 0) {
@@ -989,7 +1001,7 @@ public class ProcessFiles
                     if (AdjustnumTotal != null) {
                         AdjustnumTotal(-1);
                     }
-                    if (ListInputFiles.Selected == true) {
+                    if (ListInputFiles[a].Selected == true) {
                         if (AdjustnumSel != null) {
                             AdjustnumSel(-1);
                         }

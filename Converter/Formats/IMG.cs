@@ -8,7 +8,7 @@ namespace MediaFormats
     {
         //Friend DosFontSml As New FontDef(8, 8, 0, 0, 0, 0, -1, 0, 256, 0, 255, Color.Black.ToArgb, Color.FromArgb(255, 168, 168, 168).ToArgb)
         //Friend DosFont As New FontDef(8, 16, 0, 0, 0, 0, -1, 1, 32, 1, 255, Color.Black.ToArgb, Color.FromArgb(255, 168, 168, 168).ToArgb)
-        public Bitmap CreateImageFromASCII(string NFOText, int TextColor = new int(), int BackColor = new int())
+        public static Bitmap CreateImageFromASCII(string NFOText, int TextColor = new int(), int BackColor = new int())
         {
             InternalConstants.m_NFOText = NFOText;
             if (InternalConstants.m_NFOText == "")
@@ -25,7 +25,7 @@ namespace MediaFormats
             return InternalConstants.m_NFOTextImg;
         }
 
-        public Bitmap CreateImageFromScreenChars()
+        public static Bitmap CreateImageFromScreenChars()
         {
             InternalConstants.m_NFOTextImg = ConverterSupport.Convert.ScreenToBitmap(pSmallFont, pNoColors);
             //If pSmallFont Then
