@@ -348,7 +348,7 @@ namespace ConverterSupport
             return aResult;
         }
 
-        public FFormats checkFileFormat(string sFile)
+        public static FFormats checkFileFormat(string sFile)
         {
             int ReadTo = 3;
             byte[] Buf = new byte[] {
@@ -387,7 +387,7 @@ namespace ConverterSupport
             return sRes;
         }
 
-        public FTypes DetermineFileType(string sFile)
+        public static FTypes DetermineFileType(string sFile)
         {
             FTypes sRes = FTypes.ASCII;
             byte[] eBte;
@@ -501,7 +501,7 @@ namespace ConverterSupport
             return lSize.ToString();
         }
 
-        public long GetFileSizeNum(string sFile)
+        public static long GetFileSizeNum(string sFile)
         {
             FileInfo oFile;
             oFile = new FileInfo(sFile);
