@@ -78,7 +78,7 @@ namespace ConverterSupport
 			get {
 				if (DataType >= 0 & DataType <= 8) {
 					if (FileType >= 0 & FileType <= UBound((Array)aFT[DataType])) {
-						return aFT(DataType)(FileType);
+						return ((string[])aFT[DataType])[FileType];
 					} else {
 						return "n/a";
 					}

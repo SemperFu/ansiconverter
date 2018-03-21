@@ -1,0 +1,1009 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Converter</name>
+    </assembly>
+    <members>
+        <member name="T:MediaSupport.FontDef">
+            <summary>
+            
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:MediaSupport.FontDef.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="w"></param>
+            <param name="h"></param>
+            <param name="marginlf"></param>
+            <param name="marginrt"></param>
+            <param name="margintp"></param>
+            <param name="marginbt"></param>
+            <param name="spcw"></param>
+            <param name="initc"></param>
+            <param name="chrspln"></param>
+            <param name="chrf"></param>
+            <param name="chrt"></param>
+            <remarks></remarks>
+        </member>
+        <member name="M:MediaSupport.FontDef.SetBitmap(System.Drawing.Bitmap)">
+            <summary>
+            
+            </summary>
+            <param name="bm"></param>
+            <remarks></remarks>
+        </member>
+        <member name="M:MediaSupport.FontDef.SetTranspColor(System.Drawing.Color)">
+            <summary>
+            
+            </summary>
+            <param name="col"></param>
+            <remarks></remarks>
+        </member>
+        <member name="M:MediaSupport.FontDef.BuildFont">
+            <summary>
+            
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:MediaSupport.FontDef.GetFont(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="charcode"></param>
+            <remarks></remarks>
+        </member>
+        <member name="M:MediaSupport.FontDef.DrawText(System.Drawing.Graphics@,System.Int32,System.Int32,System.Object@,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="gr"></param>
+            <param name="xpos"></param>
+            <param name="ypos"></param>
+            <param name="stext"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:ConverterSupport.CodePage">
+            <summary>
+            Code Page Class used for <see cref="F:Data.CPS"/> Class (also see <see cref="F:AnsiCPMaps.AnsiCPMaps.CodePages"/>)
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.CodePage.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Constructor of <see cref="T:ConverterSupport.CodePage"/> Class
+            </summary>
+            <param name="Name">Name of Code Page</param>
+            <param name="Code">Short Code/Abbreviation of Code Page</param>
+            <param name="ISO">ISO Name of Code Page</param>
+            <remarks></remarks>
+        </member>
+        <member name="P:ConverterSupport.CodePage.Code">
+            <summary>
+            Returns Read-Only Property 'Code', Short Code/Abbreviation of Code Page
+            </summary>
+            <returns>String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:ConverterSupport.CodePage.Name">
+            <summary>
+            Returns Name of Code Page
+            </summary>
+            <returns>String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:ConverterSupport.CodePage.ISO">
+            <summary>
+            Returns ISO-Code of Code Page
+            </summary>
+            <returns>String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:ConverterSupport.Convert">
+            <summary>
+            Conversion Routines
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.UnicodeToAscii(System.Int32)">
+            <summary>
+            Converts a Single Unicode ASCII Code to DOS ASCII String
+            </summary>
+            <param name="iUChr">Unicode Character Value</param>
+            <returns>String (ASCII)</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.AsciiToUnicode(System.Int32)">
+            <summary>
+               Converts a Single DOS ASCII Code to a Unicode String
+            </summary>
+            <param name="iChr">ASCII Character Value (0-255)</param>
+            <returns>Unicode String</returns>
+            <remarks>If <see cref="F:Data.bHTMLEncode"/> is set to 'True', Unicode String will be converted to HTML Entity value</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.convascuni(System.String)">
+            <summary>
+              Converts an entire DOS ASCII String to Unicode or HTML Encoded Unicode ASCII
+            </summary>
+            <param name="sInput">DOS Ascii String</param>
+            <returns>Unicode or HTML Encoded String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.convuniuni(System.String)">
+            <summary>
+            Converts String of HTML Encoded Unicode Entities to Unicode String
+            </summary>
+            <param name="sInput">HTML Encoded String</param>
+            <returns>Unicode String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.convuniasc(System.String)">
+            <summary>
+            Converts HTML Encoded Unicode String to DOS ASCII
+            </summary>
+            <param name="sInput"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.AscConv(System.Int32)">
+            <summary>
+            Uses Global Settings "<see cref="F:Data.bHTMLEncode"/>",if true, HTML Encoded String is returned, else the Unicode String
+            and "<see cref="F:Data.bSanitize"/>", if True, TABs are converted to Spaces and Control Chars &lt; 32 are being removed, except line breaks
+            </summary>
+            <param name="iChr"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.seekascuni(System.String)">
+            <summary>
+            Convert a Single DOS ASCII String Character to Unicode or HTML Encoded Unicode
+            </summary>
+            <param name="schr"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ReadSauce(System.Byte[],System.Int32)">
+            <summary>
+            Read SAUCE Meta Tag Content from Byte Array to Special Sauce Meta Class
+            </summary>
+            <param name="aAnsi">Byte Array</param>
+            <param name="Offset">Offset Location</param>
+            <returns><see cref="T:ConverterSupport.SauceMeta"/></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ResizeScreen(ConverterSupport.ScreenChar[0:,0:],System.Int32,System.Int32)">
+            <summary>
+            Resizes Array of <see cref="T:ConverterSupport.ScreenChar"/> to new Width and Height
+            </summary>
+            <param name="aArr">2 Dimensional Array of <see cref="T:ConverterSupport.ScreenChar"/></param>
+            <param name="iWidth">New Width</param>
+            <param name="iHeight">New Height</param>
+            <returns>2 Dimensional Array of <see cref="T:ConverterSupport.ScreenChar"/></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ReadByteArray(System.Byte[]@,System.Int32,System.String)">
+            <summary>
+            Reads specified <paramref>iLen</paramref> from Byte Array <paramref>Arr</paramref> and returns results depending on <paramref>DtaType</paramref>
+            </summary>
+            <param name="Arr">Byte Array</param>
+            <param name="iLen">Number of Bytes to Read (always set to 1 if <paramref>DtaType</paramref> = 'b' (Byte))</param>
+            <param name="DtaType">'b' = Byte, 's' = ASCII String, 'h' = Hex String</param>
+            <returns>String or Byte</returns>
+            <remarks>Always starts at position 1 of <paramref>Arr</paramref></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ANSIScreenToASCIIByteArray">
+            <summary>
+            Converts <see cref="F:Data.Screen"/> Object to Byte Array
+            </summary>
+            <returns>Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.SetChar(System.String)">
+            <summary>
+            Sets current character in <see cref="F:Data.Screen"/> Object at position X: <see cref="F:Data.XPos"/>, Y: <see cref="F:Data.YPos"/>
+            Sets also properties <see cref="F:Data.BackColor"/>, <see cref="F:Data.ForeColor"/>, <see cref="F:Data.Bold"/>, <see cref="F:Data.Blink"/> and <see cref="F:Data.Reversed"/>
+            </summary>
+            <param name="sChar">String Representation of Character to Set</param>
+            <returns>True, if character was set successfully</returns>
+            <remarks>Always adjusts values of <see cref="F:Data.XPos"/> and if <see cref="F:Data.maxX"/> was reached also <see cref="F:Data.YPos"/>. May also adjusts global variables for <see cref="F:Data.LinesUsed"/> and <see cref="F:Data.Yoffset"/> if necessary</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.NotZero(System.Int32)">
+            <summary>
+            Checks if <paramref>iVal</paramref> = 0 and returns 1 instead. <paramref>iVal</paramref> is returned unchanged, if it is not equal 0
+            </summary>
+            <param name="iVal">Value to check</param>
+            <returns>1 or <paramref>iVal</paramref></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ChkNum(System.Object)">
+            <summary>
+            Checks if <paramref>iVal</paramref> is Numeric or Not. If it is not numeric, 0 is returned, otherwise <paramref>iVal</paramref> converted to Integer is returned instead
+            </summary>
+            <param name="iVal">Value (as Object) to check</param>
+            <returns>Integer Value</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.UniHex(System.Int32)">
+            <summary>
+            Converts Integer Value to Hex String of 4 Characters Length (representing a 2 bytes Word value)
+            </summary>
+            <param name="iNum">16 Bit Integer Value</param>
+            <returns>Hex String e.g. 000F</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.Decimal2BaseN(System.Int32,System.Int32)">
+            <summary>
+            Converts Integer value of Base 10 to new value of Base <paramref>outBase</paramref>
+            </summary>
+            <param name="value">Integer Value</param>
+            <param name="outBase">Base e.g. 2 for Binary, 16 for Hex etc.</param>
+            <returns>Converted Value as String representation</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.FlipHex(System.String)">
+            <summary>
+            Converts Hex String between Little Endian and Big Endian Representation or the other way around
+            </summary>
+            <param name="sHexStr">Hex value as String</param>
+            <returns>Hex String reverted</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.StrToByteArray(System.String,FFormats)">
+            <summary>
+            Converts a string value to a "Byte Array"
+            </summary>
+            <param name="str">string</param>
+            <param name="enc">optional encoding format as <see cref="T:FFormats"/>, Default is 'FFormats.us_ascii'</param>
+            <returns>Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ByteArrayToStr(System.Byte[],FFormats)">
+            <summary>
+            Converts a Byte Array back to a string value
+            </summary>
+            <param name="ByteArray">Byte Array</param>
+            <param name="enc">optional encoding format as <see cref="T:FFormats"/>, Default is 'FFormats.us_ascii'</param>
+            <returns>String value</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ByteArrayToString(System.Byte[])">
+            <summary>
+            Alternative Conversion function of Byte Array to ASCII String
+            </summary>
+            <param name="ByteArray">Byte Array</param>
+            <returns>String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.StringToByteArray(System.String)">
+            <summary>
+            Alternative Conversion Function from ASCII String to Byte Array
+            </summary>
+            <param name="sStr">ASCII String</param>
+            <returns>Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.HexStringToByteArray(System.String)">
+            <summary>
+            Converts String of Hex Values to Byte Array
+            </summary>
+            <param name="sHexStr">Hex Value String</param>
+            <returns>Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.MergeByteArrays(System.Byte[],System.Byte[])">
+            <summary>
+            Merges Byte Array <paramref>bArr1</paramref> with Byte Array <paramref>bArr2</paramref> to new Byte Array
+            </summary>
+            <param name="bArr1">Byte Array</param>
+            <param name="bArr2">Byte Array</param>
+            <returns>Combined Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.NullByteArray">
+            <summary>
+            Returns a Byte Array of Length = 1 with value 0
+            </summary>
+            <returns>Byte() = New Byte(){0}</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.NullByteArray(System.Int32)">
+            <summary>
+            Returns a Byte Array initialized as 0 of specified size <paramref>numb</paramref>
+            </summary>
+            <param name="numb">Size of Byte Array</param>
+            <returns>0 initialized Byte Array of length <paramref>numb</paramref></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.HexToDec(System.String)">
+            <summary>
+            Converts Hex String to 64 bit Integer Value
+            </summary>
+            <param name="strHex">Hex Values String</param>
+            <returns>Int64 Integer (Long)</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ClearBit(System.Byte@,System.Byte)">
+             <summary>
+            The ClearBit Sub clears the 1 based, nth bit (<paramref>MyBit</paramref>) of a Byte (<paramref>MyByte</paramref>).
+             </summary>
+             <param name="MyByte">Byte where Bit is to be cleared</param>
+             <param name="MyBit">Bit to be cleared (1-8)</param>
+             <remarks>Note: Bit Location is 1 based and not 0</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ExamineBit(System.Byte,System.Byte)">
+            <summary>
+            The ExamineBit function will return True or False depending on the value of the 1 based, nth bit (<paramref>MyBit</paramref>) of a Byte (<paramref>MyByte</paramref>).
+            </summary>
+            <param name="MyByte">Byte to Check</param>
+            <param name="MyBit">Bit to Check</param>
+            <returns>True or False</returns>
+            <remarks>Note: Bit Location is 1 based and not 0</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.SetBit(System.Byte@,System.Byte)">
+            <summary>
+              The SetBit Sub will set the 1 based, nth bit (<paramref>MyBit</paramref>) of a Byte (<paramref>MyByte</paramref>).
+            </summary>
+            <param name="MyByte">Byte (passed as Reference)</param>
+            <param name="MyBit">Bit Position to set</param>
+            <remarks>Note: Bit Location is 1 based and not 0</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ToggleBit(System.Byte@,System.Byte)">
+            <summary>
+             The ToggleBit Sub will change the state of the 1 based, nth bit (<paramref>MyBit</paramref>) of a Byte (<paramref>MyByte</paramref>).
+            </summary>
+            <param name="MyByte">Byte to Change (passed as Reference)</param>
+            <param name="MyBit">Bit Position to Toggle</param>
+            <remarks>Note: Bit Location is 1 based and not 0</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.SetCultureInfo(System.Int32)">
+            <summary>
+            Returns en-US based <see cref="T:System.Globalization.CultureInfo"/> with <paramref>NumDigits</paramref> decimal digits
+            </summary>
+            <param name="NumDigits">Number of Decimal Digits</param>
+            <returns><see cref="T:System.Globalization.CultureInfo"/> of 'en-US' with <paramref>NumDigits</paramref> decimal digits, '.' as Decimal Separator and ',' as Group Separator</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.USStringRound(System.Single,System.Int32)">
+            <summary>
+            Rounds <paramref>Value</paramref> to <paramref>numdigits</paramref> decimal places and returns formatted value as string (using <see cref="T:System.Globalization.CultureInfo"/> = 'en-US' for formatting)
+            </summary>
+            <param name="Value">Floating Point Value</param>
+            <param name="numdigits">Numer of Decimal Point to round to</param>
+            <returns>Formated Value as String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.RegExReplace(System.String,System.String,System.String,System.Text.RegularExpressions.RegexOptions,System.Boolean)">
+            <summary>
+            Regular Expression Replace function
+            </summary>
+            <param name="sStr">String to Evaluate and Parse</param>
+            <param name="sRet">String with the Replacement Value/Pattern</param>
+            <param name="sPattern">Regular Expression Pattern</param>
+            <param name="RegExopt">RegEx Options</param>
+            <param name="isGlobal">Global Replace True/False (False = only replaces first found match, True = replace all matches in string</param>
+            <returns>String with replaced content</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.RegExTest(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Regular Expression Test Function to check if a string matches a provided RegEx pattern or not
+            </summary>
+            <param name="sStr">String to Evaluate</param>
+            <param name="sPattern">Regular Expression Pattern</param>
+            <param name="RegExopt">RegEx Options</param>
+            <returns>True is pattern matches, False if it does not</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.isInt(System.String)">
+            <summary>
+            Check function to verify that string only contains digits 0-9 and no other characters
+            </summary>
+            <param name="Value">String value to check</param>
+            <returns>True, if <paramref>Value</paramref> only contains digits, else False</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.CutorSandR(System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Flexible 'CUT OUT' and 'SEARCH &amp; REPLACE' Function with multiple options
+            </summary>
+            <param name="SInp">Input String</param>
+            <param name="sFrom">Start Location String if <paramref>sMode</paramref> = 'C' (Special Value of 'A' for 'Beginning of String' <paramref>sInp</paramref>) or String to Find and Replace, if <paramref>sMode</paramref> = 'R'</param>
+            <param name="sTo">End Location String if <paramref>sMode</paramref> = 'C' (Special Value of 'Z' for 'End of String' <paramref>sInp</paramref>) or Replacement String, if <paramref>sMode</paramref> = 'R'</param>
+            <param name="sFromIE">Only relevant for <paramref>sMode</paramref> = 'C'. 'I' = Include <paramref>sFrom</paramref> Value in Cut-Out Results, 'E' = Exlcude <paramref>sFrom</paramref> Value.</param>
+            <param name="sToIE">Only relevant for <paramref>sMode</paramref> = 'C'. 'I' = Include <paramref>sTo</paramref> Value in Cut-Out Results, 'E' = Exlcude <paramref>sTo</paramref> Value</param>
+            <param name="sMode">'R' = Replace, 'C' = Cut out</param>
+            <param name="Num">Number of Times to Execute on Results, '' = Unlimited or <paramref>Num</paramref> > 0 to limit loop</param>
+            <returns>Processed String Result</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.isHex(System.String)">
+            <summary>
+            Returns 'True', if <paramref>sChar</paramref> is a valid Hex Values String (only containing 0-9 and A-F)
+            </summary>
+            <param name="sChar">String to Check</param>
+            <returns>True if Hex Value String, False, if not</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.StringToHex(System.String,System.String)">
+            <summary>
+            Converts ASCII String to Hex Values String
+            </summary>
+            <param name="sStr">ASCII String to Convert</param>
+            <param name="sep">Optional Separator between each Character, default = ''</param>
+            <returns>String of Hex Values separated by <paramref>sep</paramref> </returns>
+            <remarks><paramref>sep</paramref> can be used to create for example a comma separated list of Hex values etc.</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.Int2Bin(System.Int32)">
+            <summary>
+            Converts Integer number to Binary Value as String e.g. 0 to '00000000'
+            </summary>
+            <param name="IntegerNumber">Integer Value</param>
+            <returns>Binary Value as String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.Bin2Int(System.String)">
+            <summary>
+            Converts Binary String Value to Integer
+            </summary>
+            <param name="BinaryNumber">String of '0' and '1' characters</param>
+            <returns>Integer</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.Replace2ColorsInImage(System.Drawing.Bitmap,System.Drawing.Color,System.Drawing.Color,System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            Replaces two specified colors to new colors in provided <paramref>img</paramref>
+            </summary>
+            <param name="Img">Bitmap to replace colors in</param>
+            <param name="SrcColor1">First Color to Replace</param>
+            <param name="NewColor1">First New Color</param>
+            <param name="SrcColor2">Second Color to Replace</param>
+            <param name="NewColor2">Replacement for Second Color</param>
+            <returns>Bitmap with Specified Colors Replaced</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ReplaceColorInImage(System.Drawing.Bitmap,System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            Replaces single color to new color in specified bitmap <paramref>img</paramref>
+            </summary>
+            <param name="Img">Bitmap where color is to be replaced</param>
+            <param name="SrcColor">Color to replace</param>
+            <param name="NewColor">New replacement color</param>
+            <returns>Bitmap with color replaced</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.switchColorInImage(System.Drawing.Bitmap,System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            Duplicate of <see cref="M:ConverterSupport.Convert.ReplaceColorInImage(System.Drawing.Bitmap,System.Drawing.Color,System.Drawing.Color)"/>
+            </summary>
+            <param name="img"></param>
+            <param name="col1"></param>
+            <param name="col2"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ByteArrayToImage(System.Byte[])">
+            <summary>
+            Converts Byte Array <paramref>b</paramref> to <see cref="T:System.Drawing.Image"/>
+            </summary>
+            <param name="b">Byte Array</param>
+            <returns><see cref="T:System.Drawing.Image"/></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ImageToByteArray(System.Drawing.Image,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            Converts <see cref="T:System.Drawing.Image"/> <paramref>i</paramref> to Byte Array
+            </summary>
+            <param name="i"><see cref="T:System.Drawing.Image"/></param>
+            <param name="f">Optional <see cref="T:System.Drawing.Imaging.ImageFormat"/> of <paramref>i</paramref>, Default = Nothing which uses format <see cref="P:System.Drawing.Imaging.ImageFormat.MemoryBmp"/> </param>
+            <returns>Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ByteArrayToImageFile(System.Byte[],System.String,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            Converts Byte Array of Image Data to Bitmap File at location <paramref>fn</paramref>
+            </summary>
+            <param name="b">Byte Array with Image Data</param>
+            <param name="fn">File Name and Path of Image File to Write</param>
+            <param name="f">Optional <see cref="T:System.Drawing.Imaging.ImageFormat"/> of <paramref>i</paramref>, Default = Nothing which uses format <see cref="P:System.Drawing.Imaging.ImageFormat.Bmp"/></param>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ImageFileToByteArray(System.String)">
+            <summary>
+            Converts Image File at <paramref>sFile</paramref> to Byte Array
+            </summary>
+            <param name="sFile">Name and Path of Image File</param>
+            <returns>Byte Array</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.HexStringToString(System.String)">
+            <summary>
+            Converts a String of Hex Values to Unicode String
+            </summary>
+            <param name="sHexStr">Hex Values String</param>
+            <returns>Unicode String</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ScreenToBitmap(System.Boolean,System.Boolean)">
+            <summary>
+            Converts current see <see cref="F:Data.Screen"/> Object to a Bitmap Image
+            </summary>
+            <param name="bSmallFnt">Optional, Use Small Font (Default=False)</param>
+            <param name="nocolors">Optional, No Colors (=ASCII) (Default=False)</param>
+            <returns>Bitmap Frame in Format <see cref="T:System.Windows.Media.PixelFormat"/> = 'Indexed8'</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.ByteArrayToBitmap(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Converts Byte Array to Bitmap
+            </summary>
+            <param name="Bte">Byte Array</param>
+            <param name="TextWidth">Max Number of Characters in Line</param>
+            <param name="NumLines">Number of Lines Total</param>
+            <param name="bSmallFnt">Optional, Use Small Font (Default=False)</param>
+            <returns>Bitmap Frame in Format <see cref="T:System.Windows.Media.PixelFormat"/> = 'Indexed8'</returns>
+            <remarks>The Byte Array is typically a character definition from <see cref="F:MediaSupport.Ansifntdef.FntBits"/></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.CreateVideoFrame(System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Creates Video Frame Bitmap from current <see cref="F:Data.Screen"/> Object.
+            </summary>
+            <param name="bSmallFnt">Optional, Use Small Font (Default = False)</param>
+            <param name="nocolors">Optional, No Colors (= ASCII) (Default = False)</param>
+            <param name="YIndex">Optional, <see cref="F:Data.Yoffset"/> Location to use (Default = 0)</param>
+            <returns>Bitmap Frame in Format <see cref="T:System.Windows.Media.PixelFormat"/> = 'Indexed8'</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.BitmapToIndexed(System.Drawing.Bitmap,System.Drawing.Imaging.ColorPalette)">
+            <summary>
+            Comverts Bitmap to <see cref="T:System.Windows.Media.PixelFormat"/> = 'Indexed8'
+            </summary>
+            <param name="bm">Source Bitmap</param>
+            <param name="pal"><see cref="T:System.Drawing.Imaging.ColorPalette"/> to use for output 'Indexed8' Bitmap</param>
+            <returns>Bitmap with <see cref="T:System.Windows.Media.PixelFormat"/> = 'Indexed8'</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.FindPalettenEntry(System.Drawing.Color,System.Drawing.Imaging.ColorPalette,System.Boolean)">
+            <summary>
+            Find Palette Index Location for Color <paramref>col</paramref> in Palette <paramref>cp</paramref>
+            </summary>
+            <param name="col">Color to find in Palette <paramref>cp</paramref></param>
+            <param name="cp">Color Palette</param>
+            <param name="bIgnoreAlpha">Optional Ignore Alpha Values (Default=True)</param>
+            <returns>Byte with Index location of color in Palette</returns>
+            <remarks>If Color is not found in Palette, index of nearest color (see <see cref="M:ConverterSupport.Convert.GetClosestExistingRGBColor(System.Drawing.Color,System.Drawing.Imaging.ColorPalette)"/> is returned instead</remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.TestColorCloser(System.Drawing.Color,System.Drawing.Color,System.Drawing.Color)">
+            <summary>
+            Returns True, if new Color <paramref>Color1</paramref> comes closer to Comparison Color <paramref>CompColor</paramref> than current nearest color <paramref>CurrNearCol</paramref>
+            </summary>
+            <param name="Color1">New Color to Test</param>
+            <param name="CurrNearCol">Current Nearest Color</param>
+            <param name="CompColor">Color to Compare To</param>
+            <returns>True, if <paramref>Color1</paramref> comes closer to <paramref>CompColor</paramref> than <paramref>CurrNearCol</paramref>, False, if not</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.GetClosestExistingRGBColor(System.Drawing.Color,System.Drawing.Imaging.ColorPalette)">
+            <summary>
+            Determines which color of Palette <paramref>pal</paramref> comes closest to color <paramref>ColorI</paramref>
+            </summary>
+            <param name="ColorI">Input Color</param>
+            <param name="pal">Color Palette as <see cref="T:System.Drawing.Imaging.ColorPalette"/></param>
+            <returns>Closest <see cref="T:System.Drawing.Color"/> to <paramref>ColorI</paramref> in Palette <paramref>pal</paramref></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.larger(System.Int32,System.Int32)">
+            <summary>
+            Returns Larger of two values <paramref>val1</paramref> and <paramref>val2</paramref>
+            </summary>
+            <param name="val1">Integer Value 1 to compare</param>
+            <param name="val2">Integer Value 2 to compare</param>
+            <returns>Larger Integer Value</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.Convert.smaller(System.Int32,System.Int32)">
+            <summary>
+            Returns Smaller of two values <paramref>val1</paramref> and <paramref>val2</paramref>
+            </summary>
+            <param name="val1">Integer Value 1 to compare</param>
+            <param name="val2">Integer Value 2 to compare</param>
+            <returns>Smaller Integer Value</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ConverterSupport.InputOutput.ReadFile(System.String)">
+            <summary>
+            Reads a text file and returns the content as string)
+            </summary>
+            <param name="sFile">Path/File Name of Textfile to read</param>
+            <returns>String</returns>
+        </member>
+        <member name="M:ConverterSupport.InputOutput.WriteFile(System.String,System.Object,System.Boolean,System.Int32,System.Boolean,System.Boolean)">
+             <summary>
+             Write a string value to the specified output file (with extended options)
+             </summary>
+             <param name="OutFileName">Path/File Name of the output text file</param>
+             <param name="sStr">The string value to export</param>
+             <param name="bForceOverwrite">Force Overwriting of an existing file at the specified Path/File Name location</param>
+             <param name="iOutExists">Extended Options for Existing File Handling
+            
+             <para>
+             Output Array Structure
+             Dimension   Usage
+                0        Result Code (Int), See List below
+                1        Path and Name of Output File Written (if there was one written)
+                2        Info/Error Message in Text Format
+             </para>
+             <para>iOutExists - General Program Settings for Existing Output Files</para>
+             <para>  0 = Overwrite </para>
+             <para>  1 = Skip (no Output)</para>
+             <para>  2 = Auto Rename New File (Path\Filename[x].Ext)</para>
+             <para>  3 = Ask (Message Dialog)</para>
+             <para>  4 = Auto Rename Existing File</para>
+            
+            </param>
+            <returns>Response Message Array (3 dimensions) (0) = Return Code*, (1) Written File Name, (2) Extended Info/Error Message</returns>
+            <remarks>* Result Codes:
+            
+             <para>-4 - Error Writing Output File</para>
+             <para> 0 - Output Written, did not exist</para>
+             <para> 1 - Output Written, Existing Overwritten, Force Overwrite Enabled</para>
+             <para> 2 - Output Written, Existing Overwritten, iOutExists = Overwrite</para>
+             <para> 3 - Output Skipped, No Output, iOutExists = Skip</para>
+             <para> 4 - Output Written, Existing Overwritten, iOutExists = Ask, Result = Overwrite</para>
+             <para> 5 - Output Skipped, No Output, iOutExists = Ask, Result = Skip</para>
+             <para> 6 - Output Written, Different File Name, iOutExists = Auto Rename New File</para>
+             <para> 7 - Output Written, Existing File Renamed, iOutExists = Auto Rename Existing File</para>
+            
+            </remarks>
+        </member>
+        <member name="T:FFormats">
+            <summary>
+            Text Encoding Types Enumerator
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="T:FTypes">
+            <summary>
+            Media File Types Enumerator
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="T:FileListItem">
+            <summary>
+            Represents a list of files in list <see cref="F:Data.ListInputFiles"/> to be processed by the converter
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Form">
+            <summary>
+             Gets or Sets the Current <see cref="F:Data.MForm"/> where the converter assembly is attached to
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.TT">
+            <summary>
+            Gets or Sets the Current <see cref="F:Data.ToolTip"/> Extender Control
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:FileListItem.#ctor(System.String,System.String,FFormats,FTypes)">
+            <summary>
+            Main Constructor for this class, pre-setting vital properties right away
+            </summary>
+            <param name="Name">File Name (String)</param>
+            <param name="FullPath">Full Path of File (String)</param>
+            <param name="Format">File Format as <see cref="T:FFormats"/></param>
+            <param name="FTyp">Optional File Type as <see cref="T:FTypes"/>, Default = 'FTypes.ASCII'</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:FileListItem.#ctor">
+            <summary>
+            Default constructor without any pre-set parameters
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Selected">
+            <summary>
+            Gets or Sets if the Current Item is Selected or Not
+            Toggles to Background Color of the Item between <see cref="P:System.Drawing.Color.White"/> and <see cref="P:System.Drawing.Color.Yellow"/>
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Color">
+            <summary>
+            returns the default ForeColor used for the control depending of <see cref="P:FileListItem.Format"/> of the item
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Label">
+            <summary>
+            The <see cref="!:Windows.Forms.Label"/> Control that represents the item
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.FullPath">
+            <summary>
+            returns the Full Name and Path of the File
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Name">
+            <summary>
+            returns the File Name of the File
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Format">
+            <summary>
+            Returns the detected <see cref="T:FFormats"/> of Item
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:FileListItem.Type">
+            <summary>
+            Returns the detected <see cref="T:FTypes"/> of the Item
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:FileListItem.ToolTipAndEvents(System.Windows.Forms.Control,System.String)">
+            <summary>
+            Sets the new Tooltip Value for the specified <paramref>fctrl</paramref> on <see cref="F:Data.ToolTip"/>
+            </summary>
+            <param name="fctrl"></param>
+            <param name="sStr"></param>
+            <remarks></remarks>
+        </member>
+        <member name="T:Internal.InternalConstants">
+            <summary>
+            Constants for Internal Use Only
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="T:My.Resources.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.ANSIJS">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.ANSIJS2">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.dosfont80x25c16b2">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.dosfont80x50c16b2">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.dosfontback16c">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.ffmpeg">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.fnt80x25">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:My.Resources.Resources.fnt80x50">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="E:ProcessFiles.ProcessFinished">
+            <summary>
+            Triggered if Processing was finished or Cancelled (checked <see cref="P:ProcessFiles.Cancelled"/>)
+            </summary>
+            <param name="Sender">Converter Object</param>
+            <param name="e"></param>
+            <remarks></remarks>
+        </member>
+        <member name="E:ProcessFiles.StatusChanged">
+            <summary>
+            Triggered if Processing Status Changes (see <see cref="T:ProcessFiles.eStatus"/> Enumerator)
+            </summary>
+            <param name="sender">Converter Object</param>
+            <param name="NewStatus">New Status (see <see cref="T:ProcessFiles.eStatus"/> Enumerator)</param>
+            <remarks></remarks>
+        </member>
+        <member name="E:ProcessFiles.ListItemRemoved">
+            <summary>
+            Triggered if item was removed from <see cref="F:Data.ListInputFiles"/>
+            </summary>
+            <param name="sender">Converter Object</param>
+            <param name="item">File Item (see <see cref="T:FileListItem"/>)</param>
+            <remarks></remarks>
+        </member>
+        <member name="T:ProcessFiles.eStatus">
+            <summary>
+            Enumerator of Possible Processing States
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="P:ProcessFiles.Cancelled">
+            <summary>
+            Indicated wheather or not the conversion process finished normally or if it was cancelled
+            </summary>
+            <value></value>
+            <returns>True/False</returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:ProcessFiles.Status">
+            <summary>
+            Returns the current processing status (see <see cref="T:ProcessFiles.eStatus"/>)
+            </summary>
+            <value></value>
+            <returns><see cref="T:ProcessFiles.eStatus"/></returns>
+            <remarks></remarks>
+        </member>
+        <member name="P:ProcessFiles.WebFonts">
+            <summary>
+            Read only ArrayList of <see cref="T:ConverterSupport.WebFontDef"/> objects
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ProcessFiles.CancelProcessing">
+            <summary>
+            Aborts the current processing and sets <see cref="P:ProcessFiles.Cancelled"/> Property to 'True'
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:ProcessFiles.PauseProcessing">
+            <summary>
+            Pauses the current processing and sets <see cref="P:ProcessFiles.Status"/> to eStatus.Paused
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:ProcessFiles.ResumeProcessing">
+            <summary>
+            Resumes Processing (if <see cref="P:ProcessFiles.Status"/> = 'eStatus.Paused') and returns <see cref="P:ProcessFiles.Status"/> to 'eStates.Processing'
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:ProcessFiles.ConvertAllFiles">
+            <summary>
+            Begins Processing of all Items in <see cref="F:Data.ListInputFiles"/>
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:ProcessFiles.ResetMappings">
+            <summary>
+            Resets Code Page Mapper Settings to Initial Value
+            </summary>
+            <returns>False</returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:ProcessFiles.InitConst">
+            <summary>
+            Initializes Required Constants for HTML Processing and Code Page Mappings
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="T:Converter.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:Converter.Properties.Resources.ANSIJS" -->
+        <!-- Badly formed XML comment ignored for member "P:Converter.Properties.Resources.ANSIJS2" -->
+        <member name="P:Converter.Properties.Resources.ANSIJS2BA">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.ANSIJSBA">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.dosfont80x25c16b2">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.dosfont80x50c16b2">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.dosfontback16c">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.dosfontback16c1">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.ffmpeg">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.fnt80x25">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Converter.Properties.Resources.fnt80x50">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="F:Converter.VideoConverterFFMPEG.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Converter.VideoConverterFFMPEG.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Converter.VideoConverterFFMPEG.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -380,7 +380,7 @@ namespace MediaSupport
 					if (c.Equals(m_FontTranspColor)) {
 						int d = 0;
 						for (b = 0; b <= (16 * 8) - 1; b++) {
-							bArray[b][a] = d;
+							((byte[])(bArray[b]))[a] =(byte) d;
 							if (b + 1 % 16 == 0) {
 								d += 1;
 								if (d == 16)
@@ -390,7 +390,7 @@ namespace MediaSupport
 					} else if (c.Equals(m_FontColor)) {
 						int d = 0;
 						for (b = 0; b <= (16 * 8) - 1; b++) {
-							bArray(b)(a) = d;
+							((byte[])(bArray[b]))[a] = (byte)d;
 							if (b + 1 % 8 == 0) {
 								d += 1;
 								if (d == 8)

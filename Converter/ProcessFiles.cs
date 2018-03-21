@@ -24,17 +24,17 @@ public class ProcessFiles
         public event ErrMsgEventHandler ErrMsg;
         public delegate void ErrMsgEventHandler(String Msg);
         public event AdjustnumUTF16EventHandler AdjustnumUTF16;
-        public delegate void AdjustnumUTF16EventHandler();
+        public delegate void AdjustnumUTF16EventHandler(int Value);
         public event AdjustnumUTF8EventHandler AdjustnumUTF8;
-        public delegate void AdjustnumUTF8EventHandler();
+        public delegate void AdjustnumUTF8EventHandler(int Value);
         public event AdjustnumSelEventHandler AdjustnumSel;
-        public delegate void AdjustnumSelEventHandler();
+        public delegate void AdjustnumSelEventHandler(int Value);
         public event AdjustnumASCIIEventHandler AdjustnumASCII;
-        public delegate void AdjustnumASCIIEventHandler();
+        public delegate void AdjustnumASCIIEventHandler(int Value);
         public event AdjustnumTotalEventHandler AdjustnumTotal;
-        public delegate void AdjustnumTotalEventHandler();
+        public delegate void AdjustnumTotalEventHandler(int Value);
         public event ProcessedFileEventHandler ProcessedFile;
-        public delegate void ProcessedFileEventHandler();
+        public delegate void ProcessedFileEventHandler(int Value);
 
         /// <summary>
         /// Triggered if Processing was finished or Cancelled (checked <see cref="Cancelled"/>)
@@ -247,7 +247,7 @@ public class ProcessFiles
                 string sFileNam = ListInputFiles[a].FullPath;
                 cBPF = 0;
                 FFormats FTyp = ListInputFiles[a].Format;
-                sInputFormat = InternalConstants.aInp[ListInputFiles[a].Type];
+                sInputFormat = InternalConstants.aInp[Convert.ToInt32(ListInputFiles[a].Type)];
                 if (PreviousInputFormat == "") {
                     PreviousInputFormat = sInputFormat;
                 }
