@@ -44,7 +44,7 @@ namespace MediaFormats
 			return ProcessANSIAnimationFile("", sOutFile, aFile);
 		}
 
-		public string[] ProcessANSIAnimationFile(string sFile, string sOutFile, byte[] aFile = null)
+		public static string[] ProcessANSIAnimationFile(string sFile, string sOutFile, byte[] aFile = null)
 		{
 			int StoreX = 1;
 			int StoreY = 1;

@@ -9,7 +9,7 @@ namespace Internal
 	/// <remarks></remarks>
 	public class InternalConstants
 	{
-		public string[] aInp = new string[] {
+		public static string[] aInp = new string[] {
 			"ASC",
 			"ANS",
 			"HTML",
@@ -22,16 +22,16 @@ namespace Internal
 			"IMG",
 			"VID"
 		};
-		public byte[] UTF16Hdr = new byte[] {
+		public static byte[] UTF16Hdr = new byte[] {
 			255,
 			254
 		};
-		public byte[] UTF8Hdr = new byte[] {
+		public static byte[] UTF8Hdr = new byte[] {
 			239,
 			187,
 			191
 		};
-		public byte[] ANSIHdr = new byte[] {
+		public static byte[] ANSIHdr = new byte[] {
 			27,
 			91,
 			50,

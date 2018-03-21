@@ -8,6 +8,8 @@ using static Microsoft.VisualBasic.Interaction;
 using System;
 using Converter.Properties;
 using Internal;
+using System.IO;
+
 namespace MediaFormats
 {
 
@@ -20,7 +22,7 @@ namespace MediaFormats
 		}
 
 
-		public void ProcessWC2File(string sFile, byte[] aFile = null)
+		public static void ProcessWC2File(string sFile, byte[] aFile = null)
 		{
 			byte[] aAnsi = null;
 			int AnsiMode = 0;
@@ -54,13 +56,13 @@ namespace MediaFormats
 
 			for (int x = minX; x <= maxX; x++) {
 				for (int Y = minY; Y <= maxY; Y++) {
-					Screen(x, Y) = new ConverterSupport.ScreenChar(x);
+					Screen[x, Y] = new ConverterSupport.ScreenChar(x);
 				}
 			}
 			System.Windows.Forms.Application.DoEvents();
 			XPos = minX;
 			YPos = minY;
-			if (!aAnsi == null) {
+			if (!(aAnsi == null)) {
 				if (UBound(aAnsi) > 0) {
 					iLoop = 1;
 					while (iLoop <= UBound(aAnsi)) {
@@ -75,7 +77,7 @@ namespace MediaFormats
 								}
 								//SUB or "S"
 								if (CurChr == 26 | CurChr == 83) {
-									int iSauceOffset = IIf(CurChr == 83, 1, 0);
+									int iSauceOffset = (int)IIf(CurChr == 83, 1, 0);
 									if (UBound(aAnsi) >= iLoop + 128 - iSauceOffset) {
 										sStr = "";
 										for (iLoop2 = 1 - iSauceOffset; iLoop2 <= 5 - iSauceOffset; iLoop2++) {
@@ -265,9 +267,9 @@ namespace MediaFormats
 			string sCurr = "";
 			bool bEnde2 = false;
 			string[] aParams = null;
-			 // ERROR: Not supported in C#: ReDimStatement
+            // ERROR: Not supported in C#: ReDimStatement
 
-			aParams[0] = 0;
+            aParams[0] = 0.ToString() ;
 			if (sWork.Length > 1) {
 				while (sWork.Length > 0) {
 					iLp2 = 0;

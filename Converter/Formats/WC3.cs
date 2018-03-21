@@ -21,7 +21,7 @@ namespace MediaFormats
 			ProcessWC3File("", aFile);
 		}
 
-		public void ProcessWC3File(string sFile, byte[] aFile = null)
+		public static void ProcessWC3File(string sFile, byte[] aFile = null)
 		{
 			if (bDebug) {
 				Console.WriteLine("Process WC3 File: " + sFile);
@@ -104,10 +104,10 @@ namespace MediaFormats
 									if (Strings.Right(sStr, 1) == "@") {
 										string sFC = Strings.Left(sStr, 1);
 										string sBC = Chr(CurChr).ToString();
-										if (ConverterSupport.isHex(sBC) & ConverterSupport.isHex(sFC)) {
+										if (ConverterSupport.Convert.isHex(sBC) & ConverterSupport.Convert.isHex(sFC)) {
 											bRevert = false;
-											BackColor = ConverterSupport.smaller(ConverterSupport.HexToDec((string)sBC), 7);
-											ForeColor = ConverterSupport.HexToDec((string)sFC);
+											BackColor = ConverterSupport.Convert.smaller(System.Convert.ToInt32(ConverterSupport.Convert.HexToDec((string)sBC)), 7);
+											ForeColor = System.Convert.ToInt32(ConverterSupport.Convert.HexToDec((string)sFC));
 											if (ForeColor > 7) {
 												Bold = 8;
 												ForeColor -= 8;

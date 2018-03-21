@@ -225,8 +225,8 @@ namespace MediaSupport
 			//m_FontTranspColor = Color.Black
 			m_FontCharFrom = chrf;
 			m_FontCharTo = chrt;
-			m_FontTranspColor = Drawing.Color.FromArgb(backcolor);
-			m_FontColor = Drawing.Color.FromArgb(forecolor);
+			m_FontTranspColor = Color.FromArgb(backcolor);
+			m_FontColor = Color.FromArgb(forecolor);
 			bBuildFont = false;
 			//   For a As Integer = 0 To 255
 			//FontImgs(a) = New Bitmap(FontWidth, FontHeight)
@@ -259,7 +259,7 @@ namespace MediaSupport
 
 		public void SetFontColor(Color NewColor)
 		{
-			if (!m_FontBmp == null) {
+			if (!(m_FontBmp == null)) {
 				Color c;
 				Int32 x;
 				Int32 y;
@@ -281,37 +281,44 @@ namespace MediaSupport
 		public ColorPalette ExportPalette()
 		{
 			ColorPalette cp = new Bitmap(1, 1).Palette;
-			if (!m_FontBmp == null) {
+			if (!(m_FontBmp == null)) {
 				cp = m_FontBmp.Palette;
 			}
 			return cp;
 		}
 		public void ChangePalettenEntry(int id, Color Col)
 		{
-			if (!m_FontBmp == null) {
-				if (id >= 0 & id <= m_FontBmp.Palette.Entries.Count - 1) {
-					m_FontBmp.Palette.Entries(id) = Col;
+			if (!(m_FontBmp == null)) {
+				if (id >= 0 & id <= m_FontBmp.Palette.Entries.Count() - 1) {
+					m_FontBmp.Palette.Entries[id] = Col;
 				}
 			}
 		}
-		public Color GetPalettenEntry(int ID)
+		public Color GetPalettenEntry(int id)
 		{
-			if (!m_FontBmp == null) {
-				if (ID >= 0 & ID <= m_FontBmp.Palette.Entries.Count - 1) {
-					return m_FontBmp.Palette.Entries(ID);
-				}
-			}
+            if (!(m_FontBmp == null))
+            {
+                if (id >= 0 & id <= m_FontBmp.Palette.Entries.Count() - 1)
+                {
+                    return m_FontBmp.Palette.Entries[id];
+                }
+                else return new Color();//Not sure what it  needs.
+            }
+            else
+            {
+                return new Color(); //Not sure what it  needs.
+            }
 		}
 		public int FindPalettenEntry(Color col)
 		{
 			ColorPalette cp = new Bitmap(1, 1).Palette;
 			int a;
 			int iResult = -1;
-			if (!m_FontBmp == null) {
+			if (!(m_FontBmp == null)) {
 				if (m_FontBmp.PixelFormat == PixelFormat.Indexed) {
 					cp = m_FontBmp.Palette;
-					for (int a = 0; a <= cp.Entries.Count - 1; a++) {
-						if (cp.Entries(a).Equals(col)) {
+					for (a = 0; a <= cp.Entries.Count() - 1; a++) {
+						if (cp.Entries[a].Equals(col)) {
 							iResult = a;
 							break; // TODO: might not be correct. Was : Exit For
 						}
@@ -326,7 +333,7 @@ namespace MediaSupport
 		{
 			ColorPalette cp = new Bitmap(1, 1).Palette;
 			Color[] aCol = new Color[] { Color.Black };
-			if (!m_FontBmp == null) {
+			if (!(m_FontBmp == null)) {
 				cp = m_FontBmp.Palette;
 				 // ERROR: Not supported in C#: ReDimStatement
 
@@ -343,7 +350,7 @@ namespace MediaSupport
 		/// <remarks></remarks>
 		public void BuildFont()
 		{
-			if (!m_FontBmp == null) {
+			if (!(m_FontBmp == null)) {
 				//Create images for all characters included in the font
 				m_FontColorPalIndex = FindPalettenEntry(m_FontColor);
 				m_FontTranspColorPalIndex = FindPalettenEntry(m_FontTranspColor);
@@ -360,7 +367,7 @@ namespace MediaSupport
 			int b;
 			int bc;
 			int fc;
-			for (int b = 0; b <= (16 * 8) - 1; b++) {
+			for (b = 0; b <= (16 * 8) - 1; b++) {
 				byte[] cTemp = new byte[(bmap.Width * bmap.Height) - 1];
 				bArray[b] = cTemp;
 			}
@@ -372,8 +379,8 @@ namespace MediaSupport
 					c = bmap.GetPixel(x, y);
 					if (c.Equals(m_FontTranspColor)) {
 						int d = 0;
-						for (int b = 0; b <= (16 * 8) - 1; b++) {
-							bArray[b](a) = d;
+						for (b = 0; b <= (16 * 8) - 1; b++) {
+							bArray[b][a] = d;
 							if (b + 1 % 16 == 0) {
 								d += 1;
 								if (d == 16)
@@ -382,7 +389,7 @@ namespace MediaSupport
 						}
 					} else if (c.Equals(m_FontColor)) {
 						int d = 0;
-						for (int b = 0; b <= (16 * 8) - 1; b++) {
+						for (b = 0; b <= (16 * 8) - 1; b++) {
 							bArray(b)(a) = d;
 							if (b + 1 % 8 == 0) {
 								d += 1;
@@ -396,7 +403,7 @@ namespace MediaSupport
 			}
 			fc = 0;
 			bc = 0;
-			for (int b = 0; b <= (16 * 8) - 1; b++) {
+			for (b = 0; b <= (16 * 8) - 1; b++) {
 				GCHandle MyGC = GCHandle.Alloc(bArray[b], GCHandleType.Pinned);
 				//MyPointer = Marshal.AllocHGlobal(Marshal.SizeOf(bArray(b)))
 				//Marshal.StructureToPtr(bArray(b), MyPointer, False)
@@ -516,8 +523,8 @@ namespace MediaSupport
 
 			int ForeColorID = 7;
 			int BackColorID = 0;
-			Color NewForeColor;
-			Color NewBackColor;
+			Color NewForeColor = new Color();
+			Color NewBackColor= new Color();
 			//bm.Palette = pal
 			gr = Graphics.FromImage(bm);
 			gr.PageUnit = GraphicsUnit.Pixel;
@@ -585,7 +592,7 @@ namespace MediaSupport
 						Bitmap imgChar;
 						if (bDrawNoColors == false) {
 							//imgChar = New Bitmap(m_FontWidth, m_FontHeight, m_FontWidth, PixelFormat.Format8bppIndexed, m_FontArrays(FntCurrChar, ForeColorID, BackColorID))
-							imgChar = m_FontImgs[FntCurrChar];
+							imgChar = (Bitmap) m_FontImgs[FntCurrChar];
 							// Dim bmcol As Bitmap = Resources.ansibackgrounds256
 							// Dim pal As Drawing.Imaging.ColorPalette = bmcol.Palette
 							// imgChar.Palette = pal
@@ -593,7 +600,7 @@ namespace MediaSupport
 							imgChar = drawimg;
 							//imgChar2.Palette = 
 						} else {
-							imgChar = m_FontImgs[FntCurrChar];
+							imgChar = (Bitmap) m_FontImgs[FntCurrChar];
 						}
 
 						grchar.DrawImage(imgChar, 0, 0, m_FontWidth, m_FontHeight);

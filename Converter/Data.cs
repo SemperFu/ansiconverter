@@ -95,7 +95,7 @@ public class Data
     public static int ProcFilesCounter = 0;
     public static bool bExtInp = false;
 
-    public List<FileListItem> ListInputFiles = new List<FileListItem>();
+    public static List<FileListItem> ListInputFiles = new List<FileListItem>();
     public static string pBBS = "PCB";
 
     //Public currCPBlockzoompanel As xPanel

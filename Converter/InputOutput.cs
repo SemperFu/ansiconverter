@@ -9,6 +9,16 @@ using System.Text;
 using Microsoft.VisualBasic;
 using Internal;
 
+using System.Linq;
+using static Data;
+using static Microsoft.VisualBasic.Conversion;
+using static Microsoft.VisualBasic.Information;
+using static Microsoft.VisualBasic.Strings;
+using static Microsoft.VisualBasic.Interaction;
+
+using Converter.Properties;
+
+
 namespace ConverterSupport
 {
 
@@ -42,7 +52,7 @@ namespace ConverterSupport
 		/// </summary>
 		/// <param name="sFile">Path/File Name of Textfile to read</param>
 		/// <returns>String</returns>
-		public string ReadFile(string sFile)
+		public static string ReadFile(string sFile)
 		{
 			string sAll = "";
 			byte[] Bte;
@@ -415,7 +425,7 @@ namespace ConverterSupport
 			oFile = null;
 		}
 
-		public string DetermineOutputFileName(string sInpFile)
+		public static string DetermineOutputFileName(string sInpFile)
 		{
 			string sDir = "";
 			string sResult = "";
@@ -438,7 +448,7 @@ namespace ConverterSupport
 		//  PCBoard @
 		//  DOS Binary
 		//----------------------------------------------------
-		public string[] OutputASCHTML(string sOutFile, string sASC)
+		public static string[] OutputASCHTML(string sOutFile, string sASC)
 		{
 			string sOut = "";
 			string sObjWidth = (Data.maxX * 8).ToString() + "px";
@@ -500,7 +510,7 @@ namespace ConverterSupport
 			}
 			return sOut;
 		}
-		public string[] OutputHTML(string sOutFile)
+		public static string[] OutputHTML(string sOutFile)
 		{
 			string sOut = "";
 			string sObjWidth = (Data.maxX * 8).ToString() + "px";
@@ -569,7 +579,7 @@ namespace ConverterSupport
 
 		}
 
-		public string[] OutputPCB(string sOutFile)
+		public static string[] OutputPCB(string sOutFile)
 		{
 			string sOut = "";
 
@@ -607,7 +617,7 @@ namespace ConverterSupport
 
 		}
 
-		public string[] OutputAVT(string sOutFile)
+		public static string[] OutputAVT(string sOutFile)
 		{
 			string sOut = "";
 
@@ -643,7 +653,7 @@ namespace ConverterSupport
 			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
-		public string[] OutputWC2(string sOutFile)
+		public static string[] OutputWC2(string sOutFile)
 		{
 			string sOut = "";
 			byte[] aWCF = new byte[] {
@@ -705,7 +715,7 @@ namespace ConverterSupport
 			return WriteFile(sOutFile, sOut, Data.bForceOverwrite, Data.OutputFileExists, false, false);
 
 		}
-		public string[] OutputWC3(string sOutFile)
+		public static string[] OutputWC3(string sOutFile)
 		{
 			string sOut = "";
 
@@ -743,7 +753,7 @@ namespace ConverterSupport
 
 		}
 
-		public string[] OutputANS(string sOutFile)
+		public static string[] OutputANS(string sOutFile)
 		{
 			byte[] aOut = new byte[1000];
 			int Cnt = 0;
@@ -945,7 +955,7 @@ namespace ConverterSupport
 			}
 			return iNums;
 		}
-		public string[] OutputBin(string sOutFile)
+		public static string[] OutputBin(string sOutFile)
 		{
             Data.XPos = Data.minX;
             Data.YPos = Data.minY;

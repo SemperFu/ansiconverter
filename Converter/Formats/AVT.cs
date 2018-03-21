@@ -19,7 +19,7 @@ namespace MediaFormats
 			ProcessAVTFile("", aFile);
 		}
 
-		public void ProcessAVTFile(string sFile, byte[] aFile = null)
+		public static void ProcessAVTFile(string sFile, byte[] aFile = null)
 		{
 			if (bDebug) {
 				Console.WriteLine("Process AVT File: " + sFile);

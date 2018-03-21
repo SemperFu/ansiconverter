@@ -36,7 +36,7 @@ namespace ConverterSupport
 		/// <param name="iUChr">Unicode Character Value</param>
 		/// <returns>String (ASCII)</returns>
 		/// <remarks></remarks>
-		public string UnicodeToAscii(int iUChr)
+		public static string UnicodeToAscii(int iUChr)
 		{
 
 			//Converts a Single Unicode ASCII Code to DOS ASCII String
@@ -65,7 +65,7 @@ namespace ConverterSupport
 		/// <param name="iChr">ASCII Character Value (0-255)</param>
 		/// <returns>Unicode String</returns>
 		/// <remarks>If <see cref="bHTMLEncode"/> is set to 'True', Unicode String will be converted to HTML Entity value</remarks>
-		public string AsciiToUnicode(int iChr)
+		public static string AsciiToUnicode(int iChr)
 		{
 			//Converts a Single DOS ASCII Code to a Unicode String
 
@@ -112,7 +112,7 @@ namespace ConverterSupport
 		/// <param name="sInput">DOS Ascii String</param>
 		/// <returns>Unicode or HTML Encoded String</returns>
 		/// <remarks></remarks>
-		public string convascuni(string sInput)
+		public static string convascuni(string sInput)
 		{
 			//Converts an entire DOS ASCII String to Unicode or HTML Encoded Unicode ASCII
 			string swork = sInput;
@@ -139,7 +139,7 @@ namespace ConverterSupport
 		/// <param name="sInput">HTML Encoded String</param>
 		/// <returns>Unicode String</returns>
 		/// <remarks></remarks>
-		public string convuniuni(string sInput)
+		public static string convuniuni(string sInput)
 		{
 			string sWork = sInput;
 			int iPos = 1;
@@ -182,7 +182,7 @@ namespace ConverterSupport
 		/// <param name="sInput"></param>
 		/// <returns></returns>
 		/// <remarks></remarks>
-		public string convuniasc(string sInput)
+		public static string convuniasc(string sInput)
 		{
 			//Converts HTML Encoded Unicode String to DOS ASCII
 			string swork = sInput;
@@ -214,7 +214,7 @@ namespace ConverterSupport
 		/// <param name="iChr"></param>
 		/// <returns></returns>
 		/// <remarks></remarks>
-		public string AscConv(int iChr)
+		public static string AscConv(int iChr)
 		{
 			//Uses Global Settings "bHTMLEncode",if true, HTML Encoded String is returned, else the Unicode String
 			//and "bSanitize", if True, TABs are converted to Spaces and Control Chars < 32 are being removed, except line breaks
@@ -321,7 +321,7 @@ namespace ConverterSupport
 		/// <param name="iHeight">New Height</param>
 		/// <returns>2 Dimensional Array of <see cref="ScreenChar"/></returns>
 		/// <remarks></remarks>
-		public ScreenChar[,] ResizeScreen(ScreenChar[,] aArr, int iWidth, int iHeight)
+		public static ScreenChar[,] ResizeScreen(ScreenChar[,] aArr, int iWidth, int iHeight)
 		{
 			ScreenChar[,] aNewScr = new ScreenChar[iWidth, iHeight];
 			for (int X = Data.minX; X <= iWidth; X++) {
@@ -376,7 +376,7 @@ namespace ConverterSupport
 		/// </summary>
 		/// <returns>Byte Array</returns>
 		/// <remarks></remarks>
-		public byte[] ANSIScreenToASCIIByteArray()
+		public static byte[] ANSIScreenToASCIIByteArray()
 		{
 			byte[] bte = null;
 			int cnt = 0;
@@ -601,7 +601,7 @@ namespace ConverterSupport
 		/// <param name="enc">optional encoding format as <see cref="FFormats"/>, Default is 'FFormats.us_ascii'</param>
 		/// <returns>Byte Array</returns>
 		/// <remarks></remarks>
-		public byte[] StrToByteArray(string str, FFormats enc = FFormats.us_ascii)
+		public static byte[] StrToByteArray(string str, FFormats enc = FFormats.us_ascii)
 		{
 			switch (enc) {
 
@@ -636,7 +636,7 @@ namespace ConverterSupport
 		/// <param name="enc">optional encoding format as <see cref="FFormats"/>, Default is 'FFormats.us_ascii'</param>
 		/// <returns>String value</returns>
 		/// <remarks></remarks>
-		public string ByteArrayToStr(byte[] ByteArray, FFormats enc = FFormats.us_ascii)
+		public static string ByteArrayToStr(byte[] ByteArray, FFormats enc = FFormats.us_ascii)
 		{
 			switch (enc) {
 				
@@ -667,7 +667,7 @@ namespace ConverterSupport
 		/// <param name="ByteArray">Byte Array</param>
 		/// <returns>String</returns>
 		/// <remarks></remarks>
-		public string ByteArrayToString(byte[] ByteArray)
+		public static string ByteArrayToString(byte[] ByteArray)
 		{
 			string result = "";
 			for (int a = 0; a <= ByteArray.Length - 1; a++) {
@@ -705,7 +705,7 @@ namespace ConverterSupport
 		/// <param name="sHexStr">Hex Value String</param>
 		/// <returns>Byte Array</returns>
 		/// <remarks></remarks>
-		public byte[] HexStringToByteArray(string sHexStr)
+		public static byte[] HexStringToByteArray(string sHexStr)
 		{
 			int a;
 			byte[] dByte = null;
@@ -828,13 +828,24 @@ namespace ConverterSupport
 		/// <remarks>Note: Bit Location is 1 based and not 0</remarks>
 		public void ClearBit(ref byte MyByte, byte MyBit)
 		{
-			Int16 BitMask;
-			MyByte = System.Convert.ToByte(MyByte & 0xff);
-            // Create a bitmask with the 2 to the nth power bit set:
-            BitMask = (short)(2 ^ (MyBit - 1));
-            // Clear the nth Bit:
-            MyByte = MyByte & !BitMask;
-		}
+	            MyByte &= (byte)~MyBit;
+
+            //This should clear the bit. VB conveter did not work
+
+            //public void ClearBit(ref byte MyByte, byte MyBit)
+            //{
+            //    Int16 BitMask;
+            //    MyByte = (MyByte & 255);
+            //    //  Create a bitmask with the 2 to the nth power bit set:
+            //    BitMask = (2
+            //                | (MyBit - 1));
+            //    // TODO: Warning!!! The operator should be an XOR ^ instead of an OR, but not available in CodeDOM
+            //    MyByte = (MyByte
+            //                & !BitMask);
+            //}
+
+
+        }
 
 		/// <summary>
 		/// The ExamineBit function will return True or False depending on the value of the 1 based, nth bit (<paramref>MyBit</paramref>) of a Byte (<paramref>MyByte</paramref>).
@@ -902,9 +913,15 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public string USStringRound(float Value, int numdigits)
 		{
-			System.Globalization.CultureInfo USNum = new System.Globalization.CultureInfo("en-US", false);
-			return Math.Round((float)Value.ToString("F", SetCultureInfo(numdigits)), numdigits).ToString(USNum);
-		}
+
+            var t = Math.Round(Value, numdigits); 
+            //Not sure why they are rounding it this way. Would have to put a break point and see what it looks like in VB. 
+			//System.Globalization.CultureInfo USNum = new System.Globalization.CultureInfo("en-US", false);
+   //         var f =  Math.Round((float)Value.ToString("F", SetCultureInfo(numdigits)), numdigits).ToString(USNum);
+
+            return t.ToString();
+
+        }
 
 
 		/// <summary>
@@ -917,7 +934,7 @@ namespace ConverterSupport
 		/// <param name="isGlobal">Global Replace True/False (False = only replaces first found match, True = replace all matches in string</param>
 		/// <returns>String with replaced content</returns>
 		/// <remarks></remarks>
-		public string RegExReplace(string sStr, string sRet, string sPattern, System.Text.RegularExpressions.RegexOptions RegExOpt = 0, bool isGlobal = true)
+		public static string RegExReplace(string sStr, string sRet, string sPattern, System.Text.RegularExpressions.RegexOptions RegExOpt = 0, bool isGlobal = true)
 		{
 
 			Regex re = new Regex(sPattern, RegExOpt);
@@ -939,7 +956,7 @@ namespace ConverterSupport
 		/// <remarks></remarks>
 		public bool RegExTest(string sStr, string sPattern, System.Text.RegularExpressions.RegexOptions RegExOpt = 0)
 		{
-			if (RegExOpt && RegexOptions.Multiline) {
+			if (!IsNothing(RegExOpt) && !IsNothing(RegexOptions.Multiline)) {
 				sStr = Strings.Replace(sStr, Environment.NewLine, "\n", 1, -1, CompareMethod.Text);
 			}
 			Regex re = new Regex(sPattern, RegExOpt);
@@ -967,7 +984,7 @@ namespace ConverterSupport
 		/// <param name="Num">Number of Times to Execute on Results, '' = Unlimited or <paramref>Num</paramref> > 0 to limit loop</param>
 		/// <returns>Processed String Result</returns>
 		/// <remarks></remarks>
-		public string CutorSandR(string SInp, string sFrom, string sTo, string sFromIE, string sToIE, string sMode, string Num)
+		public static string CutorSandR(string SInp, string sFrom, string sTo, string sFromIE, string sToIE, string sMode, string Num)
 		{
 
 			string sPart1;
@@ -1077,7 +1094,7 @@ namespace ConverterSupport
 		/// <param name="sChar">String to Check</param>
 		/// <returns>True if Hex Value String, False, if not</returns>
 		/// <remarks></remarks>
-		public bool isHex(string sChar)
+		public static bool isHex(string sChar)
 		{
 			bool bResult = true;
 			string sChr = "";
@@ -1177,7 +1194,7 @@ namespace ConverterSupport
 		/// <param name="NewColor2">Replacement for Second Color</param>
 		/// <returns>Bitmap with Specified Colors Replaced</returns>
 		/// <remarks></remarks>
-		public System.Drawing.Bitmap Replace2ColorsInImage(System.Drawing.Bitmap Img, System.Drawing.Color SrcColor1, System.Drawing.Color NewColor1, System.Drawing.Color SrcColor2, System.Drawing.Color NewColor2)
+		public static System.Drawing.Bitmap Replace2ColorsInImage(System.Drawing.Bitmap Img, System.Drawing.Color SrcColor1, System.Drawing.Color NewColor1, System.Drawing.Color SrcColor2, System.Drawing.Color NewColor2)
 		{
 			System.Drawing.Color c;
 			Int32 x;
@@ -1761,7 +1778,7 @@ namespace ConverterSupport
 		/// <param name="val2">Integer Value 2 to compare</param>
 		/// <returns>Smaller Integer Value</returns>
 		/// <remarks></remarks>
-		public int smaller(int val1, int val2)
+		public static int smaller(int val1, int val2)
 		{
 			return (int)Interaction.IIf(val1 < val2, val1, val2);
 		}

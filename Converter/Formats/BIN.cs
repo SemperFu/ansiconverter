@@ -20,7 +20,7 @@ namespace MediaFormats
 		}
 
 
-		public void ProcessBINFile(string sFile, byte[] aFile = null)
+		public static void ProcessBINFile(string sFile, byte[] aFile = null)
 		{
 			byte[] aAnsi = null;
 			bool bDrawChar;

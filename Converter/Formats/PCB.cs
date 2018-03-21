@@ -19,7 +19,7 @@ namespace MediaFormats
 			ProcessPCBFile("", aFile);
 		}
 
-		public void ProcessPCBFile(string sFile, byte[] aFile = null)
+		public static void ProcessPCBFile(string sFile, byte[] aFile = null)
 		{
 			if (bDebug) {
 				Console.WriteLine("Process PCB File: " + sFile);

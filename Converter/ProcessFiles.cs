@@ -8,16 +8,12 @@ using Microsoft.VisualBasic;
 using Internal;
 using System.Drawing;
 using Converter.Properties;
-using Microsoft.VisualBasic;
 using static Data;
 using static Microsoft.VisualBasic.Conversion;
 using static Microsoft.VisualBasic.Information;
 using static Microsoft.VisualBasic.Strings;
 using static Microsoft.VisualBasic.Interaction;
-using System;
-using Converter.Properties;
-using Internal;
-
+using System.Linq;
 
 
 public class ProcessFiles
@@ -26,7 +22,7 @@ public class ProcessFiles
         public event InfoMsgEventHandler InfoMsg;
         public delegate void InfoMsgEventHandler(String Msg, Boolean nolinebreak, Boolean removelast);
         public event ErrMsgEventHandler ErrMsg;
-        public delegate void ErrMsgEventHandler();
+        public delegate void ErrMsgEventHandler(String Msg);
         public event AdjustnumUTF16EventHandler AdjustnumUTF16;
         public delegate void AdjustnumUTF16EventHandler();
         public event AdjustnumUTF8EventHandler AdjustnumUTF8;
@@ -218,7 +214,7 @@ public class ProcessFiles
                 bAnimation = true;
             }
             if (sOutPutFormat == "AVI") {
-                ConverterSupport.WriteFile(ffmpegpath, Resources.ffmpeg, true, 0, true, true);
+                ConverterSupport.InputOutput.WriteFile(ffmpegpath, Resources.ffmpeg, true, 0, true, true);
             }
             bResetMappings = ResetMappings();
             OutputFileExists = (int)pOutExist;
@@ -251,18 +247,18 @@ public class ProcessFiles
                     System.Threading.Thread.Sleep(100);
                     System.Windows.Forms.Application.DoEvents();
                 }
-                string sFileNam = ListInputFiles.Item(a).FullPath;
+                string sFileNam = ListInputFiles[a].FullPath;
                 cBPF = 0;
-                FFormats FTyp = ListInputFiles.Item(a).Format;
-                sInputFormat = Internal.aInp(ListInputFiles.Item(a).Type);
+                FFormats FTyp = ListInputFiles.[a].Format;
+                sInputFormat = InternalConstants.aInp(ListInputFiles[a].Type);
                 if (PreviousInputFormat == "") {
                     PreviousInputFormat = sInputFormat;
                 }
                 ProcessedCount += 1;
                 if (InfoMsg != null) {
-                    InfoMsg("Processing (" + ProcessedCount.ToString + "/" + iToDoCount.ToString + ") [b]" + sFileNam + "[/b]", false, false);
+                    InfoMsg("Processing (" + ProcessedCount.ToString() + "/" + iToDoCount.ToString() + ") [b]" + sFileNam + "[/b]", false, false);
                 }
-                string sOutF = ConverterSupport.DetermineOutputFileName(sFileNam);
+                string sOutF = ConverterSupport.InputOutput.DetermineOutputFileName(sFileNam);
                 OutFileWrite = sOutF;
                 //  RaiseEvent InfoMsg("Target Output: " & sOutF & ",rOutPathInput=" & rOutPathInput & ",rReplaceExt=" & rReplaceExt & ",txtExt=" & txtExt & ",outPath=" & outPath)
                 ProcFilesCounter += 1;
@@ -301,7 +297,7 @@ public class ProcessFiles
                                 }
                                 if (sOutPutFormat == "HTML" | sOutPutFormat == "IMG") {
                                     //Read ASC File as a String
-                                    strWork1 = ConverterSupport.ReadFile(sFileNam);
+                                    strWork1 = ConverterSupport.InputOutput.ReadFile(sFileNam);
                                     bHasSauce = oSauce.GetFromFile(sFileNam);
                                     if (bHasSauce == true) {
                                         int iOff = InStr(1, strWork1, Chr(26) + "SAUCE00", CompareMethod.Binary);
@@ -322,6 +318,7 @@ public class ProcessFiles
                                     oAnsi.ProcessANSIFile(sFileNam);
                                 }
                             }
+                            break;
                         case "ANS":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
@@ -337,10 +334,10 @@ public class ProcessFiles
                             if (bSkipIt == false) {
                                 if (sOutPutFormat == "AVI") {
                                     string VideoFile = "";
-                                    Ret = ConverterSupport.WriteFile(sOutF, "", bForceOverwrite, OutputFileExists, true, false);
-                                    VideoFile = Ret(1);
+                                    Ret = (string[]) ConverterSupport.InputOutput.WriteFile(sOutF, "", bForceOverwrite, OutputFileExists, true, false);
+                                    VideoFile = Ret[1];
                                     OutFileWrite = VideoFile;
-                                    TempVideoFolder = Path.Combine(Path.GetTempPath, "ANSIToVideoTemp");
+                                    TempVideoFolder = Path.Combine(Path.GetTempPath(), "ANSIToVideoTemp");
                                     if (!Directory.Exists(TempVideoFolder)) {
                                         Directory.CreateDirectory(TempVideoFolder);
                                     } else {
@@ -359,17 +356,20 @@ public class ProcessFiles
                                 switch (sOutPutFormat) {
                                     case "HTML":
                                         bConv2Unicode = true;
+                                    break;
                                     default:
                                         bConv2Unicode = false;
+                                    break;
                                 }
                                 //Read ANSI File and Convert it to Custom Class/Array
                                 if (sOutPutFormat == "HTML" & bAnimation == true) {
-                                    Ret = MediaFormats.ProcessANSIAnimationFile(sFileNam, sOutF);
+                                    Ret = MediaFormats.ANM.ProcessANSIAnimationFile(sFileNam, sOutF);
                                 } else {
                                     //Also used for Video Conversion of Ansi Animations
                                     oAnsi.ProcessANSIFile(sFileNam);
                                 }
                             }
+                        break;
                         case "HTML":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
@@ -384,14 +384,15 @@ public class ProcessFiles
                             }
                             if (bSkipIt == false) {
                                 //Read HTML Document as ASCII Text to a String Variable
-                                strWork1 = ConverterSupport.ReadFile(sFileNam);
+                                strWork1 = ConverterSupport.InputOutput.ReadFile(sFileNam);
                                 //
-                                strWork1 = ConverterSupport.CutorSandR(strWork1, "<html>", "<div class=ANSICSS>", "I", "I", "C", 1);
-                                strWork1 = ConverterSupport.CutorSandR(strWork1, "</div>", "</html>", "I", "I", "C", 1);
-                                strWork1 = ConverterSupport.CutorSandR(strWork1, "<style>", "</style>", "I", "I", "C", "");
-                                strWork1 = ConverterSupport.CutorSandR(strWork1, "<script", "</script>", "I", "I", "C", "");
-                                strWork1 = ConverterSupport.RegExReplace(strWork1, "", "</?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>", RegexOptions.IgnoreCase, true);
+                                strWork1 = ConverterSupport.Convert.CutorSandR(strWork1, "<html>", "<div class=ANSICSS>", "I", "I", "C", "1");
+                                strWork1 = ConverterSupport.Convert.CutorSandR(strWork1, "</div>", "</html>", "I", "I", "C", "1");
+                                strWork1 = ConverterSupport.Convert.CutorSandR(strWork1, "<style>", "</style>", "I", "I", "C", "");
+                                strWork1 = ConverterSupport.Convert.CutorSandR(strWork1, "<script", "</script>", "I", "I", "C", "");
+                                strWork1 = ConverterSupport.Convert.RegExReplace(strWork1, "", "</?\\w+((\\s+\\w+(\\s*=\\s*(?:\".*?\"|'.*?'|[^'\">\\s]+))?)+\\s*|\\s*)/?>", RegexOptions.IgnoreCase, true);
                             }
+                        break;
                         case "UTF":
                             if (FTyp != FFormats.utf_16 & FTyp != FFormats.utf_8) {
                                 if (ErrMsg != null) {
@@ -410,13 +411,14 @@ public class ProcessFiles
                                 bteWork1 = ConverterSupport.InputOutput.ReadBinaryFile(sFileNam);
                                 if (FTyp == FFormats.utf_16) {
                                     //Read UTF-16 Encoded Text File to a String Variable
-                                    strWork1 = ConverterSupport.ByteArrayToStr(bteWork1, FFormats.utf_16);
+                                    strWork1 = ConverterSupport.Convert.ByteArrayToStr(bteWork1, FFormats.utf_16);
                                 }
                                 if (FTyp == FFormats.utf_8) {
                                     //Read UTF-8 Encoded Text File to a String Variable
-                                    strWork1 = ConverterSupport.ByteArrayToStr(bteWork1, FFormats.utf_8);
+                                    strWork1 = ConverterSupport.Convert.ByteArrayToStr(bteWork1, FFormats.utf_8);
                                 }
                             }
+                        break;
                         case "PCB":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
@@ -436,12 +438,15 @@ public class ProcessFiles
                                 switch (sOutPutFormat) {
                                     case "HTML":
                                         bConv2Unicode = true;
+                                    break;
                                     default:
                                         bConv2Unicode = false;
+                                    break;
                                 }
                                 //Read PCB File and Convert it to Custom Class/Array
-                                MediaFormats.ProcessPCBFile(sFileNam);
+                                MediaFormats.PCB.ProcessPCBFile(sFileNam);
                             }
+                        break;
                         case "WC2":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
@@ -460,12 +465,15 @@ public class ProcessFiles
                                 switch (sOutPutFormat) {
                                     case "HTML":
                                         bConv2Unicode = true;
+                                    break;
                                     default:
                                         bConv2Unicode = false;
+                                    break;
                                 }
                                 //Read WC2 File and Convert it to Custom Class/Array
-                                MediaFormats.ProcessWC2File(sFileNam);
+                                MediaFormats.WC2.ProcessWC2File(sFileNam);
                             }
+                        break;
                         case "WC3":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
@@ -484,13 +492,16 @@ public class ProcessFiles
                                 switch (sOutPutFormat) {
                                     case "HTML":
                                         bConv2Unicode = true;
-                                    default:
+                                    break;
+                                default:
                                         bConv2Unicode = false;
-                                }
-                                //Read WC3 File and Convert it to Custom Class/Array
-                                MediaFormats.ProcessWC3File(sFileNam);
+                                    break;
                             }
-                        case "AVT":
+                                //Read WC3 File and Convert it to Custom Class/Array
+                                MediaFormats.WC3.ProcessWC3File(sFileNam);
+                            }
+                        break;
+                    case "AVT":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
                                     ErrMsg("Input file: " + sFileNam + " is Unicode format and not an PCB @ Styled Ansi in US-ASCII Encoded format. File Skipped!");
@@ -508,13 +519,16 @@ public class ProcessFiles
                                 switch (sOutPutFormat) {
                                     case "HTML":
                                         bConv2Unicode = true;
-                                    default:
+                                    break;
+                                default:
                                         bConv2Unicode = false;
-                                }
-                                //Read AVT File and Convert it to Custom Class/Array
-                                MediaFormats.ProcessAVTFile(sFileNam);
+                                    break;
                             }
-                        case "BIN":
+                                //Read AVT File and Convert it to Custom Class/Array
+                                MediaFormats.AVT.ProcessAVTFile(sFileNam);
+                            }
+                        break;
+                    case "BIN":
                             if (FTyp == FFormats.utf_16 | FTyp == FFormats.utf_8) {
                                 if (ErrMsg != null) {
                                     ErrMsg("Input file: " + sFileNam + " is Unicode format and not a DOS Binary Ansi. File Skipped!");
@@ -531,15 +545,19 @@ public class ProcessFiles
                                 switch (sOutPutFormat) {
                                     case "HTML":
                                         bConv2Unicode = true;
-                                    default:
+                                    break;
+                                default:
                                         bConv2Unicode = false;
-                                }
+                                    break;
+                            }
                                 //Read BIN File and Convert it to Custom Class/Array
                                 maxX = 160;
-                                MediaFormats.ProcessBINFile(sFileNam);
+                                MediaFormats.BIN.ProcessBINFile(sFileNam);
                             }
-                    }
-                    System.Windows.Forms.Application.DoEvents();
+                        break;
+                }
+              
+                System.Windows.Forms.Application.DoEvents();
                     if (bSkipIt == false) {
                         //Input seams okay, no skipping of file 
 
@@ -550,83 +568,84 @@ public class ProcessFiles
                                     //Convert Unicode Text File to ASC File
                                     strWork2 = "";
                                     for (iLp = 2; iLp <= strWork1.Length; iLp++) {
-                                        strWork2 += Microsoft.VisualBasic.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
+                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.Convert.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.HexStringToByteArray(strWork2), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = (string[]) ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.HexStringToByteArray(strWork2), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "HTML") {
                                     //Convert HTML Encoded Unicode ASCII to ASC File
-                                    strWork2 = ConverterSupport.convuniasc(strWork1);
-                                    strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
+                                    strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
+                                    strWork2 = Replace(strWork2, Chr(255).ToString(), " ", 1, -1, CompareMethod.Binary);
                                     if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
                                         string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
-                                            aTmp1(b) = RTrim(aTmp1(b));
+                                            aTmp1[b] = RTrim(aTmp1[b]);
                                         }
                                         strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
-                                    int iLen = Microsoft.VisualBasic.Len(strWork2);
+                                    int iLen = Strings.Len(strWork2);
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1(iLp - 1) = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
                                     }
-                                    Ret = ConverterSupport.WriteFile(sOutF, bteWork1, bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, bteWork1, bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "ANS" | sInputFormat == "PCB" | sInputFormat == "BIN" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
                                     //Save ANSI as ASCII
-                                    bteWork1 = ConverterSupport.ANSIScreenToASCIIByteArray();
-                                    Ret = ConverterSupport.WriteFile(sOutF, bteWork1, bForceOverwrite, OutputFileExists, false, true);
+                                    bteWork1 = ConverterSupport.Convert.ANSIScreenToASCIIByteArray();
+                                    Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, bteWork1, bForceOverwrite, OutputFileExists, false, true);
                                 }
                             case "ANS":
                                 if (sInputFormat == "ASC") {
                                     //Create ANSI from ASC File
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "PCB" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT" | sInputFormat == "BIN") {
-                                    Ret = ConverterSupport.OutputANS(sOutF);
+                                    Ret = ConverterSupport.InputOutput.OutputANS(sOutF);
                                 }
                                 if (sInputFormat == "HTML") {
-                                    strWork2 = ConverterSupport.convuniasc(strWork1);
-                                    strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
+                                    strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
+                                    strWork2 = Replace(strWork2, Chr(255).ToString(), " ", 1, -1, CompareMethod.Binary);
                                     if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
                                         string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
-                                            aTmp1(b) = RTrim(aTmp1(b));
+                                            aTmp1[b] = RTrim(aTmp1[b]);
                                         }
                                         strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
-                                    int iLen = Microsoft.VisualBasic.Len(strWork2);
+                                    int iLen = Strings.Len(strWork2);
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1(iLp - 1) = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
                                     }
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "UTF") {
                                     strWork2 = "";
                                     for (iLp = 2; iLp <= strWork1.Length; iLp++) {
-                                        strWork2 += Microsoft.VisualBasic.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
+                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.Convert.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
-                                    bteWork1 = ConverterSupport.HexStringToByteArray(strWork2);
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    bteWork1 = ConverterSupport.Convert.HexStringToByteArray(strWork2);
+                                    Ret = (string[]) ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
+                            break;
                             case "HTML":
                                 if (sInputFormat == "ANS" | sInputFormat == "PCB" | sInputFormat == "BIN" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
                                     //Convert ANSI to Html Encoded Unicode and CSS
                                     if (bAnimation == false) {
-                                        Ret = ConverterSupport.OutputHTML(sOutF);
+                                        Ret = ConverterSupport.InputOutput.OutputHTML(sOutF);
                                     }
                                 }
                                 if (sInputFormat == "ASC") {
                                     //Convert ASC to HTML Encoded Unicode
-                                    strWork2 = ConverterSupport.convascuni(strWork1);
-                                    Ret = ConverterSupport.OutputASCHTML(sOutF, strWork2);
+                                    strWork2 = ConverterSupport.Convert.convascuni(strWork1);
+                                    Ret = ConverterSupport.InputOutput.OutputASCHTML(sOutF, strWork2);
                                 }
                                 if (sInputFormat == "UTF") {
                                     //Convert Unicode Text File to HTML Encoded Unicode 
@@ -635,23 +654,24 @@ public class ProcessFiles
                                     //be changed when there is time.
                                     strWork2 = "";
                                     for (iLp = 2; iLp <= strWork1.Length; iLp++) {
-                                        strWork2 += Microsoft.VisualBasic.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
+                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.Convert.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
-                                    strWork1 = ConverterSupport.ByteArrayToString(ConverterSupport.HexStringToByteArray(strWork2));
-                                    strWork2 = ConverterSupport.convascuni(strWork1);
-                                    Ret = ConverterSupport.OutputASCHTML(sOutF, strWork2);
+                                    strWork1 = ConverterSupport.Convert.ByteArrayToString(ConverterSupport.Convert.HexStringToByteArray(strWork2));
+                                    strWork2 = ConverterSupport.Convert.convascuni(strWork1);
+                                    Ret = ConverterSupport.InputOutput.OutputASCHTML(sOutF, strWork2);
                                 }
+                            break;
                             case "UTF":
                                 if (sInputFormat == "ASC" | sInputFormat == "HTML") {
                                     //Convert Unicode Encoded HTML ASCII to ASC Byte Array
                                     if (sInputFormat == "HTML") {
-                                        strWork2 = ConverterSupport.convuniasc(strWork1);
-                                        strWork1 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
-                                        strWork2 = ConverterSupport.convuniuni(strWork1);
+                                        strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
+                                        strWork1 = Replace(strWork2, Chr(255).ToString(), " ", 1, -1, CompareMethod.Binary);
+                                        strWork2 = ConverterSupport.Convert.convuniuni(strWork1);
                                         if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
                                             string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                             for (int b = 0; b <= UBound(aTmp1); b++) {
-                                                aTmp1(b) = RTrim(aTmp1(b));
+                                                aTmp1[b] = RTrim(aTmp1[b]);
                                             }
                                             strWork2 = Join(aTmp1, Environment.NewLine);
                                         } else {
@@ -669,7 +689,7 @@ public class ProcessFiles
                                     }
                                 }
                                 if (sInputFormat == "ANS" | sInputFormat == "BIN" | sInputFormat == "PCB" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
-                                    bteWork1 = ConverterSupport.ANSIScreenToASCIIByteArray();
+                                    bteWork1 = ConverterSupport.Convert.ANSIScreenToASCIIByteArray();
                                 }
                                 //Convert ASC File to Unicode Text File
                                 strWork1 = "";
@@ -677,58 +697,62 @@ public class ProcessFiles
                                     strWork1 = strWork2;
                                 } else {
                                     for (iLp = 0; iLp <= UBound(bteWork1); iLp++) {
-                                        strWork1 += ConverterSupport.AsciiToUnicode(bteWork1(iLp));
+                                        strWork1 += ConverterSupport.Convert.AsciiToUnicode(bteWork1[iLp]);
                                     }
                                 }
                                 //MainForm.rUTF16.Checked = True Then
                                 if (selUTF == "UTF16") {
                                     //Save as UTF-16 Encoded Text File
-                                    bteWork2 = ConverterSupport.StrToByteArray(strWork1, FFormats.utf_16);
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.UTF16Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
+                                    bteWork2 = ConverterSupport.Convert.StrToByteArray(strWork1, FFormats.utf_16);
+                                    Ret = (string[]) ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.UTF16Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 //MainForm.rUTF8.Checked = True Then
                                 if (selUTF == "UTF8") {
                                     //Save as UTF-8 Encoded Text File
-                                    bteWork2 = ConverterSupport.StrToByteArray(strWork1, FFormats.utf_8);
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.UTF8Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
+                                    bteWork2 = ConverterSupport.Convert.StrToByteArray(strWork1, FFormats.utf_8);
+                                    Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.UTF8Hdr, bteWork2), bForceOverwrite, OutputFileExists, false, true);
 
                                 }
-
-                            case "BBS":
+                            break;
+                        case "BBS":
                                 if (sInputFormat == "ANS" | sInputFormat == "BIN" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
                                     //Save ANSI to PCBoard @ Styled ANSI
                                     switch (pBBS) {
                                         case "PCB":
-                                            Ret = ConverterSupport.OutputPCB(sOutF);
+                                            Ret = ConverterSupport.InputOutput.OutputPCB(sOutF);
+                                        break;
                                         case "AVT":
-                                            Ret = ConverterSupport.OutputAVT(sOutF);
-                                        case "WC2":
-                                            Ret = ConverterSupport.OutputWC2(sOutF);
-                                        case "WC3":
-                                            Ret = ConverterSupport.OutputWC3(sOutF);
-                                    }
+                                            Ret = ConverterSupport.InputOutput.OutputAVT(sOutF);
+                                        break;
+                                    case "WC2":
+                                            Ret = ConverterSupport.InputOutput.OutputWC2(sOutF);
+                                        break;
+                                    case "WC3":
+                                            Ret = ConverterSupport.InputOutput.OutputWC3(sOutF);
+                                        break;
+                                }
                                 }
                                 if (sInputFormat == "ASC") {
                                     //Create PCBoard @ Styled ANSI from ASC File
-                                    Ret = ConverterSupport.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(Internal.PCBHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
+                                    Ret = ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.PCBHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
                                 if (sInputFormat == "HTML") {
-                                    strWork2 = ConverterSupport.convuniasc(strWork1);
-                                    strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
+                                    strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
+                                    strWork2 = Replace(strWork2, Chr(255).ToString(), " ", 1, -1, CompareMethod.Binary);
                                     if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
                                         string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
-                                            aTmp1(b) = RTrim(aTmp1(b));
+                                            aTmp1[b] = RTrim(aTmp1[b]);
                                         }
                                         strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
-                                    int iLen = Microsoft.VisualBasic.Len(strWork2);
+                                    int iLen = Strings.Len(strWork2);
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1(iLp - 1) = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
@@ -736,53 +760,58 @@ public class ProcessFiles
                                     oAnsi.ProcessANSIFile(sFileNam, bteWork1);
                                     switch (pBBS) {
                                         case "PCB":
-                                            Ret = ConverterSupport.OutputPCB(sOutF);
+                                            Ret = ConverterSupport.InputOutput.OutputPCB(sOutF);
+                                        break;
                                         case "AVT":
-                                            Ret = ConverterSupport.OutputAVT(sOutF);
-                                        case "WC2":
-                                            Ret = ConverterSupport.OutputWC2(sOutF);
-                                        case "WC3":
-                                            Ret = ConverterSupport.OutputWC3(sOutF);
-                                    }
+                                            Ret = ConverterSupport.InputOutput.OutputAVT(sOutF);
+                                        break;
+                                    case "WC2":
+                                            Ret = ConverterSupport.InputOutput.OutputWC2(sOutF);
+                                        break;
+                                    case "WC3":
+                                            Ret = ConverterSupport.InputOutput.OutputWC3(sOutF);
+                                        break;
+                                }
 
                                 }
                                 if (sInputFormat == "UTF") {
                                     //Convert Unicode Text File to ASCII Byte Array and from there to Custom Class to PCB
                                     strWork2 = "";
                                     for (iLp = 2; iLp <= strWork1.Length; iLp++) {
-                                        strWork2 += Microsoft.VisualBasic.Right("0" + Hex(Asc(ConverterSupport.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
+                                        strWork2 += Strings.Right("0" + Hex(Asc(ConverterSupport.Convert.UnicodeToAscii(AscW(Mid(strWork1, iLp, 1))))), 2);
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
-                                    oAnsi.ProcessANSIFile(sFileNam, ConverterSupport.HexStringToByteArray(strWork2));
-                                    Ret = ConverterSupport.OutputPCB(sOutF);
+                                    oAnsi.ProcessANSIFile(sFileNam, ConverterSupport.Convert.HexStringToByteArray(strWork2));
+                                    Ret = ConverterSupport.InputOutput.OutputPCB(sOutF);
                                 }
+                            break;
                             case "BIN":
                                 if (sInputFormat == "ANS" | sInputFormat == "PCB" | sInputFormat == "ASC" | sInputFormat == "WC2" | sInputFormat == "WC3" | sInputFormat == "AVT") {
                                     //Save ANSI as Binary DOS File
                                     if (bDebug == true)
                                         Console.WriteLine("output filename:" + sOutF);
                                     maxX = 160;
-                                    Screen = ConverterSupport.ResizeScreen(Screen, maxX, LinesUsed);
-                                    Ret = ConverterSupport.OutputBin(sOutF);
+                                    Data.Screen = ConverterSupport.Convert.ResizeScreen(Data.Screen, maxX, LinesUsed);
+                                    Ret = ConverterSupport.InputOutput.OutputBin(sOutF);
                                 }
                                 if (sInputFormat == "HTML") {
-                                    strWork2 = ConverterSupport.convuniasc(strWork1);
-                                    strWork2 = Replace(strWork2, Chr(255), " ", 1, -1, CompareMethod.Binary);
+                                    strWork2 = ConverterSupport.Convert.convuniasc(strWork1);
+                                    strWork2 = Replace(strWork2, Chr(255).ToString(), " ", 1, -1, CompareMethod.Binary);
                                     if (InStr(strWork2, Environment.NewLine, CompareMethod.Text) > 0) {
                                         string[] aTmp1 = Split(strWork2, Environment.NewLine);
                                         for (int b = 0; b <= UBound(aTmp1); b++) {
-                                            aTmp1(b) = RTrim(aTmp1(b));
+                                            aTmp1[b] = RTrim(aTmp1[b]);
                                         }
                                         strWork2 = Join(aTmp1, Environment.NewLine);
                                     } else {
                                         strWork2 = RTrim(strWork2);
                                     }
-                                    int iLen = Microsoft.VisualBasic.Len(strWork2);
+                                    int iLen = Strings.Len(strWork2);
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1(iLp - 1) = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
@@ -800,7 +829,7 @@ public class ProcessFiles
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
-                                    oAnsi.ProcessANSIFile(sFileNam, ConverterSupport.HexStringToByteArray(strWork2));
+                                    oAnsi.ProcessANSIFile(sFileNam, ConverterSupport.InputOutput.HexStringToByteArray(strWork2));
                                     maxX = 160;
                                     Screen = ConverterSupport.ResizeScreen(Screen, maxX, LinesUsed);
                                     Ret = ConverterSupport.OutputBin(sOutF);
@@ -848,7 +877,7 @@ public class ProcessFiles
                                 } else {
                                 }
 
-                                Ret = ConverterSupport.WriteFile(sOutF, i, bForceOverwrite, OutputFileExists, false, true);
+                                Ret = ConverterSupport.InputOutput.WriteFile(sOutF, i, bForceOverwrite, OutputFileExists, false, true);
                             case "AVI":
                                 //oAVIFile.Close()
                                 if (InfoMsg != null) {
@@ -917,14 +946,14 @@ public class ProcessFiles
                         }
 
 
-                        if ((int)Ret(0) >= 0) {
+                        if (System.Convert.ToInt32(Ret[0]) >= 0) {
                             if (InfoMsg != null) {
-                                InfoMsg("Output generated at [b]" + Ret(1) + "[/b]. \r\n" + Ret(2), false, false);
+                                InfoMsg("Output generated at [b]" + Ret[1] + "[/b]. \r\n" + Ret[2], false, false);
                             }
                             ConvertedCount += 1;
                         } else {
                             if (ErrMsg != null) {
-                                ErrMsg("Error writing: " + Ret(1) + ". \r\n" + Ret(2));
+                                ErrMsg("Error writing: " + Ret[1] + ". \r\n" + Ret[2]);
                             }
                             ErrorCount += 1;
                         }
@@ -936,36 +965,36 @@ public class ProcessFiles
                 }
                 //  If MainForm.bRemoveCompleted.Checked = True Then
                 if (bRemoveCompleted == true) {
-                    switch (ListInputFiles.Item(a).Format) {
+                    switch (ListInputFiles[a].Format) {
                         case FFormats.utf_16:
 
                             if (AdjustnumUTF16 != null) {
                                 AdjustnumUTF16(-1);
                             }
-
+                        break;
                         case FFormats.utf_8:
 
                             if (AdjustnumUTF8 != null) {
                                 AdjustnumUTF8(-1);
                             }
-
-                        default:
+                        break;
+                    default:
 
                             if (AdjustnumASCII != null) {
                                 AdjustnumASCII(-1);
                             }
-
-                    }
+                        break;
+                }
 
                     if (AdjustnumTotal != null) {
                         AdjustnumTotal(-1);
                     }
-                    if (ListInputFiles.Item(a).Selected == true) {
+                    if (ListInputFiles.Selected == true) {
                         if (AdjustnumSel != null) {
                             AdjustnumSel(-1);
                         }
                     }
-                    FileListItem item = ListInputFiles.Item(a);
+                    FileListItem item = ListInputFiles[a];
                     ListInputFiles.Remove(item);
                     if (ListItemRemoved != null) {
                         ListItemRemoved(this, item);
