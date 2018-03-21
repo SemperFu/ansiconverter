@@ -209,6 +209,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ANSIJS.bn" />
+    <None Include="Resources\ANSIJS2.bn" />
     <None Include="Resources\dosfontback16c.png" />
     <None Include="ffmpeg.exe" />
     <Content Include="Resources\ANSIJS.JS" />

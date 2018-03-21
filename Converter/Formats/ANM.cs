@@ -728,7 +728,8 @@ namespace MediaFormats
 
 			string sJS;
 			//= ByteArrayToString(Resources.ANSIJS)
-			sJS = ConverterSupport.Convert.ByteArrayToStr(Resources.ANSIJS, FFormats.us_ascii);
+			sJS = ConverterSupport.Convert.ByteArrayToStr(Resources.ANSIJSBA, FFormats.us_ascii); //NEw VS makes it a string not byte[] Added another file for now with diff ext
+            
 			//sJS = ByteArrayToStr(Resources.ANSIJS2, FFormats.us_ascii)
 
 			sJS = ConverterSupport.Convert.CutorSandR(sJS, "//VARDEFSTART", "//VARDEFEND", "I", "I", "C", "1");
@@ -773,7 +774,7 @@ namespace MediaFormats
 			if (InternalConstants.aSpecH[iChr] != "") {
 				return InternalConstants.aSpecH[iChr];
 			} else {
-				if (Int(InternalConstants.aUniCode[iChr]) != Int(iChr) | iChr == 44) {
+				if ((int)Int(InternalConstants.aUniCode[iChr]) != Int(iChr) | iChr == 44) {
 					return "&#" + InternalConstants.aUniCode[iChr] + ";";
 				} else {
 					if (iChr == 92) {

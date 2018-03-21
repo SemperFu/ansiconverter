@@ -417,7 +417,7 @@ namespace MediaSupport
 					if (fc == 16)
 						fc = 0;
 				}
-				m_FontArrays[code, fc, bc] = MyGC;
+				m_FontArrays[code, fc, bc] = GCHandle.ToIntPtr(MyGC);
 			}
 		}
 		struct Bte128

@@ -100,7 +100,7 @@ namespace ConverterSupport
 			"Archive",
 			"Executable"
 		};
-		private object[] aFT = new object[] {
+		private static object[] aFT = new object[] {
 			new string[] { "" },
 			new string[] {
 				"ASCII",

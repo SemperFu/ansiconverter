@@ -187,10 +187,7 @@ public class ProcessFiles
             int ConvertedCount = 0;
             int ErrorCount = 0;
             int SkippedCount = 0;
-            string[] Ret = new string[] {
-            0,
-            "",
-            ""
+            string[] Ret = new string[] {"0", "", ""
         };
             byte[] bteWork1 = new byte[] { 0 };
             byte[] bteWork2 = new byte[] { 0 };
@@ -589,7 +586,7 @@ public class ProcessFiles
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = (byte)Asc(Mid(strWork2, iLp, 1));
                                     }
                                     Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, bteWork1, bForceOverwrite, OutputFileExists, false, true);
                                 }
@@ -623,7 +620,7 @@ public class ProcessFiles
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = (byte)Asc(Mid(strWork2, iLp, 1));
                                     }
                                     Ret = (string[])ConverterSupport.InputOutput.WriteFile(sOutF, ConverterSupport.Convert.MergeByteArrays(InternalConstants.ANSIHdr, bteWork1), bForceOverwrite, OutputFileExists, false, true);
                                 }
@@ -753,7 +750,7 @@ public class ProcessFiles
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = (byte)Asc(Mid(strWork2, iLp, 1));
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
@@ -812,7 +809,7 @@ public class ProcessFiles
                                     // ERROR: Not supported in C#: ReDimStatement
 
                                     for (iLp = 1; iLp <= iLen; iLp++) {
-                                        bteWork1[iLp - 1] = Asc(Mid(strWork2, iLp, 1));
+                                        bteWork1[iLp - 1] = (byte)Asc(Mid(strWork2, iLp, 1));
                                     }
                                     bConv2Unicode = false;
                                     bHTMLEncode = false;
